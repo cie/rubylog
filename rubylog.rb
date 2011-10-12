@@ -9,7 +9,6 @@ module Rubylog
     def use *args
       args.each do |a|
         case a
-        when Class, Module then a.send :include, Term
         when :variables
           def Object.const_missing k
             (k.to_s =~ /^ANY/ ? DontCareVariable : Variable).new k
@@ -18,44 +17,55 @@ module Rubylog
       end
     end
 
-    attr_reader :functors
-    def functor *args
-      @functors ||= default_functors
-      args.each{|a|@functors << a}
-    end
-
-    def any_functor 
-      @functors = nil
-    end
-
-    def good_functor? name
-      not @functors or @functors.include? name
-    end
-
-    def default_functors
-      Builtins.instance_methods.map{|f|f.to_sym}
-    end
-
   end
 
   module Term
-    def method_missing name, *args
-      s = name.to_s
-      case s
-      when /!$/
-        real_name = s[0..-2].to_sym
-        return super unless Rubylog::good_functor? real_name
-        Rubylog.theory.assert(
-          Clause.new real_name, self, *args
-        )
-      when /\?$/
-        fail
-      when /=$/
-        return super
-      else
-        return super unless Rubylog::good_functor? name
-        Clause.new name, self, *args
+    class << self
+      def included class_or_module
+        class_or_module.extend ClassMethods
       end
+
+      def add_predicate_to class_or_module, *args
+        @predicate_modules ||= {}
+        args.each do |a|
+          a = a.to_sym
+
+          class_or_module.send :include, (
+            @predicate_modules[a] ||= Module.new do
+              define_method a do |*args|
+                Clause.new a, self, *args 
+              end
+
+              a_bang =  :"#{a}!"
+              define_method a_bang do |*args|
+                Rubylog.theory.assert send(a, *args), :true
+              end
+
+              a_qmark = :"#{a}?"
+              define_method a_qmark do |*args|
+                each { return true }
+                false
+              end
+            end
+          )
+        end
+      end
+    end
+
+    module ClassMethods
+      def rubylog_predicate *args
+        Rubylog::Term.add_predicate_to self, *args
+        Rubylog::Term.add_predicate_to Rubylog::Variable, *args
+        Rubylog::Term.add_predicate_to Rubylog::Clause, *args
+      end
+    end
+
+    def if body
+      Rubylog.theory.assert self, body
+    end
+
+    def unless body
+      Rubylog.theory.assert self, Rubylog::Clause.new(:~, body)
     end
 
   end
@@ -112,6 +122,7 @@ module Rubylog
     def inspect
       @name
     end
+
   end
 
   class DontCareVariable < Variable
@@ -127,25 +138,89 @@ module Rubylog
     end
 
     def initialize
-      @predicates = Hash.new{|hash,key|hash[key] = []}
+      @database ||= Database.new
+      @builtins = Object.new.extend Builtins
     end
 
-    attr_reader :predicates
+    attr_reader :database
 
-    def assert clause
-      predicates[clause.desc] << clause
+    def assert head, body=:true
+      database << Clause.new(:-, head, body)
     end
 
-    def prove goal
+    def prove? goal
+      solve goal do return true end
+      false
+    end
+
+    def solve goal
       case goal
+      when Symbol
+        Builtins.send goal { yield variables }
       when Clause
-        goal.
-      else raise ArgumentError.new(goal)
+        goal[0].send :"#{goal.functor}?", goal[1..-1]
+      when Proc
+        case goal.arity
+        when 0
+          goal[]
+        else
+          goal[*variables]
+        end
+      else
+        raise ArgumentError.new(goal)
       end
     end
   end
 
+
   module Builtins
+    class << self
+      def true
+        yield
+      end
+      
+      def fail 
+      end
+
+      def cut
+        break
+      end
+    end
+
+    def and other
+      each { other.each { yield } }
+    end
+
+    def or other
+      each { yield }
+      other.each { yield }
+    end
+
+    def then other
+      stands = false
+      each { stands = true ; break }
+      other.each { yield } if stands
+    end
+
+    def fails
+      each { return }
+      yield
+    end
+
+  end
+
+  class Database
+    def initialize
+      @predicates = Hash.new{|hash,key|hash[key] = []}
+    end
+
+    def [] desc
+      @predicates[desc]
+    end
+
+    def << clause
+      @predicates[clause[0].desc] << clause
+    end
 
   end
 
