@@ -43,7 +43,8 @@ module Rubylog
 
               a_qmark = :"#{a}?"
               define_method a_qmark do |*args|
-                each { return true }
+                goal = Clause.new a, self, *args
+                Rubylog.theory.solve(goal) { return true }
                 false
               end
             end
@@ -65,7 +66,11 @@ module Rubylog
     end
 
     def unless body
-      Rubylog.theory.assert self, Rubylog::Clause.new(:~, body)
+      Rubylog.theory.assert self, Rubylog::Clause.new(:fails, body)
+    end
+
+    def unify other
+      yield if self == other
     end
 
   end
@@ -149,16 +154,21 @@ module Rubylog
     end
 
     def prove? goal
-      solve goal do return true end
+      solve(goal) { return true }
       false
     end
 
     def solve goal
       case goal
       when Symbol
-        Builtins.send goal { yield variables }
+        Builtins.send(goal) { yield *variables }
       when Clause
-        goal[0].send :"#{goal.functor}?", goal[1..-1]
+        database[goal.desc].each do |rule|
+          head, body = rule[0], rule[1]
+          head.unify goal do
+            solve(body) { yield *variables }
+          end
+        end
       when Proc
         case goal.arity
         when 0
@@ -170,6 +180,13 @@ module Rubylog
         raise ArgumentError.new(goal)
       end
     end
+
+    def variables
+      [] # TODO
+    end
+
+
+
   end
 
 
