@@ -123,24 +123,79 @@ describe Rubylog do
 
   end
 
-  #describe "unification" do
-    #pending; next
-    #it "works on terms" do
-      #((:john.likes :beer) === (A.likes B)).to_a.should == [(:john.likes :beer)]
-    #end
-    #it "works for variables" do
-      #(A === 12).to_a.should == [12]
-    #end
-    #it "works for used classes" do
-      #(:john === X).to_a.should == [:john]
-    #end
-    #it "works for constants" do
-      #(:jane === :jane).to_a.should == [:jane]
-    #end
-    #it "fails for different constants" do
-      #(:john === :jane).to_a.should be_false
-    #end
-  #end
+  describe "unification" do
+    it "works for variables" do
+      result = false
+      A.unify(12) { result = true }
+      result.should == true
+    end
+    it "works for used classes" do
+      result = false
+      :john.unify(A) { result = true }
+      result.should == true
+    end
+    it "works for constants" do
+      result = false
+      :john.unify(:john) { result = true }
+      result.should == true
+    end
+    it "fails for different constants" do
+      result = false
+      :john.unify(:mary) { result = true }
+      result.should == false
+    end
+    it "works on clauses" do
+      result = false
+      (:john.likes :beer).unify(A.likes B) { result = true }
+      result.should == true
+    end
+    it "works on clauses with equal values" do
+      result = false
+      (:john.likes :beer).unify(:john.likes :beer) { result = true }
+      result.should == true
+    end
+    it "works on clauses with different values" do
+      result = false
+      (:john.likes :beer).unify(:john.likes :milk) { result = true }
+      result.should == false
+    end
+    it "works on clauses with variables and equal values" do
+      result = false
+      (:john.likes :beer).unify(X.likes :beer) { result = true }
+      result.should == true
+    end
+    it "works on clauses with variables and equal values #2" do
+      result = false
+      (:john.likes :beer).unify(:john.likes DRINK) { result = true }
+      result.should == true
+    end
+    it "works on clauses with variables and different values" do
+      result = false
+      (:john.likes :beer).unify(X.likes :milk) { result = true }
+      result.should == false
+    end
+    it "works on clauses with variables and different values #2" do
+      result = false
+      (:john.likes :beer).unify(:jane.likes D) { result = true }
+      result.should == false
+    end
+
+    it "works on clauses with repeated variables #1" do
+      result = false
+      (A.likes A).unify(:john.likes :jane) { result = true }
+      result.should == false
+      (A.likes A).unify(:john.likes :john) { result = true }
+      result.should == true
+    end
+    it "works on clauses with repeated variables #1" do
+      result = false
+      (:john.likes :jane).unify(A.likes A) { result = true }
+      result.should == false
+      (:john.likes :john).unify(A.likes A) { result = true }
+      result.should == true
+    end
+
+  end
 
   describe "queries" do
     it "can be run with prove" do
