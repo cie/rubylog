@@ -48,5 +48,10 @@ module Rubylog
       Rubylog.theory.assert self, Rubylog::Clause.new(:fails, body)
     end
 
+    include Enumerable
+    def each
+      Rubylog.theory.solve(self) { yield @variables }
+    end
+
   end
 end

@@ -39,7 +39,7 @@ describe Rubylog do
       (:john.likes Drink).should be_kind_of Rubylog::Term
       (:john.likes :drinking.in :bar).should be_kind_of Rubylog::Term
     end
-    it "forbids non-predicate names" do
+    it "forbids non-declared names" do
       lambda { :john.something_else }.should raise_error(NoMethodError)
     end
     it "also work with operators" do
@@ -59,6 +59,12 @@ describe Rubylog do
       (:john.likes(:cold, :beer))[2].should == :beer
       (:john.likes(:cold, :beer))[1..2].should == [:cold,:beer]
       (:john.likes :drinking.in :bar)[1].should == (:drinking.in :bar)
+    end
+    it "can be asked for their args" do
+      (:john.is_happy).args.should == [:john]
+      (:john.likes :beer).args.should == [:john, :beer]
+      (:john.likes(:cold, :beer)).args.should == [:john, :cold, :beer]
+      (:john.likes :drinking.in :bar).args.should == [:john, :drinking.in :bar]
     end
     it "support ==" do
       (:john.is_happy).should == (:john.is_happy)
@@ -182,16 +188,16 @@ describe Rubylog do
 
     it "works on clauses with repeated variables #1" do
       result = false
-      (A.likes A).unify(:john.likes :jane) { result = true }
+      (A.likes A).compile.unify(:john.likes :jane) { result = true }
       result.should == false
-      (A.likes A).unify(:john.likes :john) { result = true }
+      (A.likes A).compile.unify(:john.likes :john) { result = true }
       result.should == true
     end
     it "works on clauses with repeated variables #1" do
       result = false
-      (:john.likes :jane).unify(A.likes A) { result = true }
+      (:john.likes :jane).unify(A.likes(A).compile) { result = true }
       result.should == false
-      (:john.likes :john).unify(A.likes A) { result = true }
+      (:john.likes :john).unify(A.likes(A).compile) { result = true }
       result.should == true
     end
 
@@ -236,13 +242,13 @@ describe Rubylog do
       k.should == [:john]
     end
 
-    describe "supports Enumerable" do
+    describe "support Enumerable" do
       before do
         :john.likes! :beer
         :john.likes! :milk
       end
 
-      it "supports all?, any? and none?" do
+      it "#all?, #any? and #none?" do
         (:john.likes A).all?{|a| Symbol===a}.should be_true
         (:john.likes A).all?{|a| a == :beer}.should be_false
         (:john.likes A).all?{|a| a == :beer or a == :milk}.should be_true
@@ -253,19 +259,19 @@ describe Rubylog do
         (:john.likes A).none?{|a| a == :beer}.should be_false
       end
 
-      it "supports to_a" do
+      it "#to_a" do
         (:john.likes A).to_a.should == [:beer, :water]
       end
 
-      it "supports first" do
+      it "#first" do
         (:john.likes A).first.should == :beer
       end
 
-      it "supports map" do
+      it "#map" do
         (:john.likes A).map{|a|a.to_s}.should == ['beer', 'milk']
       end
 
-      it "supports include? and member?" do
+      it "#include? and #member?" do
         (:john.likes B).member?(:beer).should be_true
         (:john.likes B).include?(:beer).should be_true
         (:john.likes B).member?(:milk).should be_true
@@ -343,13 +349,13 @@ describe Rubylog do
 
       it "can take arguments" do
         (A.divides B).if proc{|a,b| b % a == 0}
-        (4.divides 16).should be_true
-        (4.divides 17).should be_false
-        (4.divides 18).should be_false
-        (3.divides 3).should be_true
-        (3.divides 4).should be_false
-        (3.divides 5).should be_false
-        (3.divides 6).should be_true
+        (4.divides? 16).should be_true
+        (4.divides? 17).should be_false
+        (4.divides? 18).should be_false
+        (3.divides? 3).should be_true
+        (3.divides? 4).should be_false
+        (3.divides? 5).should be_false
+        (3.divides? 6).should be_true
       end
     end
   end
@@ -358,15 +364,15 @@ describe Rubylog do
     before do
       class User
         include Rubylog::Term
-        predicate :girl, :boy
+        rubylog_predicate :girl, :boy
 
-        attr_reader name
+        attr_reader :name
         def initialize name
           @name = name
         end
         
         def girl?
-          name =~ /[aeiouh]$/
+          name =~ /[aeiouh]$/ or super
         end
         U.boy.unless U.girl
       end
@@ -380,6 +386,18 @@ describe Rubylog do
       jane.boy?.should be_false
       jane.girl?.should be_true
     end
+    
+    it "can be used in assertions" do
+      pete = User.new "Pete"
+      pete.boy?.should be_false
+      pete.boy!
+      pete.boy?.should be_true
+
+      janet = User.new "Janet"
+      janet.girl?.should be_false
+      janet.girl!
+      janet.girl?.should be_true
+    end
 
 
 
@@ -388,7 +406,7 @@ describe Rubylog do
 
   describe "backtracking" do
     it "works" do
-
+      pending
     end
   end
 

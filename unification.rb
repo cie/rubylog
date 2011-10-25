@@ -39,12 +39,12 @@ module Rubylog
     def unify other
       if other.kind_of? Clause and 
         if other.functor == functor
-          args = @args
-          other_args = other.args
-          if args.count == other_args.count
+          my_args = @args.dup
+          other_args = other.args.dup
+          if my_args.count == other_args.count
             block = proc do
-              if args.any?
-                args.shift.unify(other_args.shift, &block)
+              if my_args.any?
+                my_args.shift.unify(other_args.shift, &block)
               else
                 yield
               end

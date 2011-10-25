@@ -7,6 +7,7 @@ module Rubylog
     def initialize
       @database ||= Database.new
       @builtins = Object.new.extend Builtins
+      @variables = []
     end
 
     attr_reader :database
@@ -20,15 +21,15 @@ module Rubylog
       false
     end
 
-    def solve goal
+    def solve goal, &block
       case goal
       when Symbol
-        Builtins.send(goal) { yield *variables }
+        Builtins.send(goal) { yield }
       when Clause
         database[goal.desc].each do |rule|
           head, body = rule[0], rule[1]
           head.unify goal do
-            solve(body) { yield *variables }
+            solve(body) { yield }
           end
         end
       when Proc
