@@ -10,6 +10,7 @@ module Rubylog
 
     def << clause
       @predicates[clause[0].desc] << clause
+      self
     end
 
   end
