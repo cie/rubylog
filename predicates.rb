@@ -50,7 +50,9 @@ module Rubylog
 
     include Enumerable
     def each
-      Rubylog.theory.solve(self) { yield @variables }
+      Rubylog.theory.solve(self.compile_variables!) do
+        yield *variable_values 
+      end
     end
 
   end

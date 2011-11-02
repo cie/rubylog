@@ -129,6 +129,64 @@ describe Rubylog do
 
   end
 
+  describe "compilation" do
+
+    it "makes eql variables be equal" do
+      a = A; b = A
+      c = (a.likes b)
+      c[0].should be_equal a; c[1].should be_equal b
+      c[0].should_not be_equal c[1]
+      c.compile_variables!
+      c[0].should be_equal a; c[1].should be_equal a
+      c[0].should be_equal c[1]
+    end
+
+    it "makes non-eql variables be non-equal" do
+      a = A; b = B
+      c = (a.likes b)
+      c[0].should be_equal a; c[1].should be_equal b
+      c[0].should_not be_equal c[1]
+      c.compile_variables!
+      c[0].should be_equal a; c[1].should be_equal b
+      c[0].should_not be_equal c[1]
+    end
+
+    it "makes dont-care variables be non-equal" do
+      a = ANY; b = ANY
+      c = (a.likes b)
+      c[0].should be_equal a; c[1].should be_equal b
+      c[0].should_not be_equal c[1]
+      c.compile_variables!
+      c[0].should be_equal a; c[1].should be_equal b
+      c[0].should_not be_equal c[1]
+    end
+
+    it "returns self" do
+      a = A; b = B
+      c = (a.likes b)
+      c.compile_variables!.should be_equal c
+    end
+
+    it "makes variables available" do
+      a = A; a1 = A; a2 = A; b = B; b1 = B; c = C;
+      (a.likes b).compile_variables!.rubylog_variables.should == [a, b]
+      (a.likes a1).compile_variables!.rubylog_variables.should == [a]
+      (a.likes a1.in b).compile_variables!.rubylog_variables.should == [a, b]
+      (a.likes a1,b,b1,a2,c).compile_variables!.rubylog_variables.should == [a, b, c]
+    end
+
+    it "does not make dont-care variables available" do
+      a = ANY; a1 = ANYTHING; a2 = ANYTHING; b = B; b1 = B; c = C;
+      (a.likes b).compile_variables!.rubylog_variables.should == [b]
+      (a.likes a1).compile_variables!.rubylog_variables.should == []
+      (a.likes a1.in b).compile_variables!.
+        rubylog_variables.should == [b]
+      (a.likes a1,b,b1,a2,c).compile_variables!.
+        rubylog_variables.should == [b, c]
+    end
+
+  end
+
   describe "unification" do
     it "works for variables" do
       result = false
@@ -188,16 +246,16 @@ describe Rubylog do
 
     it "works on clauses with repeated variables #1" do
       result = false
-      (A.likes A).compile.unify(:john.likes :jane) { result = true }
+      (A.likes A).compile_variables!.unify(:john.likes :jane) { result = true }
       result.should == false
-      (A.likes A).compile.unify(:john.likes :john) { result = true }
+      (A.likes A).compile_variables!.unify(:john.likes :john) { result = true }
       result.should == true
     end
     it "works on clauses with repeated variables #1" do
       result = false
-      (:john.likes :jane).unify(A.likes(A).compile) { result = true }
+      (:john.likes :jane).unify(A.likes(A).compile_variables!) { result = true }
       result.should == false
-      (:john.likes :john).unify(A.likes(A).compile) { result = true }
+      (:john.likes :john).unify(A.likes(A).compile_variables!) { result = true }
       result.should == true
     end
 
