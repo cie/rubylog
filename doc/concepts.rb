@@ -1,3 +1,4 @@
+
 X.clause.if X.fact
 X.clause.if X.rule
 X.clause.if X.query

@@ -21,6 +21,7 @@ module Rubylog
       @args.enum_with_index do |a,i|
         case a
         when Variable
+
           @args[i] = vars[a.name] ||= a unless a.kind_of? DontCareVariable
         when Clause
           a.compile vars

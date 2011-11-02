@@ -64,7 +64,7 @@ describe Rubylog do
       (:john.is_happy).args.should == [:john]
       (:john.likes :beer).args.should == [:john, :beer]
       (:john.likes(:cold, :beer)).args.should == [:john, :cold, :beer]
-      (:john.likes :drinking.in :bar).args.should == [:john, :drinking.in :bar]
+      (:john.likes :drinking.in :bar).args.should == [:john, :drinking.in(:bar)]
     end
     it "support ==" do
       (:john.is_happy).should == (:john.is_happy)
