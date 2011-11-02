@@ -51,6 +51,7 @@ module Rubylog
     end
 
     include Enumerable
+
     def each
       Rubylog.theory.solve(self.compile_variables!) do
         yield *variable_values 

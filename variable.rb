@@ -21,6 +21,18 @@ module Rubylog
   end
 
   module Term
+    def compile_variables!
+      self
+    end
+
+    def rubylog_variables
+      []
+    end
+
+    def variable_values
+      rubylog_variables.map{|v|v.value}
+    end
+
   end
 
 end

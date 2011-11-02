@@ -43,7 +43,7 @@ module Rubylog
       return unless other.instance_of? self.class
       return unless other.functor == functor
       return unless arity == other.arity
-      block = proc |a,b| do
+      block = proc do |a,b|
         if a.any? 
           a[0].unify(b[0]) { block[a[1..-1], b[1..-1]] }
         else
@@ -54,10 +54,6 @@ module Rubylog
     end
 
     attr_reader :rubylog_variables
-
-    def variable_values
-      rubylog_variables.map{|v|v.value}
-    end
 
     def compile_variables! vars=[], vars_by_name={}
       return self if @variables_compiled

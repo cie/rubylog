@@ -4,7 +4,7 @@ require 'rubylog'
 Rubylog.use :variables, Symbol, Integer
 Symbol.rubylog_predicate \
   :likes, :is_happy, :/, :in, :has, :we_have,
-  :brother, :father, :uncle, :neq
+  :brother, :father, :uncle, :neq, :happy
 Integer.rubylog_predicate :divides, :queens
 Rubylog::Clause.rubylog_predicate :-
 
@@ -468,12 +468,6 @@ describe Rubylog do
 
   end
 
-  describe "backtracking" do
-    it "works" do
-      (N.queens L).
-      (4.queens [A,B,C,D]).to_a.sort.should == [[2,1,4,3],[3,4,1,2]]
-    end
-  end
 
   describe "builtin" do
     it "true" do
@@ -486,13 +480,33 @@ describe Rubylog do
       :john.should_not be_happy
     end
 
-    it "branch or" do
-      :john.happy.if :fail
-      :john.happy.if :true
-      :john.should be_happy
+    describe "branch or" do
+      it "works 1" do
+        :john.happy.if :fail
+        :john.happy.if :true
+        :john.should be_happy
+      end
+
+      it "works 2" do
+        :john.happy.if :true
+        :john.happy.if :fail
+        :john.should be_happy
+      end
+
+      it "works 3" do
+        :john.happy.if :fail
+        :john.happy.if :fail
+        :john.should_not be_happy
+      end
+
+      it "works 4" do
+        :john.happy.if :true
+        :john.happy.if :true
+        :john.should be_happy
+      end
     end
 
-    desrcribe "or" do
+    describe "or" do
       it "works 1" do
         :john.happy.if :fail.or :true
         :john.should be_happy
@@ -514,7 +528,7 @@ describe Rubylog do
       end
     end
 
-    desrcribe "and" do
+    describe "and" do
       it "works 1" do
         :john.happy.if :fail.and :true
         :john.should_not be_happy
@@ -536,10 +550,79 @@ describe Rubylog do
       end
     end
 
-    describe "cut" do
+    describe "then" do
       it "works 1" do
-        :john.is_happy.if :true.and :cut.and :fail
+        :john.happy.if :fail.then :true
+        :john.should_not be_happy
       end
+
+      it "works 2" do
+        :john.happy.if :true.then :fail
+        :john.should_not be_happy
+      end
+
+      it "works 3" do
+        :john.happy.if :fail.then :fail
+        :john.should_not be_happy
+      end
+
+      it "works 4" do
+        :john.happy.if :true.then :true
+        :john.should be_happy
+      end
+
+      it "works 5" do
+        :john.happy.if :true.then :true
+        :john.should be_happy
+      end
+    end
+
+    describe "cut" do
+      it "works with branch or" do
+        :john.happy.if :true.and :cut.and :fail
+        :john.happy.if :true
+        :john.should_not be_happy
+      end
+      it "works with branch or (control)" do
+        :john.happy.if :true.and :fail
+        :john.happy.if :true
+        :john.should be_happy
+      end
+
+      it "works with or" do
+        :john.happy.if((:true.and :cut.and :fail).or :true)
+        :john.should_not be_happy
+      end
+
+      it "works with or (control)" do
+        :john.happy.if((:true.and :fail).or :true)
+        :john.should be_happy
+      end
+    end
+
+    describe "is_false" do
+      it "works 5" do
+        :john.happy.if :true.is_false
+        :john.should_not be_happy
+      end
+
+      it "works 5" do
+        :john.happy.if :fail.is_false
+        :john.should be_happy
+      end
+    end
+
+    describe "is" do
+      before do
+        :john.likes! :beer
+        :jane.likes! :milk
+      end
+
+      it "works for variables" do
+        (A.likes(B).and(B.is :milk)).to_a.should == [[:jane, :milk]]
+        (A.likes(B).and(:milk.is B)).to_a.should == [[:jane, :milk]]
+      end
+
     end
 
   end

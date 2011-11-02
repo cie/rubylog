@@ -32,14 +32,14 @@ module Rubylog
         yield
       end
 
-      def === a b
-        a.unify b { yield }
+      def is a, b
+        a.unify(b) { yield }
       end
 
     end
   end
 
   module Term
-    rubylog_predicate :and, :or, :then, :is_false, :===
+    rubylog_predicate :and, :or, :then, :is_false, :is
   end
 end
