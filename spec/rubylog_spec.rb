@@ -1,17 +1,12 @@
 require 'rubylog'
 
 
-Rubylog.use :variables
-
-class Symbol
-  include Rubylog::Term
-  rubylog_predicate :likes, :is_happy, :/, :in, :has, :we_have, :-, :brother, :father, :uncle, :neq
-end
-
-class Integer
-  include Rubylog::Term
-  rubylog_predicate :divides
-end
+Rubylog.use :variables, Symbol, Integer
+Symbol.rubylog_predicate \
+  :likes, :is_happy, :/, :in, :has, :we_have,
+  :brother, :father, :uncle, :neq
+Integer.rubylog_predicate :divides, :queens
+Rubylog::Clause.rubylog_predicate :-
 
 describe Rubylog do
   before do
@@ -398,6 +393,16 @@ describe Rubylog do
         :john.is_happy?.should be_false
       end
 
+      it "can be asserted implicitly (true)" do
+        :john.is_happy.if { true }
+        :john.is_happy?.should be_true
+      end
+
+      it "can be asserted implicitly (false)" do
+        :john.is_happy.if { false }
+        :john.is_happy?.should be_false
+      end
+
       it "run the body during every query" do
         count = 0
         :john.is_happy.if proc{ count += 1 }
@@ -432,9 +437,7 @@ describe Rubylog do
           @name = name
         end
         
-        def girl?
-          name =~ /[aeiouh]$/ or super
-        end
+        U.girl.if {|u| u.name =~ /[aeiouh]$/ }
         U.boy.unless U.girl
       end
     end
@@ -467,13 +470,91 @@ describe Rubylog do
 
   describe "backtracking" do
     it "works" do
-      pending
+      (N.queens L).
+      (4.queens [A,B,C,D]).to_a.sort.should == [[2,1,4,3],[3,4,1,2]]
     end
+  end
+
+  describe "builtin" do
+    it "true" do
+      :john.happy.if :true
+      :john.should be_happy
+    end
+
+    it "fail" do
+      :john.happy.if :fail
+      :john.should_not be_happy
+    end
+
+    it "branch or" do
+      :john.happy.if :fail
+      :john.happy.if :true
+      :john.should be_happy
+    end
+
+    desrcribe "or" do
+      it "works 1" do
+        :john.happy.if :fail.or :true
+        :john.should be_happy
+      end
+
+      it "works 2" do
+        :john.happy.if :true.or :fail
+        :john.should be_happy
+      end
+
+      it "works 3" do
+        :john.happy.if :fail.or :fail
+        :john.should_not be_happy
+      end
+
+      it "works 4" do
+        :john.happy.if :true.or :true
+        :john.should be_happy
+      end
+    end
+
+    desrcribe "and" do
+      it "works 1" do
+        :john.happy.if :fail.and :true
+        :john.should_not be_happy
+      end
+
+      it "works 2" do
+        :john.happy.if :true.and :fail
+        :john.should_not be_happy
+      end
+
+      it "works 3" do
+        :john.happy.if :fail.and :fail
+        :john.should_not be_happy
+      end
+
+      it "works 4" do
+        :john.happy.if :true.and :true
+        :john.should be_happy
+      end
+    end
+
+    describe "cut" do
+      it "works 1" do
+        :john.is_happy.if :true.and :cut.and :fail
+      end
+    end
+
   end
 
 
 
+
+
 end
+
+
+
+
+
+
 
 
 

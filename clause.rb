@@ -1,6 +1,6 @@
 module Rubylog
   class Clause
-    include Term
+    include Rubylog::Term
 
     attr_reader :functor, :args
     def initialize functor, *args
@@ -12,13 +12,13 @@ module Rubylog
       @args[i]
     end
 
-    def eql? other
-      self == other
-    end
 
     def == other
       other.instance_of? Clause and
       functor == other.functor and args == other.args
+    end
+    def eql? other
+      self == other
     end
 
     def hash
@@ -39,5 +39,44 @@ module Rubylog
       Clause.new :/, functor, arity
     end
 
+    def unify other
+      return unless other.instance_of? self.class
+      return unless other.functor == functor
+      return unless arity == other.arity
+      block = proc |a,b| do
+        if a.any? 
+          a[0].unify(b[0]) { block[a[1..-1], b[1..-1]] }
+        else
+          yield
+        end
+      end
+      block[args, other.args]
+    end
+
+    attr_reader :rubylog_variables
+
+    def variable_values
+      rubylog_variables.map{|v|v.value}
+    end
+
+    def compile_variables! vars=[], vars_by_name={}
+      return self if @variables_compiled
+      @args.enum_with_index do |arg,i|
+        case arg
+        when Variable
+          unless arg.kind_of? DontCareVariable
+            if not (real_var = vars_by_name[arg.name])
+              vars << (real_var = vars_by_name[arg.name] = arg)
+            end
+            @args[i] = real_var
+          end
+        when Clause
+          arg.compile_variables! vars, vars_by_name
+        end
+      end
+      @rubylog_variables = vars
+      @variables_compiled = true
+      self
+    end
   end
 end

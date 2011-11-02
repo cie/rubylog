@@ -34,7 +34,7 @@ module Rubylog
 
     module ClassMethods
       def rubylog_predicate *args
-        [self, Variable, Clause].each do |c|
+        [self, Variable].each do |c|
           Rubylog::Term.add_predicate_to c, *args
         end
       end
@@ -42,12 +42,12 @@ module Rubylog
 
     extend ClassMethods
 
-    def if body
-      Rubylog.theory.assert self, body
+    def if body=nil, &block
+      Rubylog.theory.assert self, body || block
     end
 
-    def unless body
-      Rubylog.theory.assert self, Rubylog::Clause.new(:is_false, body)
+    def unless body=nil, &block
+      Rubylog.theory.assert self, Rubylog::Clause.new(:is_false, body || block)
     end
 
     include Enumerable

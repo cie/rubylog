@@ -12,6 +12,8 @@ module Rubylog
           def Object.const_missing k
             (k.to_s =~ /^ANY/ ? DontCareVariable : Variable).new k
           end
+        when Class,Module
+          a.send :include, Rubylog::Term
         end
       end
     end
@@ -25,12 +27,14 @@ end
 
 require 'term.rb'
 require 'predicates.rb'
-require 'clause.rb'
 require 'database.rb'
 require 'theory.rb'
 require 'unification.rb'
 require 'variable.rb'
 
 require 'builtins.rb'
+
+require 'clause.rb'
+require 'array.rb'
 
 Rubylog::Theory.new!

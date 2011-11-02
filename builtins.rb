@@ -9,7 +9,7 @@ module Rubylog
       end
 
       def cut
-        break
+        raise Rubylog::Cut
       end
 
       def and a, b
@@ -32,10 +32,14 @@ module Rubylog
         yield
       end
 
+      def === a b
+        a.unify b { yield }
+      end
+
     end
   end
 
   module Term
-    rubylog_predicate :and, :or, :then, :is_false
+    rubylog_predicate :and, :or, :then, :is_false, :===
   end
 end

@@ -1,4 +1,6 @@
 module Rubylog
+  class Cut < StandardError end
+
   class Theory
     def self.new! 
       Rubylog.theory = new
@@ -35,6 +37,7 @@ module Rubylog
               head.unify goal do
                 solve(body) { yield }
               end
+            catch Cut
             ensure
               @variable_bindings.pop
             end

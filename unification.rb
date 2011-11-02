@@ -38,25 +38,5 @@ module Rubylog
     end
   end
 
-  class Clause
-    def unify other
-      if other.kind_of? Clause and 
-        if other.functor == functor
-          my_args = @args.dup
-          other_args = other.args.dup
-          if my_args.count == other_args.count
-            block = proc do
-              if my_args.any?
-                my_args.shift.unify(other_args.shift, &block)
-              else
-                yield
-              end
-            end
-            block[]
-          end
-        end
-      end
-    end
-  end
 
 end
