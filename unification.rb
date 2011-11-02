@@ -20,9 +20,12 @@ module Rubylog
       if @assigned
         dereference.unify(other) do yield end
       else
-        @assigned = true; @value = other
-        yield
-        @assigned = false
+        begin
+          @assigned = true; @value = other
+          yield
+        ensure
+          @assigned = false
+        end
       end
     end
 

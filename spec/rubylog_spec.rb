@@ -5,7 +5,7 @@ Rubylog.use :variables
 
 class Symbol
   include Rubylog::Term
-  rubylog_predicate :likes, :is_happy, :/, :in, :has, :we_have, :-
+  rubylog_predicate :likes, :is_happy, :/, :in, :has, :we_have, :-, :brother, :father, :uncle, :neq
 end
 
 class Integer
@@ -318,7 +318,9 @@ describe Rubylog do
       end
 
       it "#to_a" do
-        (:john.likes A).to_a.should == [:beer, :water]
+        (:john.likes A).to_a.should == [:beer, :milk]
+        (X.likes A).to_a.should == [[:john, :beer], [:john, :milk]]
+        (ANYONE.likes A).to_a.should == [:beer, :milk]
       end
 
       it "#first" do
@@ -348,7 +350,7 @@ describe Rubylog do
         :john.is_happy.if :-@.we_have(:beer)
         :john.is_happy?.should be_false
         :-@.we_have!(:beer)
-        :john.is_happy?.should be_ture
+        :john.is_happy?.should be_true
       end
 
       it "can be asserted with unless" do
@@ -371,6 +373,7 @@ describe Rubylog do
       it "can yield implied solutions" do
         X.brother(Y).if X.father(Z).and Y.father(Z).and X.neq(Y)
         X.uncle(Y).if X.father(Z).and Z.brother(Y)
+        X.neq(Y).if proc {|x,y|x != y}
 
         :john.father! :dad
         :jack.father! :dad
@@ -380,7 +383,7 @@ describe Rubylog do
         (:john.brother X).to_a.should == [:jack]
         (:john.father X).to_a.should == [:dad]
         (X.father :dad).to_a.should == [:john, :jack]
-        (ANY.father X).to_a.should == [:dad, :grandpa]
+        (ANY.father X).to_a.should == [:dad, :dad, :grandpa, :grandpa]
         (:john.uncle X).to_a.should == [:jim]
       end
     end
@@ -438,11 +441,11 @@ describe Rubylog do
 
     it "can have ruby predicates" do
       john = User.new "John"
-      john.boy?.should be_true
       john.girl?.should be_false
+      john.boy?.should be_true
       jane = User.new "Jane"
-      jane.boy?.should be_false
       jane.girl?.should be_true
+      jane.boy?.should be_false
     end
     
     it "can be used in assertions" do

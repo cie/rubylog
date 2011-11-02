@@ -2,7 +2,7 @@ module Rubylog
   class Variable
     include Term
     
-    attr_reader :name, :assigned, :value
+    attr_reader :name, :assigned
     def initialize name
       @name = name
       @assigned = false
@@ -10,6 +10,10 @@ module Rubylog
 
     def inspect
       @name
+    end
+
+    def value
+      dereference
     end
   end
 
@@ -27,7 +31,7 @@ module Rubylog
     end
 
     def compile_variables! vars=[], vars_by_name={}
-      return if @variables_compiled
+      return self if @variables_compiled
       @args.enum_with_index do |arg,i|
         case arg
         when Variable

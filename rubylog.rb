@@ -25,11 +25,12 @@ end
 
 require 'term.rb'
 require 'predicates.rb'
-require 'builtins.rb'
 require 'clause.rb'
 require 'database.rb'
 require 'theory.rb'
 require 'unification.rb'
 require 'variable.rb'
+
+require 'builtins.rb'
 
 Rubylog::Theory.new!

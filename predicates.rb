@@ -40,12 +40,14 @@ module Rubylog
       end
     end
 
+    extend ClassMethods
+
     def if body
       Rubylog.theory.assert self, body
     end
 
     def unless body
-      Rubylog.theory.assert self, Rubylog::Clause.new(:fails, body)
+      Rubylog.theory.assert self, Rubylog::Clause.new(:is_false, body)
     end
 
     include Enumerable

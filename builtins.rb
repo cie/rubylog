@@ -1,6 +1,6 @@
 module Rubylog
   module Builtins
-    class << self
+    class << self 
       def true
         yield
       end
@@ -11,27 +11,31 @@ module Rubylog
       def cut
         break
       end
-    end
 
-    def and other
-      each { other.each { yield } }
-    end
+      def and a, b
+        a.each { b.each { yield } }
+      end
 
-    def or other
-      each { yield }
-      other.each { yield }
-    end
+      def or a, b
+        a.each { yield }
+        b.each { yield }
+      end
 
-    def then other
-      stands = false
-      each { stands = true ; break }
-      other.each { yield } if stands
-    end
+      def then a, b
+        stands = false
+        a.each { stands = true ; break }
+        b.each { yield } if stands
+      end
 
-    def fails
-      each { return }
-      yield
-    end
+      def is_false a
+        a.each { return }
+        yield
+      end
 
+    end
+  end
+
+  module Term
+    rubylog_predicate :and, :or, :then, :is_false
   end
 end
