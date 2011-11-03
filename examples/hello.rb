@@ -1,8 +1,8 @@
-require "../rubylog.rb"
+require "rubylog"
 
-Rubylog.use :variables, String
+Rubylog.use :variables, :implicit_predicates, String
 
-A.write.if {|a| puts a}
+A.write.if {|a| puts a; true}
 :hello.if "Hello, world!".write
 
 :hello.true?

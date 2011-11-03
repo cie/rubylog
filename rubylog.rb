@@ -12,8 +12,13 @@ module Rubylog
           def Object.const_missing k
             (k.to_s =~ /^ANY/ ? DontCareVariable : Variable).new k
           end
+        when :implicit_predicates
+          [Term, Variable].each{|k|
+            k.send :include, Rubylog::ImplicitPredicates}
         when Class,Module
           a.send :include, Rubylog::Term
+        else
+          raise ArgumentError, "Cannot use #{a.inspect}"
         end
       end
     end

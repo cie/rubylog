@@ -54,7 +54,7 @@ module Rubylog
 
     def solve
       Rubylog.theory.solve(self.compile_variables!) do
-        yield *variable_values 
+        yield(*variable_values )
       end
     end
 
@@ -69,4 +69,13 @@ module Rubylog
     end
 
   end
+
+  module ImplicitPredicates
+    def method_missing method_name, *args
+      trimmed_method_name = method_name.to_s.sub(/[?!]$/, "").to_sym
+      self.class.send :rubylog_predicate, trimmed_method_name
+      send method_name, *args
+    end
+  end
+
 end

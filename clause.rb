@@ -40,15 +40,15 @@ module Rubylog
     end
 
     def each
-      solve {|*a| yield *a }
+      solve {|*a| yield(*a) }
     end
 
     def unify other
-      return unless other.instance_of? self.class
+      return super{yield} unless other.instance_of? self.class
       return unless other.functor == functor
       return unless arity == other.arity
       block = proc do |a,b|
-        if a.any? 
+        if not a.empty? 
           a[0].unify(b[0]) { block[a[1..-1], b[1..-1]] }
         else
           yield

@@ -34,5 +34,4 @@ module Rubylog
     end
 
   end
-
 end

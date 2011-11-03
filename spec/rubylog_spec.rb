@@ -254,6 +254,12 @@ describe Rubylog do
       result.should == true
     end
 
+    it "works for second-order variables" do
+      result = false
+      (:john.likes :beer).unify(A) { result = true }
+      result.should == true
+    end
+
   end
 
   describe "queries" do
@@ -662,6 +668,21 @@ describe Rubylog do
 
   end
 
+  describe "Array" do
+    it "can be unified" do
+      result = false
+      [A,B].unify(12) { result = true }
+      result.should == false
+
+      result = false
+      [A,B].unify([12,13]) { result = true }
+      result.should == true
+
+      result = false
+      [14,B].unify([12,13]) { result = true }
+      result.should == false
+    end
+  end
 
 
 

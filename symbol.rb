@@ -1,5 +1,5 @@
 class Symbol
-  include Rubylog::Term
+  include ::Rubylog::Term
 
   def functor
     self
@@ -10,7 +10,7 @@ class Symbol
   end
 
   def desc
-    Clause.new :/, functor, arity
+    ::Rubylog::Clause.new :/, functor, arity
   end
 
   def args
