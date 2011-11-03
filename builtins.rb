@@ -1,41 +1,51 @@
 module Rubylog
   module Builtins
     class << self 
+      # true
       def true
         yield
       end
       
+      # fail
       def fail 
       end
 
+      # '!'
       def cut
         yield
         raise Cut
       end
-
+      
+      # ','
       def and a, b
-        a.each { b.each { yield } }
+        a.solve { b.solve { yield } }
       end
 
-      def or a, b
-        a.each { yield }
-        b.each { yield }
+      # ';'
+      def or a, b 
+        a.solve { yield }
+        b.solve { yield }
       end
 
+      # '->'
       def then a, b
         stands = false
-        a.each { stands = true ; break }
-        b.each { yield } if stands
+        a.solve { stands = true ; break }
+        b.solve { yield } if stands
       end
 
+      # '\+'
       def is_false a
-        a.each { return }
+        a.solve { return }
         yield
       end
 
+      # '='
       def is a, b
         a.unify(b) { yield }
       end
+
+
 
     end
   end

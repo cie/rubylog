@@ -52,10 +52,15 @@ module Rubylog
 
     include Enumerable
 
-    def each
+    def solve
       Rubylog.theory.solve(self.compile_variables!) do
         yield *variable_values 
       end
+    end
+
+    def true?
+      Rubylog.theory.solve(self.compile_variables!) { return true }
+      false
     end
 
   end

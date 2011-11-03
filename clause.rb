@@ -39,6 +39,10 @@ module Rubylog
       Clause.new :/, functor, arity
     end
 
+    def each
+      solve {|*a| yield *a }
+    end
+
     def unify other
       return unless other.instance_of? self.class
       return unless other.functor == functor

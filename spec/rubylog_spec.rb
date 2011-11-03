@@ -268,6 +268,12 @@ describe Rubylog do
       :john.likes! :beer
       :john.likes?(:beer).should be_true
     end
+
+    it "can be run with true?" do
+      (:john.likes(:beer)).true?.should be_false
+      :john.likes! :beer
+      (:john.likes(:beer)).true?.should be_true
+    end
     
     it "work with variables" do
       :john.likes?(X).should be_false
