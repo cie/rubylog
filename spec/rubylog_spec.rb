@@ -289,6 +289,14 @@ describe Rubylog do
       k.should == [:beer]
     end
 
+    it "yield all solutions with solve" do
+      :john.likes! :beer
+
+      k=[]
+      (:john.likes X).solve{|x|k << x}
+      k.should == [:beer]
+    end
+
     it "ignore don't-care variables" do
       :john.likes! :beer
 

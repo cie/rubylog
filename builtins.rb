@@ -18,25 +18,25 @@ module Rubylog
       
       # ','
       def and a, b
-        a.solve { b.solve { yield } }
+        a.prove { b.prove { yield } }
       end
 
       # ';'
       def or a, b 
-        a.solve { yield }
-        b.solve { yield }
+        a.prove { yield }
+        b.prove { yield }
       end
 
       # '->'
       def then a, b
         stands = false
-        a.solve { stands = true ; break }
-        b.solve { yield } if stands
+        a.prove { stands = true ; break }
+        b.prove { yield } if stands
       end
 
       # '\+'
       def is_false a
-        a.solve { return }
+        a.prove { return }
         yield
       end
 

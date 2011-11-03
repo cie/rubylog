@@ -58,6 +58,11 @@ module Rubylog
       end
     end
 
+    # optimized version - does not yield variables, does not recompile
+    def prove
+      Rubylog.theory.solve(self) { yield }
+    end
+
     def true?
       Rubylog.theory.solve(self.compile_variables!) { return true }
       false
