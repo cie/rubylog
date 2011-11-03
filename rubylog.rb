@@ -4,7 +4,12 @@
 require 'set'
 
 module Rubylog
+
+  @used_classes = []
+
   class << self
+    attr_reader :used_classes
+
     def use *args
       args.each do |a|
         case a
@@ -13,10 +18,10 @@ module Rubylog
             (k.to_s =~ /^ANY/ ? DontCareVariable : Variable).new k
           end
         when :implicit_predicates
-          [Term, Variable].each{|k|
-            k.send :include, Rubylog::ImplicitPredicates}
+          (used_classes + [Term]).each{|k|
+            k.send :include, ImplicitPredicates}
         when Class,Module
-          a.send :include, Rubylog::Term
+          a.send :include, Term
         else
           raise ArgumentError, "Cannot use #{a.inspect}"
         end
@@ -42,5 +47,6 @@ require 'builtins.rb'
 require 'clause.rb'
 require 'array.rb'
 require 'symbol.rb'
+require 'proc.rb'
 
 Rubylog::Theory.new!

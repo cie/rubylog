@@ -3,11 +3,16 @@
 require "rubylog"
 require "readline"
 
-Rubylog.use Symbol, Integer, :implicit_predicates, :variables
+Rubylog.use Integer, :implicit_predicates, :variables
 
 while s = Readline.readline("rubylog> ",false)
   Readline::HISTORY.push s unless s.empty?
-  res = eval s
+  begin
+    res = eval s
+  rescue StandardError
+    res = $!
+  end
+
   case res
   when Rubylog::Database
     puts "OK"
@@ -17,6 +22,7 @@ while s = Readline.readline("rubylog> ",false)
     puts "Yes."
   when false
     puts "No."
+  when nil
   else
     p res
   end

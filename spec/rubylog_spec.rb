@@ -359,6 +359,30 @@ describe Rubylog do
 
   end
 
+  describe "using ruby code in clauses" do
+    it "works" do
+      (:true.and? {false}).should be_false
+      (:true.and? {true}).should be_true
+      (:false.and? {false}).should be_false
+      (:false.and? {true}).should be_false
+      (:true.or? {false}).should be_true
+      (:true.or? {true}).should be_true
+      (:false.or? {false}).should be_false
+      (:false.or? {true}).should be_true
+    end
+    it "runs the query once at every evaluation" do
+      count = 0
+      :john.is_happy.if :true.and { count += 1 }
+      count.should == 0
+      :john.is_happy?
+      count.should == 1
+      :john.is_happy?
+      count.should == 2
+      (:false.or? {count+=1}).should be_true
+      count.should == 3
+    end
+  end
+
   describe "rules" do
     describe "with prolog body" do
       it "can be asserted with if" do
