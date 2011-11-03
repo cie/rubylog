@@ -47,14 +47,7 @@ module Rubylog
       return super{yield} unless other.instance_of? self.class
       return unless other.functor == functor
       return unless arity == other.arity
-      block = proc do |a,b|
-        if not a.empty? 
-          a[0].unify(b[0]) { block[a[1..-1], b[1..-1]] }
-        else
-          yield
-        end
-      end
-      block[args, other.args]
+      args.unify(other.args) { yield }
     end
 
     attr_reader :rubylog_variables

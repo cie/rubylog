@@ -10,17 +10,20 @@ module Rubylog
 
           class_or_module.send :include, (
             @predicate_modules[a] ||= Module.new do
-              define_method a do |*args|
+              define_method a do |*args, &block|
+                args << block if block
                 Clause.new a, self, *args 
               end
 
               a_bang =  :"#{a}!"
-              define_method a_bang do |*args|
+              define_method a_bang do |*args, &block|
+                args << block if block
                 Rubylog.theory.assert send(a, *args), :true
               end
 
               a_qmark = :"#{a}?"
-              define_method a_qmark do |*args|
+              define_method a_qmark do |*args, &block|
+                args << block if block
                 goal = Clause.new a, self, *args
                 result = false
                 Rubylog.theory.solve(goal) { result = true; break }
