@@ -36,5 +36,6 @@ require 'builtins.rb'
 
 require 'clause.rb'
 require 'array.rb'
+require 'symbol.rb'
 
 Rubylog::Theory.new!

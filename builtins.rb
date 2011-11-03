@@ -9,7 +9,8 @@ module Rubylog
       end
 
       def cut
-        raise Rubylog::Cut
+        yield
+        raise Cut
       end
 
       def and a, b

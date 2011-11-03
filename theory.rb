@@ -25,9 +25,7 @@ module Rubylog
 
     def solve goal
       case goal
-      when Symbol
-        Builtins.send(goal) { yield }
-      when Clause
+      when Symbol, Clause
         if is_builtin? goal.functor
           Builtins.send(goal.functor, *goal.args) { yield }
         else
