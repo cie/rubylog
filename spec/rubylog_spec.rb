@@ -180,6 +180,7 @@ describe Rubylog do
         rubylog_variables.should == [b, c]
     end
 
+
   end
 
   describe "unification" do
@@ -263,10 +264,10 @@ describe Rubylog do
   end
 
   describe "queries" do
-    it "can be run with prove" do
-      @theory.prove?(:john.likes :beer).should be_false
+    it "can be run with true?" do
+      @theory.true?(:john.likes :beer).should be_false
       :john.likes! :beer
-      @theory.prove?(:john.likes :beer).should be_true
+      @theory.true?(:john.likes :beer).should be_true
     end
 
     it "can be run with question mark" do
@@ -380,6 +381,30 @@ describe Rubylog do
       count.should == 2
       (:false.or? {count+=1}).should be_true
       count.should == 3
+    end
+
+    describe "bindings" do
+      it "works for rule bodies" do
+        result = nil; 
+        (A.likes(B).if {|*args| result = args})
+        (:john.likes(:beer)).solve{}
+        result.should == [:john,:beer]
+      end
+
+      it "works for rules" do
+        result = nil
+        (A.likes(B).if B.is(4).and A.is(2).and C.is(5).and {|*args| result = args})
+        (A.likes(B)).solve{}
+        result.should == [2,4,5]
+      end
+
+      it "works for inline terms" do
+        result = nil
+        (A.is(1).and B.is(2).and {|*args| result = args}).solve{}
+        result.should == [1,2]
+      end
+
+
     end
   end
 
@@ -686,6 +711,18 @@ describe Rubylog do
       it "works for variables" do
         (A.likes(B).and(B.is :milk)).to_a.should == [[:jane, :milk]]
         (A.likes(B).and(:milk.is B)).to_a.should == [[:jane, :milk]]
+      end
+
+      it "works as calculation" do
+        (A.is {4+4}).to_a.should == [8]
+        (A.is(4).and A.is{2*2}).to_a.should == [4]
+        (A.is(4).and A.is{2*3}).to_a.should == []
+      end
+
+      it "works as calculation with vars" do
+        (A.is(4).and B.is{|a|a*4}).to_a.should == [[4,16]]
+        (A.is(4).and A.is{|a|a*1}).to_a.should == [4]
+        (A.is(4).and A.is{|a|a*2}).to_a.should == []
       end
 
     end

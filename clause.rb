@@ -65,6 +65,8 @@ module Rubylog
           end
         when Clause
           arg.compile_variables! vars, vars_by_name
+        when Proc
+          arg.context_variables = vars
         end
       end
       @rubylog_variables = vars

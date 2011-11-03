@@ -24,10 +24,7 @@ module Rubylog
               a_qmark = :"#{a}?"
               define_method a_qmark do |*args, &block|
                 args << block if block
-                goal = Clause.new a, self, *args
-                result = false
-                Rubylog.theory.solve(goal) { result = true; break }
-                result
+                Clause.new(a, self, *args).true?
               end
             end
           )
@@ -56,19 +53,16 @@ module Rubylog
     include Enumerable
 
     def solve
-      Rubylog.theory.solve(self.compile_variables!) do
-        yield(*variable_values )
-      end
+      Rubylog.theory.solve(self) {|*args| yield *args }
     end
 
     # optimized version - does not yield variables, does not recompile
     def prove
-      Rubylog.theory.solve(self) { yield }
+      Rubylog.theory.prove(self) { yield }
     end
 
     def true?
-      Rubylog.theory.solve(self.compile_variables!) { return true }
-      false
+      Rubylog.theory.true? self
     end
 
   end
