@@ -404,6 +404,12 @@ describe Rubylog do
         result.should == [1,2]
       end
 
+      it "makes sure all variables are instantiated" do
+        res = []
+        A.likes(B).if {|a,b| res << a << b }
+        A.likes? :beer
+        res.should == [nil,:beer]
+      end
 
     end
   end
@@ -714,7 +720,7 @@ describe Rubylog do
       end
 
       it "works as calculation" do
-        (A.is {4+4}).to_a.should == [8]
+        (A.is {|| 4+4}).to_a.should == [8]
         (A.is(4).and A.is{2*2}).to_a.should == [4]
         (A.is(4).and A.is{2*3}).to_a.should == []
       end

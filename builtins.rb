@@ -42,7 +42,7 @@ module Rubylog
 
       # '='
       def is a, b
-        b = Rubylog.theory.run_proc &b if b.kind_of? Proc
+        b = b.call_with_variables if b.kind_of? Proc
         a.unify(b) { yield }
       end
 

@@ -35,6 +35,7 @@ module Rubylog
 
 end
 
+require 'errors.rb'
 require 'term.rb'
 require 'predicates.rb'
 require 'database.rb'

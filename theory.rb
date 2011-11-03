@@ -54,7 +54,7 @@ module Rubylog
           end
         end
       when Proc
-        yield if run_proc &goal
+        goal.prove { yield }
       else
         raise ArgumentError.new(goal.inspect)
       end
@@ -62,14 +62,6 @@ module Rubylog
 
     def is_builtin? functor
       Builtins.respond_to? functor
-    end
-
-    def run_proc &block
-      if block.arity == -1
-        block[*@variable_bindings.last.map{|v|v.value}]
-      else
-        block[*@variable_bindings.last[0...block.arity].map{|v|v.value} ]
-      end
     end
 
     def with_vars_of term

@@ -1,4 +1,5 @@
 module Rubylog
+
   class Variable
     include Term
     
@@ -13,7 +14,8 @@ module Rubylog
     end
 
     def value
-      dereference
+      return nil if (val = dereference).kind_of? Variable
+      val
     end
   end
 
