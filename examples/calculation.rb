@@ -1,10 +1,12 @@
-require "rubylog"
+require 'rubylog'
 
 Rubylog.use :variables, :implicit_predicates, String
 
-A.write.if {|a| puts a; true}
-:hello.if "Hello, world!".write
+Rubylog::Theory.new do
+  A.write.if {|a| puts a or true}
+  :hello.if "Hello, world!".write
+  :hello.prove
+end
 
-:hello.true?
 
 
