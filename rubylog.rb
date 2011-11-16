@@ -5,6 +5,7 @@ require 'set'
 
 require 'rubylog/errors.rb'
 require 'rubylog/predicate.rb'
+require 'rubylog/callable.rb'
 require 'rubylog/theory.rb'
 require 'rubylog/variable.rb'
 require 'rubylog/unification.rb'

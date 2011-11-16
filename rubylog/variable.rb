@@ -1,4 +1,17 @@
 module Rubylog
+  module Term
+    def rubylog_compile_variables
+      self
+    end
+
+    def rubylog_variables
+      []
+    end
+
+    def rubylog_variable_values
+      rubylog_variables.map{|v|v.value}
+    end
+  end
 
   class Variable
     attr_reader :name, :assigned
@@ -21,6 +34,8 @@ module Rubylog
       @dont_care
     end
 
+    # Term methods
+    include Term
     def rubylog_compile_variables vars=[], vars_by_name={}
       if dont_care?
         dup
@@ -31,19 +46,10 @@ module Rubylog
         result
       end
     end
-  end
-
-  module Term
-    def rubylog_compile_variables
-      self
-    end
 
     def rubylog_variables
-      []
-    end
-
-    def rubylog_variable_values
-      rubylog_variables.map{|v|v.value}
+      [self]
     end
   end
+
 end

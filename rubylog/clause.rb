@@ -38,8 +38,8 @@ module Rubylog
     end
 
 
-    include Callable
     # Callable methods
+    include Callable
 
     def prove
       predicate = Rubylog.theory[@functor][@arity]
