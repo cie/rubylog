@@ -1,8 +1,6 @@
 module Rubylog
 
   class Variable
-    include Term
-    
     attr_reader :name, :assigned
     def initialize name
       @name = name
@@ -15,7 +13,7 @@ module Rubylog
     end
 
     def value
-      return nil if (val = dereference).kind_of? Variable
+      return nil if (val = rubylog_dereference).kind_of? Variable
       val
     end
 
@@ -35,7 +33,7 @@ module Rubylog
     end
   end
 
-  class Object
+  module Term
     def rubylog_compile_variables
       self
     end

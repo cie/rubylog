@@ -1,14 +1,18 @@
 class Proc
 
   def true?
-    call_with_variables
+    call_with_rubylog_variables
   end
 
   def prove
-    yield if call_with_variables
+    yield if call_with_rubylog_variables
   end
 
-  def call_with_variables
+  def solve
+    Rubylog.theory.solve(self) {|*a| yield *a}
+  end
+
+  def call_with_rubylog_variables
     raise Rubylog::ArgumentError, "variables not available" if not @context_variables
     if arity == -1
       call *@context_variables.map{|v|v.value}

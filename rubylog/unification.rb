@@ -1,24 +1,23 @@
 
 module Rubylog
-  module Term
-    def unify other
+  module Unifiable
+    def rubylog_unify other
       if other.kind_of? Rubylog::Variable
-        other.unify(self) do yield end
+        other.rubylog_unify(self) do yield end
       else
         yield if self == other
       end
     end
 
-    def dereference
+    def rubylog_dereference
       self
     end
-
   end
 
   class Variable
-    def unify other
+    def rubylog_unify other
       if @assigned
-        dereference.unify(other) do yield end
+        rubylog_dereference.rubylog_unify(other) do yield end
       else
         begin
           @assigned = true; @value = other
@@ -29,9 +28,9 @@ module Rubylog
       end
     end
 
-    def dereference
+    def rubylog_dereference
       if @assigned
-        @value.dereference
+        @value.rubylog_dereference
       else
         self
       end

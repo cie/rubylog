@@ -7,7 +7,7 @@ module Rubylog
           Rubylog.theory.with_vars_of rule do
             rule = rule.rubylog_compile_variables
             head, body = rule.pop, rule
-            head.unify { body.prove { yield }}
+            head.rubylog_unify { body.prove { yield }}
           end
         end
       rescue Cut

@@ -1,6 +1,6 @@
 class Symbol
-  include ::Rubylog::Term
 
+  # a proxy for Clause
   def functor
     self
   end

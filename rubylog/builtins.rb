@@ -16,11 +16,11 @@ module Rubylog
   }
   BUILTINS[:is_false][1] = proc {|a| a.prove { return }; yield }
   BUILTINS[:is][2] = proc {|a,b|
-    b = b.call_with_variables if b.kind_of? Proc
+    b = b.call_with_rubylog_variables if b.kind_of? Proc
     if b.kind_of? Variable 
-      b.unify(a) { yield }
+      b.rubylog_unify(a) { yield }
     elsif a.kind_of? Variable
-      a.unify(b) { yield }
+      a.rubylog_unify(b) { yield }
     else
       b === a
     end

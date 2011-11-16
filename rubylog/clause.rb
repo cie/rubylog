@@ -1,7 +1,7 @@
 module Rubylog
   class Clause
-    include Rubylog::Term
 
+    # data structure
     attr_reader :functor, :args
     def initialize functor, *args
       @functor = functor
@@ -12,7 +12,6 @@ module Rubylog
     def [] i
       @args[i]
     end
-
 
     def == other
       other.instance_of? Clause and
@@ -38,19 +37,20 @@ module Rubylog
       [@functor, @arity]
     end
 
-    def each
-      solve {|*a| yield(*a) }
-    end
+    # callable methods
+    alias each solve
 
-    def unify other
+    # unification methods
+    def rubylog_unify other
       return super{yield} unless other.instance_of? self.class
       return unless other.functor == @functor
       return unless @arity == other.arity
-      @args.unify(other.args) { yield }
+      @args.rubylog_unify(other.args) { yield }
     end
 
     attr_reader :rubylog_variables
 
+    # variable methods
     def rubylog_compile_variables vars=[], vars_by_name={}
       Clause.new @functor, *@args.map{|a|
         a.rubylog_compile_variables vars, vars_by_name
