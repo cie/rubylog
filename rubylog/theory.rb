@@ -33,7 +33,7 @@ module Rubylog
 
     def solve goal
       with_vars_of (goal = goal.rubylog_compile_variables) do
-        goal.prove { yield(*goal.rubylog_variable_values) }
+        goal.prove { yield(*goal.rubylog_variables.map{|v|v.values}) }
       end
     end
 
