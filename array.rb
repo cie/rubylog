@@ -1,4 +1,7 @@
 class Array
+
+  # Unifiable methods
+  include Unifiable
   def rubylog_unify other
     return super{yield} unless other.instance_of? self.class
     if empty?
@@ -11,4 +14,11 @@ class Array
       end
     end
   end
+
+  # CompositeTerm methods
+  include CompositeTerm
+  def rubylog_cterm_compile_variables vars=[], vars_by_name={}
+    map{|a|a.rubylog_compile_variables vars, vars_by_name}
+  end
+  
 end

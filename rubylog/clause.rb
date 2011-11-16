@@ -47,9 +47,12 @@ module Rubylog
       predicate.call(*args) { yield }
     end
 
+    # enumerable methods
+    include Enumerable
     alias each solve
 
     # Unifiable methods
+    include Unifiable
     def rubylog_unify other
       return super{yield} unless other.instance_of? self.class
       return unless other.functor == @functor
@@ -59,11 +62,11 @@ module Rubylog
 
     attr_reader :rubylog_variables
 
-    # variable methods
-    def rubylog_compile_variables vars=[], vars_by_name={}
-      Clause.new @functor, *@args.map{|a|
-        a.rubylog_compile_variables vars, vars_by_name
-      }
+    # CompositeTerm methods
+    include CompositeTerm
+    def rubylog_cterm_compile_variables vars=[], vars_by_name={}
+      Clause.new @functor, 
+        *@args.rubylog_compile_variables(vars, vars_by_name)
     end
   end
 end

@@ -1,19 +1,8 @@
 module Rubylog
-  module Term
-    def rubylog_compile_variables
-      self
-    end
-
-    def rubylog_variables
-      []
-    end
-
-    def rubylog_variable_values
-      rubylog_variables.map{|v|v.value}
-    end
-  end
-
   class Variable
+
+    # data structure
+
     attr_reader :name, :assigned
     def initialize name
       @name = name
@@ -35,6 +24,7 @@ module Rubylog
     end
 
     # Term methods
+    
     include Term
     def rubylog_compile_variables vars=[], vars_by_name={}
       if dont_care?
@@ -50,6 +40,42 @@ module Rubylog
     def rubylog_variables
       [self]
     end
+
+    # Unifiable methods
+    include Unifiable
+
+    def rubylog_unify other
+      if @assigned
+        rubylog_dereference.rubylog_unify(other) do yield end
+      else
+        begin
+          @assigned = true; @value = other
+          yield
+        ensure
+          @assigned = false
+        end
+      end
+    end
+
+    def rubylog_dereference
+      if @assigned
+        @value.rubylog_dereference
+      else
+        self
+      end
+    end
+
+    # Callable methods
+    include Callable
+
+    def prove
+      # XXX not tested
+      v = value
+      raise InstantiationError if v.nil?
+      v.prove{yield}
+    end
+
   end
+
 
 end
