@@ -10,7 +10,7 @@ class Symbol
   end
 
   def desc
-    ::Rubylog::Clause.new :/, functor, arity
+    [self, 0]
   end
 
   def args
