@@ -17,13 +17,10 @@ module Rubylog
   BUILTINS[:is_false][1] = proc {|a| a.prove { return }; yield }
   BUILTINS[:is][2] = proc {|a,b|
     b = b.call_with_rubylog_variables if b.kind_of? Proc
-    if b.kind_of? Variable 
-      b.rubylog_unify(a) { yield }
-    elsif a.kind_of? Variable
-      a.rubylog_unify(b) { yield }
-    else
-      b === a
-    end
+    a.rubylog_unify(b) { yield }
+  }
+  BUILTINS[:matches][2] = proc {|a,b|
+    yield if b.rubylog_dereference === a.rubylog_dereference
   }
 
   BUILTINS[:&][2] = BUILTINS[:and][2]

@@ -16,4 +16,7 @@ class Symbol
   def args
     []
   end
+
+  include Unifiable
+  include Term
 end
