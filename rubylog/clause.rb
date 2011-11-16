@@ -37,10 +37,19 @@ module Rubylog
       [@functor, @arity]
     end
 
-    # callable methods
+
+    include Callable
+    # Callable methods
+
+    def prove
+      predicate = Rubylog.theory[@functor][@arity]
+      raise ExistenceError, desc if not predicate
+      predicate.call(*args) { yield }
+    end
+
     alias each solve
 
-    # unification methods
+    # Unifiable methods
     def rubylog_unify other
       return super{yield} unless other.instance_of? self.class
       return unless other.functor == @functor

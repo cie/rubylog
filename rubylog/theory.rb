@@ -2,12 +2,30 @@ module Rubylog
   class Cut < StandardError
   end
 
+  module Callable
+    def prove
+      raise "abstract method called"
+    end
+
+    def true?
+      Rubylog.theory.true? self
+    end
+
+    def solve
+      Rubylog.theory.solve(self) {|*a| yield *a}
+    end
+  end
+
   class Theory
     def initialize
       @database = Hash.new{|h,k| h[k] = {}}.merge! BUILTINS
       @variable_bindings = []
       @public_interface = Module.new
       @predicate_modules = {}
+    end
+
+    def [] *args
+      database[*args]
     end
 
     attr_reader :database
@@ -29,29 +47,18 @@ module Rubylog
 
     def solve goal
       with_vars_of (goal = goal.rubylog_compile_variables) do
-        prove(goal) { yield(*goal.rubylog_variable_values) }
+        goal.prove { yield(*goal.rubylog_variable_values) }
       end
     end
 
     def true? goal
       with_vars_of (goal = goal.rubylog_compile_variables) do
-        prove(goal) { return true }
+        goal.prove { return true }
         return false
       end
     end
 
-    def prove goal
-      case goal
-      when Symbol, Clause
-        predicate = @database[goal.functor][goal.arity]
-        raise ExistenceError, goal.desc if not predicate
-        predicate.call(*goal.args) { yield }
-      when Proc
-        goal.prove { yield }
-      else
-        raise ArgumentError.new(goal.inspect)
-      end
-    end
+    protected
 
     def with_vars_of term
       begin
@@ -61,8 +68,6 @@ module Rubylog
         @variable_bindings.pop
       end
     end
-
-    protected
 
     def check_assertable
       raise BuiltinPredicateError, head.desc if predicate.is_a? Proc
