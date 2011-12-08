@@ -12,6 +12,7 @@ require 'rubylog/composite_term.rb'
 
 # helpers
 require 'rubylog/dsl.rb'
+require 'rubylog/dsl/constants.rb'
 
 # classes
 require 'rubylog/errors.rb'

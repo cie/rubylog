@@ -4,27 +4,20 @@ require 'rubylog'
 class << Rubylog::Theory.new
   Symbol.rubylog_predicate \
     :likes, :is_happy, :in, :has, :we_have,
-    :brother, :father, :uncle, :neq, :happy
+    :brother, :father, :uncle, :neq, :happy, :%
   Integer.rubylog_predicate :divides, :queens
   Rubylog::Clause.rubylog_predicate :-
 
   describe Rubylog do
-    before do
-      @theory = Rubylog::Theory.new
-    end
-
     describe "variables" do
       it "are undefined constants" do 
-        _ = self
-        class << @theory
-          [A, SomethingLong].each{|x|x.should _.be_kind_of Rubylog::Variable}
-        end
+        [A, SomethingLong].each{|x|x.should be_kind_of Rubylog::Variable}
       end
     end
 
     describe "don't care variables" do
       it "are variables that start with ANY..." do 
-        [ANY, ANYTHING, ANYTIME].each{|x|x.should be_kind_of Rubylog::DontCareVariable}
+        [ANY, ANYTHING, ANYTIME].each{|x|x.should be_kind_of Rubylog::Variable; x.should be_dont_care}
       end
     end
 
@@ -41,13 +34,13 @@ class << Rubylog::Theory.new
         lambda { :john.something_else }.should raise_error(NoMethodError)
       end
       it "also work with operators" do
-        (:is_happy/1).should be_kind_of Rubylog::Term
-        (A/B).should be_kind_of Rubylog::Term
+        (:is_happy%1).should be_kind_of Rubylog::Term
+        (A%B).should be_kind_of Rubylog::Term
       end
       it "can be asked for their functor" do
         (:john.is_happy).functor.should == :is_happy
-        (:is_happy/1).functor.should == :/
-        (A/1).functor.should == :/
+        (:is_happy%1).functor.should == :%
+        (A%1).functor.should == :%
         (:john.likes :drinking.in :bar).functor.should == :likes
       end
       it "can be indexed" do
@@ -99,28 +92,28 @@ class << Rubylog::Theory.new
         (:john.likes :drinking.in :bar).arity.should == 2
       end
       it "can tell their descriptor" do
-        (:john.is_happy).desc.should == :is_happy/1
-        (:john.likes :beer).desc.should == :likes/2
-        (:john.likes :drinking,:beer).desc.should == :likes/3
-        (:john.likes :drinking.in :bar).desc.should == :likes/2
+        (:john.is_happy).desc.should == [:is_happy,1]
+        (:john.likes :beer).desc.should == [:likes,2]
+        (:john.likes :drinking,:beer).desc.should == [:likes,3]
+        (:john.likes :drinking.in :bar).desc.should == [:likes,2]
       end
     end
 
     describe "facts" do
       it "can be asserted with assert" do
         @theory.assert(:john.is_happy)
-        @theory.database[:is_happy/1].should include(Rubylog::Clause.new :-, :john.is_happy, :true)
+        @theory.database[:is_happy][1].should include(Rubylog::Clause.new :-, :john.is_happy, :true)
         @theory.assert(:john.likes :beer)
-        @theory.database[:likes/2].should include(Rubylog::Clause.new :-, :john.likes(:beer), :true)
+        @theory.database[:likes][2].should include(Rubylog::Clause.new :-, :john.likes(:beer), :true)
         @theory.assert(:john.likes :drinking.in :bar)
-        @theory.database[:likes/2].should include(:john.likes(:drinking.in :bar) - :true)
+        @theory.database[:likes][2].should include(:john.likes(:drinking.in :bar) - :true)
       end
 
       it "can be asserted with a bang" do
         :john.is_happy!
-        @theory.database[:is_happy/1].should include(:john.is_happy.-:true)
+        @theory.database[:is_happy][1].should include(:john.is_happy.-:true)
         :john.likes! :beer
-        @theory.database[:likes/2].should include(:john.likes(:beer).-:true)
+        @theory.database[:likes][2].should include(:john.likes(:beer).-:true)
         :john.likes! :drinking.in :bar
         @theory.database[:likes/2].should include(:john.likes(:drinking.in :bar).-:true)
       end

@@ -6,7 +6,9 @@ class Class
 
   def rubylog_predicate *predicates
     predicates.each do |p|
-      include Rubylog::DSL.predicate_module p
+      m = Rubylog::DSL.predicate_module p
+      include m
+      Rubylog::Variable.send :include, m
     end
   end
 end
