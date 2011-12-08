@@ -2,8 +2,16 @@ module Rubylog
   class Cut < StandardError
   end
 
+  def self.theory
+    Thread.current[:rubylog_theory]
+  end
+
   class Theory
     include Rubylog::DSL::Constants
+
+    def self.new!
+      Thread.current[:rubylog_theory] = new
+    end
 
     def initialize
       @database = Hash.new{|h,k| h[k] = {}}.merge! BUILTINS
@@ -21,9 +29,9 @@ module Rubylog
       functor, arity = head.functor, head.arity
       predicate = database[functor][arity]
       if predicate
-        check_assertable predicate
+        check_assertable predicate, head, body
       else
-        databse[functor][arity] = predicate = Predicate.new
+        database[functor][arity] = predicate = Predicate.new
         @public_interface.send :include, DSL.predicate_module(functor)
       end
       predicate << Clause.new(:-, head, body)
@@ -55,9 +63,9 @@ module Rubylog
       end
     end
 
-    def check_assertable predicate
-      raise BuiltinPredicateError, head.desc if predicate.is_a? Proc
-      raise DiscontinuousPredicateError, head.desc if predicate != @last_predicate and @last_predicate
+    def check_assertable predicate, head, body
+      raise BuiltinPredicateError, "#{head.functor}", caller[2..-1] if predicate.is_a? Proc
+      raise DiscontinuousPredicateError, "#{head.functor}", caller[2..-1] if @last_predicate  and predicate != @last_predicate
     end
       
     

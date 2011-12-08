@@ -11,7 +11,7 @@ module Rubylog
     end
 
     def inspect
-      @name
+      @name.to_s
     end
 
     def value
