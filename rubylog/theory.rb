@@ -23,7 +23,12 @@ module Rubylog
       database[*args]
     end
 
+    def clear
+      initialize
+    end
+
     attr_reader :database
+    attr_reader :public_interface
 
     def assert head, body=:true
       functor, arity = head.functor, head.arity
@@ -52,8 +57,6 @@ module Rubylog
       end
     end
 
-    protected
-
     def with_vars_of term
       begin
         @variable_bindings << term.rubylog_variables
@@ -62,6 +65,9 @@ module Rubylog
         @variable_bindings.pop
       end
     end
+
+    protected
+
 
     def check_assertable predicate, head, body
       raise BuiltinPredicateError, "#{head.functor}", caller[2..-1] if predicate.is_a? Proc

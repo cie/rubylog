@@ -43,8 +43,8 @@ module Rubylog
 
     def prove
       predicate = Rubylog.theory[@functor][@arity]
-      raise ExistenceError, desc if not predicate
-      predicate.call(*args) { yield }
+      raise ExistenceError, desc.inspect if not predicate
+      predicate.call(self) { yield }
     end
 
     # enumerable methods

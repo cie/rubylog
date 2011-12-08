@@ -1,13 +1,13 @@
 
 module Rubylog
   class Predicate < Array
-    def call
+    def call *args
       begin
         each do |rule|
           Rubylog.theory.with_vars_of rule do
             rule = rule.rubylog_compile_variables
-            head, body = rule.pop, rule
-            head.rubylog_unify { body.prove { yield }}
+            head, body = rule[0], rule[1]
+            head.args.rubylog_unify(args) { body.prove { yield }}
           end
         end
       rescue Cut

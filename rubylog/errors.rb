@@ -8,5 +8,8 @@ module Rubylog
   class BuiltinPredicateError < RubylogError
   end
 
+  class ExistenceError < RubylogError
+  end
+
 end
 

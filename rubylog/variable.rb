@@ -14,6 +14,14 @@ module Rubylog
       @name.to_s
     end
 
+    def == other
+      Variable === other and @name == other.name
+    end
+
+    def eql? other
+      Variable === other and @name == other.name
+    end
+
     def value
       return nil if (val = rubylog_dereference).kind_of? Variable
       val

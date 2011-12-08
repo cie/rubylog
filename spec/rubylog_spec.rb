@@ -10,12 +10,24 @@ class << $theory = Rubylog::Theory.new!
 
   describe Rubylog do
     before do
-      $theory.database.clear
+      $theory.clear
     end
 
     describe "variables" do
       it "are undefined constants" do 
         [A, SomethingLong].each{|x|x.should be_kind_of Rubylog::Variable}
+      end
+
+      it "support ==" do 
+        A.should == A
+      end
+
+      it "support eql?" do
+        A.should be_eql A
+      end
+
+      it "returns different instances" do
+        A.should_not be_equal A
       end
     end
 
@@ -267,9 +279,10 @@ class << $theory = Rubylog::Theory.new!
 
     describe "queries" do
       it "can be run with true?" do
-        $theory.true?(:john.likes :beer).should be_false
+        lambda {$theory.true?(:john.likes :beer)}.should raise_error(Rubylog::ExistenceError)
         :john.likes! :beer
         $theory.true?(:john.likes :beer).should be_true
+        $theory.true?(:john.likes :milk).should be_false
       end
 
       it "can be run with question mark" do
