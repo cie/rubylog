@@ -3,11 +3,12 @@ module Rubylog
   end
 
   class Theory
+    include Rubylog::DSL::Constants
+
     def initialize
       @database = Hash.new{|h,k| h[k] = {}}.merge! BUILTINS
       @variable_bindings = []
       @public_interface = Module.new
-      @predicate_modules = {}
     end
 
     def [] *args
@@ -22,9 +23,8 @@ module Rubylog
       if predicate
         check_assertable predicate
       else
-        databse[functor][arity] = predicate =
-          Predicate.new
-        create_predicate_methods_for functor
+        databse[functor][arity] = predicate = Predicate.new
+        @public_interface.send :include, DSL.predicate_module(functor)
       end
       predicate << Clause.new(:-, head, body)
       @last_predicate = predicate
@@ -55,48 +55,27 @@ module Rubylog
       end
     end
 
-    def check_assertable
+    def check_assertable predicate
       raise BuiltinPredicateError, head.desc if predicate.is_a? Proc
-      raise DiscontinuousPredicateError, head.desc if predicate != @last_predicate
+      raise DiscontinuousPredicateError, head.desc if predicate != @last_predicate and @last_predicate
     end
       
-    def create_predicate_methods_for a
-      @predicate_modules[a] ||= Module.new do
-        define_method a do |*args, &block|
-          args << block if block
-          Clause.new a, self, *args 
-        end
-
-        a_bang =  :"#{a}!"
-        define_method a_bang do |*args, &block|
-          args << block if block
-          Rubylog.theory.assert Clause.new(a, self, *args), :true
-        end
-
-        a_qmark = :"#{a}?"
-        define_method a_qmark do |*args, &block|
-          args << block if block
-          Rubylog.theory.true? Clause.new(a, self, *args)
-        end
-      end
-    end
     
 
-    class << self
-      def private *args
-        if args.empty?
-          @scope = :private
-        else
-        end
-      end
-
-      def protected *args
-        if args.empty?
-          @scope = :protected
-        else
-        end
-      end
-    end
+    #class << self
+      #def private *args
+        #if args.empty?
+          #@scope = :private
+        #else
+        #end
+      #end
+      #def protected *args
+        #if args.empty?
+          #@scope = :protected
+        #else
+        #end
+      #end
+    #end
 
 
   end

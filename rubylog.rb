@@ -8,7 +8,10 @@ require 'set'
 require 'rubylog/term.rb'
 require 'rubylog/callable.rb'
 require 'rubylog/unifiable.rb'
-require 'rubylog/composite.rb'
+require 'rubylog/composite_term.rb'
+
+# helpers
+require 'rubylog/dsl.rb'
 
 # classes
 require 'rubylog/errors.rb'
@@ -22,4 +25,6 @@ require 'rubylog/clause.rb'
 require 'array.rb'
 require 'symbol.rb'
 require 'proc.rb'
+require 'object.rb'
+require 'class.rb'
 

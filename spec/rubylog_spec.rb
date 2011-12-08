@@ -3,19 +3,22 @@ require 'rubylog'
 
 class << Rubylog::Theory.new
   Symbol.rubylog_predicate \
-    :likes, :is_happy, :/, :in, :has, :we_have,
+    :likes, :is_happy, :in, :has, :we_have,
     :brother, :father, :uncle, :neq, :happy
   Integer.rubylog_predicate :divides, :queens
   Rubylog::Clause.rubylog_predicate :-
 
   describe Rubylog do
     before do
-      @theory = Rubylog::Theory.new!
+      @theory = Rubylog::Theory.new
     end
 
     describe "variables" do
       it "are undefined constants" do 
-        [A, SomethingLong].each{|x|x.should be_kind_of Rubylog::Variable}
+        _ = self
+        class << @theory
+          [A, SomethingLong].each{|x|x.should _.be_kind_of Rubylog::Variable}
+        end
       end
     end
 

@@ -39,7 +39,7 @@ module Rubylog
 
 
     # Callable methods
-    include Callable
+    include Rubylog::Callable
 
     def prove
       predicate = Rubylog.theory[@functor][@arity]
@@ -52,7 +52,7 @@ module Rubylog
     alias each solve
 
     # Unifiable methods
-    include Unifiable
+    include Rubylog::Unifiable
     def rubylog_unify other
       return super{yield} unless other.instance_of? self.class
       return unless other.functor == @functor
@@ -63,7 +63,7 @@ module Rubylog
     attr_reader :rubylog_variables
 
     # CompositeTerm methods
-    include CompositeTerm
+    include Rubylog::CompositeTerm
     def rubylog_cterm_compile_variables vars=[], vars_by_name={}
       Clause.new @functor, 
         *@args.rubylog_compile_variables(vars, vars_by_name)

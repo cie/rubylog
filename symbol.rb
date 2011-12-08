@@ -17,6 +17,5 @@ class Symbol
     []
   end
 
-  include Unifiable
-  include Term
+  include Rubylog::Unifiable
 end

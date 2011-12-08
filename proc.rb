@@ -1,7 +1,7 @@
 class Proc
 
   # Callable methods
-  include Callable
+  include Rubylog::Callable
   def prove
     yield if call_with_rubylog_variables
   end
@@ -17,11 +17,11 @@ class Proc
   end
 
   # CompositeTerm methods
-  include CompositeTerm 
+  include Rubylog::CompositeTerm 
   def rubylog_cterm_compile_variables *_
     dup
   end
 
   # Unifiable methods
-  include Unifiable
+  include Rubylog::Unifiable
 end
