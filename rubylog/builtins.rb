@@ -55,7 +55,9 @@ module Rubylog
     def in a,b
       b = b.call_with_rubylog_variables if 
         b.respond_to? :call_with_rubylog_variables
-      yield if b.rubylog_dereference.include? a.rubylog_dereference
+      b.each do |e|
+        a.rubylog_unify(e) { yield }
+      end
     end
   end
 
@@ -71,7 +73,7 @@ module Rubylog
     DSL::SecondOrderFunctors.send :include, DSL.functor_module(f)
   end
 
-  [:is, :matches].each do |f|
+  [:is, :matches, :in].each do |f|
     DSL::FirstOrderFunctors.send :include, DSL.functor_module(f)
   end
 
