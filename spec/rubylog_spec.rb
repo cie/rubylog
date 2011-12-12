@@ -773,6 +773,51 @@ class << $theory = Rubylog::Theory.new!
 
       end
 
+      describe "matches" do
+        before do
+          :john.likes! "Beer"
+          :jane.likes! "Water"
+        end
+
+        it "works for variables" do
+          (A.likes(B).and(B.matches /e/)).to_a.should == [[:john, "Beer"], [:jane, "Water"]]
+          (A.likes(B).and(B.matches /ee/)).to_a.should == [[:john, "Beer"]]
+          (A.likes(B).and(B.matches /w/i)).to_a.should == [[:jane, "Water"]]
+        end
+
+        it "works as calculation" do
+          (A.likes(B).and(B.matches {|a,b|/e/})).to_a.should == [[:john, "Beer"], [:jane, "Water"]]
+          (A.likes(B).and(B.matches {|a,b|/ee/})).to_a.should == [[:john, "Beer"]]
+          (A.likes(B).and(B.matches {|a,b|/w/i})).to_a.should == [[:jane, "Water"]]
+          (A.likes(B).and(B.matches {|a,b|b})).to_a.should == [[:john, "Beer"], [:jane, "Water"]]
+          (A.likes(B).and(B.matches {|a,b|a})).to_a.should == []
+        end
+
+
+      end
+
+      describe "in" do
+        before do
+          :john.likes! :beer
+          :jane.likes! :milk
+        end
+
+        it "works for variables" do
+          (A.likes(B).and(B.in [])).to_a.should == []
+          (A.likes(B).and(B.in [:milk])).to_a.should == [[:jane, :milk]]
+          (A.likes(B).and(B.in [:beer])).to_a.should == [[:john, :beer]]
+          (A.likes(B).and(B.in [:milk, :beer])).to_a.should == [[:john, :beer], [:jane, :milk]]
+        end
+
+        it "works with blocks" do
+          (A.likes(B).and(B.in {[]})).to_a.should == []
+          (A.likes(B).and(B.in {|a|[a,:milk]})).to_a.should == [[:jane, :milk]]
+          (A.likes(B).and(B.in {|a,b|[:beer]})).to_a.should == [[:john, :beer]]
+          (A.likes(B).and(B.in {|a,b|[b]})).to_a.should == [[:john, :beer], [:jane, :milk]]
+        end
+
+      end
+
     end
 
     describe "Array" do

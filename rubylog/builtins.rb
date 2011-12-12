@@ -47,7 +47,15 @@ module Rubylog
     end
 
     def matches a,b
+      b = b.call_with_rubylog_variables if 
+        b.respond_to? :call_with_rubylog_variables
       yield if b.rubylog_dereference === a.rubylog_dereference
+    end
+
+    def in a,b
+      b = b.call_with_rubylog_variables if 
+        b.respond_to? :call_with_rubylog_variables
+      yield if b.rubylog_dereference.include? a.rubylog_dereference
     end
   end
 
