@@ -77,5 +77,9 @@ module Rubylog
       Clause.new @functor, 
         *@args.rubylog_compile_variables(vars, vars_by_name)
     end
+
+    # Second-order functors (:is_false, :and, :or, :then)
+    include Rubylog::DSL::SecondOrderFunctors
   end
+
 end

@@ -2,12 +2,11 @@ require 'rubylog'
 
 
 class << $theory = Rubylog::Theory.new!
-  Symbol.rubylog_predicate \
+  Symbol.rubylog_functor \
     :likes, :is_happy, :in, :has, :we_have,
-    :brother, :father, :uncle, :neq, :happy, :%,
-    :and, :or, :then
-  Integer.rubylog_predicate :divides, :queens
-  Rubylog::Clause.rubylog_predicate :-
+    :brother, :father, :uncle, :neq, :happy, :%
+  Integer.rubylog_functor :divides, :queens
+  Rubylog::Clause.rubylog_functor :-
 
   describe Rubylog do
     before do
@@ -539,7 +538,7 @@ class << $theory = Rubylog::Theory.new!
     describe "custom classes" do
       before do
         class User
-          rubylog_predicate :girl, :boy
+          rubylog_functor :girl, :boy
           include Rubylog::DSL::Constants
 
           attr_reader :name

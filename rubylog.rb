@@ -13,6 +13,8 @@ require 'rubylog/composite_term.rb'
 # helpers
 require 'rubylog/dsl.rb'
 require 'rubylog/dsl/constants.rb'
+require 'rubylog/dsl/first_order_functors.rb'
+require 'rubylog/dsl/second_order_functors.rb'
 require 'rubylog/proc_method_additions.rb'
 
 # classes
@@ -32,5 +34,4 @@ require 'object.rb'
 require 'class.rb'
 require 'method.rb'
 
-Rubylog::DSL.add_predicates_to Rubylog::Clause, 
-  *Rubylog::BUILTINS.select{|k,v|v.keys.any?{|arity|arity>0}}.map{|k,v| k}
+  

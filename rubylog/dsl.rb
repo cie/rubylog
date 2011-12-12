@@ -1,17 +1,17 @@
 module Rubylog
   module DSL
-    def self.add_predicates_to class_or_module, *predicates
-      predicates.each do |p|
-        m = predicate_module(p)
+    def self.add_functors_to class_or_module, *functors
+      functors.each do |p|
+        m = functor_module(p)
         class_or_module.send :include, m
         Rubylog::Variable.send :include, m
       end
     end
     
-    @predicate_modules ||= {}
+    @functor_modules ||= {}
 
-    def self.predicate_module a
-      @predicate_modules[a] ||= Module.new do
+    def self.functor_module a
+      @functor_modules[a] ||= Module.new do
         define_method a do |*args, &block|
           args << block if block
           Clause.new a, self, *args 

@@ -3,6 +3,7 @@ module Rubylog
 
   class << Object.new
     def singleton_method_added name
+      return if name == :singleton_method_added
       m = method(name)
       BUILTINS[name][m.arity] = m
     end
@@ -57,5 +58,13 @@ module Rubylog
   BUILTINS[:~][1] = BUILTINS[:is_false][1]
   BUILTINS[:not][1] = BUILTINS[:is_false][1]
   BUILTINS[:false][0] = BUILTINS[:fail][0]
+
+  [:and, :or, :then, :is_false, :&, :|, :~, :not].each do |f|
+    DSL::SecondOrderFunctors.send :include, DSL.functor_module(f)
+  end
+
+  [:is, :matches].each do |f|
+    DSL::FirstOrderFunctors.send :include, DSL.functor_module(f)
+  end
 
 end

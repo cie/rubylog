@@ -52,7 +52,7 @@ module Rubylog
         check_assertable predicate, head, body
       else
         database[functor][arity] = predicate = Predicate.new
-        @public_interface.send :include, DSL.predicate_module(functor)
+        @public_interface.send :include, DSL.functor_module(functor)
       end
       predicate << Clause.new(:-, head, body)
       @last_predicate = predicate

@@ -28,4 +28,8 @@ class Symbol
     raise Rubylog::ExistenceError, desc.inspect if not predicate
     predicate.call(*args) { yield }
   end
+
+  # Second-order functors (:is_false, :and, :or, :then)
+  include Rubylog::DSL::SecondOrderFunctors
+
 end
