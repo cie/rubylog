@@ -15,6 +15,14 @@ module Rubylog
       end
     end
 
+    def discontinuous!
+      @discontinuous = true
+    end
+
+    def discontinuous?
+      @discontinuous
+    end
+
   end
   
 

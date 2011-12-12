@@ -540,6 +540,7 @@ class << $theory = Rubylog::Theory.new!
       before do
         class User
           rubylog_predicate :girl, :boy
+          include Rubylog::DSL::Constants
 
           attr_reader :name
           def initialize name
@@ -566,6 +567,7 @@ class << $theory = Rubylog::Theory.new!
         pete.boy!
         pete.boy?.should be_true
 
+        $theory[:girl][1].discontinuous!
         janet = User.new "Janet"
         janet.girl?.should be_false
         janet.girl!
