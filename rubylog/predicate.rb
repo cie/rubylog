@@ -1,6 +1,7 @@
 
 module Rubylog
   class Predicate < Array
+    # accepts the *args of the called clause
     def call *args
       begin
         each do |rule|

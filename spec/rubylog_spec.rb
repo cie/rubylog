@@ -4,7 +4,8 @@ require 'rubylog'
 class << $theory = Rubylog::Theory.new!
   Symbol.rubylog_predicate \
     :likes, :is_happy, :in, :has, :we_have,
-    :brother, :father, :uncle, :neq, :happy, :%
+    :brother, :father, :uncle, :neq, :happy, :%,
+    :and, :or, :then
   Integer.rubylog_predicate :divides, :queens
   Rubylog::Clause.rubylog_predicate :-
 
@@ -286,37 +287,49 @@ class << $theory = Rubylog::Theory.new!
       end
 
       it "can be run with question mark" do
-        :john.likes?(:beer).should be_false
+        lambda {$theory.true?(:john.likes :beer)}.should raise_error(Rubylog::ExistenceError)
         :john.likes! :beer
         :john.likes?(:beer).should be_true
       end
 
       it "can be run with true?" do
-        (:john.likes(:beer)).true?.should be_false
+        lambda {$theory.true?(:john.likes :beer)}.should raise_error(Rubylog::ExistenceError)
         :john.likes! :beer
         (:john.likes(:beer)).true?.should be_true
       end
       
       it "work with variables" do
-        :john.likes?(X).should be_false
+        lambda {$theory.true?(:john.likes X)}.should raise_error(Rubylog::ExistenceError)
         :john.likes! :water
         :john.likes?(X).should be_true
       end
 
       it "yield all solutions" do
         :john.likes! :beer
+        :john.likes! :milk
 
         k=[]
         (:john.likes X).each{|x|k << x}
-        k.should == [:beer]
+        k.should == [:beer, :milk]
       end
 
       it "yield all solutions with solve" do
         :john.likes! :beer
+        :john.likes! :milk
 
         k=[]
         (:john.likes X).solve{|x|k << x}
-        k.should == [:beer]
+        k.should == [:beer, :milk]
+      end
+
+      it "yield all solutions with solve and multiple vars and multiple block parameters" do
+        :john.likes! :beer
+        :jane.likes! :milk
+        :jane.likes! :water
+
+        k=[]
+        (X.likes Y).solve{|a,b|k << [a,b]}
+        k.should == [[:john, :beer], [:jane, :milk], [:jane, :water]]
       end
 
       it "ignore don't-care variables" do
@@ -385,6 +398,9 @@ class << $theory = Rubylog::Theory.new!
         (:true.or? {true}).should be_true
         (:false.or? {false}).should be_false
         (:false.or? {true}).should be_true
+
+        (:fail.or? {false}).should be_false
+        (:fail.or? {true}).should be_true
       end
       it "runs the query once at every evaluation" do
         count = 0
@@ -566,6 +582,11 @@ class << $theory = Rubylog::Theory.new!
 
       it "fail" do
         :john.happy.if :fail
+        :john.should_not be_happy
+      end
+
+      it "false" do
+        :john.happy.if :false
         :john.should_not be_happy
       end
 

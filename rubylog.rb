@@ -20,6 +20,7 @@ require 'rubylog/predicate.rb'
 require 'rubylog/theory.rb'
 require 'rubylog/variable.rb'
 
+# builtins
 require 'rubylog/builtins.rb'
 
 require 'rubylog/clause.rb'
@@ -29,3 +30,5 @@ require 'proc.rb'
 require 'object.rb'
 require 'class.rb'
 
+Rubylog::DSL.add_predicates_to Rubylog::Clause, 
+  *Rubylog::BUILTINS.select{|k,v|v.keys.any?{|arity|arity>0}}.map{|k,v| k}

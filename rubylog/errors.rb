@@ -11,5 +11,8 @@ module Rubylog
   class ExistenceError < RubylogError
   end
 
+  class InvalidStateError < RubylogError
+  end
+
 end
 

@@ -28,5 +28,6 @@ module Rubylog
   BUILTINS[:|][2] = BUILTINS[:or][2]
   BUILTINS[:~][1] = BUILTINS[:is_false][1]
   BUILTINS[:not][1] = BUILTINS[:is_false][1]
+  BUILTINS[:false][0] = BUILTINS[:fail][0]
 
 end

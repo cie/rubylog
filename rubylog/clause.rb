@@ -37,6 +37,15 @@ module Rubylog
       [@functor, @arity]
     end
 
+    # assertion routines
+    def if body=nil, &block
+      Rubylog.theory.assert self, body || block
+    end
+
+    def unless body=nil, &block
+      Rubylog.theory.assert self, Clause.new(:is_false, body || block)
+    end
+
 
     # Callable methods
     include Rubylog::Callable
@@ -44,7 +53,7 @@ module Rubylog
     def prove
       predicate = Rubylog.theory[@functor][@arity]
       raise ExistenceError, desc.inspect if not predicate
-      predicate.call(self) { yield }
+      predicate.call(*@args) { yield }
     end
 
     # enumerable methods

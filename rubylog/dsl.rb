@@ -1,5 +1,13 @@
 module Rubylog
   module DSL
+    def self.add_predicates_to class_or_module, *predicates
+      predicates.each do |p|
+        m = predicate_module(p)
+        class_or_module.send :include, m
+        Rubylog::Variable.send :include, m
+      end
+    end
+    
     @predicate_modules ||= {}
 
     def self.predicate_module a

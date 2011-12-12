@@ -25,7 +25,7 @@ class Symbol
 
   def prove
     predicate = Rubylog.theory[self][0]
-    raise ExistenceError, desc.inspect if not predicate
+    raise Rubylog::ExistenceError, desc.inspect if not predicate
     predicate.call(*args) { yield }
   end
 end

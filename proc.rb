@@ -8,7 +8,7 @@ class Proc
 
 
   def call_with_rubylog_variables
-    raise Rubylog::ArgumentError, "variables not available" if not @context_variables
+    raise Rubylog::InvalidStateError, "variables not available" if not @rubylog_variables
     if arity == -1
       call *@rubylog_variables.map{|v|v.value}
     else
