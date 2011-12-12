@@ -14,7 +14,9 @@ module Rubylog
     end
 
     def initialize
-      @database = Hash.new{|h,k| h[k] = {}}.merge! BUILTINS
+      @database = Hash.new{|h,k| h[k] = 
+        {}
+      }.merge! BUILTINS
       @variable_bindings = []
       @public_interface = Module.new
     end
@@ -26,6 +28,13 @@ module Rubylog
     def clear
       initialize
     end
+
+    def predicate *descs
+      descs.each do |desc|
+        @database[desc.first][desc.last] ||= Predicate.new
+      end
+    end
+      
 
     attr_reader :database
     attr_reader :public_interface
@@ -70,8 +79,8 @@ module Rubylog
 
 
     def check_assertable predicate, head, body
-      raise BuiltinPredicateError, "#{head.functor}", caller[2..-1] if predicate.is_a? Proc
-      raise DiscontinuousPredicateError, "#{head.functor}", caller[2..-1] if @last_predicate  and predicate != @last_predicate
+      raise BuiltinPredicateError, head.desc.inspect, caller[2..-1] if predicate.is_a? Proc
+      raise DiscontinuousPredicateError, head.desc.inspect, caller[2..-1] if not predicate.empty? and predicate != @last_predicate
     end
       
     

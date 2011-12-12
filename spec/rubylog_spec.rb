@@ -448,6 +448,7 @@ class << $theory = Rubylog::Theory.new!
     describe "rules" do
       describe "with prolog body" do
         it "can be asserted with if" do
+          $theory.predicate [:we_have, 2]
           :john.is_happy.if :-@.we_have(:beer)
           :john.is_happy?.should be_false
           :-@.we_have!(:beer)
@@ -455,6 +456,7 @@ class << $theory = Rubylog::Theory.new!
         end
 
         it "can be asserted with unless" do
+          $theory.predicate [:we_have, 2]
           :john.is_happy.unless :-@.we_have(:problem)
           :john.is_happy?.should be_true
           :-@.we_have!(:problem)
