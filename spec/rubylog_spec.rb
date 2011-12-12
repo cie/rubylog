@@ -464,6 +464,8 @@ class << $theory = Rubylog::Theory.new!
         end
 
         it "can do simple general implications" do
+          $theory.predicate [:is_happy,1], [:has,2]
+          $theory.discontinuous [:likes,2]
           X.is_happy.if X.likes(Y).and X.has(Y)
           :john.likes! :milk
           :john.is_happy?.should be_false

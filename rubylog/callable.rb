@@ -1,8 +1,9 @@
 module Rubylog
   module Callable
-    def prove
-      raise "abstract method called"
-    end
+    # should yield for each possible solution of the term
+    #def prove
+    #  raise "abstract method called"
+    #end
 
     def true?
       Rubylog.theory.true? self

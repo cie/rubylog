@@ -1,27 +1,55 @@
 module Rubylog
   BUILTINS = Hash.new{|h,k| h[k] = {}}
 
-  BUILTINS[:true][0] = proc {|&p| p[] }
-  BUILTINS[:fail][0] = proc {}
-  BUILTINS[:cut][0] = proc {|&p| p[]; raise Cut }
-  BUILTINS[:and][2] = proc {|a,b,&p| a.prove { b.prove { p[] } } }
-  BUILTINS[:or][2] = proc {|a,b,&p|
-    a.prove { p[] }
-    b.prove { p[] } 
-  }
-  BUILTINS[:then][2] = proc {|a,b,&p|
-    stands = false
-    a.prove { stands = true ; break }
-    b.prove { p[] } if stands
-  }
-  BUILTINS[:is_false][1] = proc {|a,&p| a.prove { return }; p[] }
-  BUILTINS[:is][2] = proc {|a,b,&p|
-    b = b.call_with_rubylog_variables if b.kind_of? Proc
-    a.rubylog_unify(b) { p[] }
-  }
-  BUILTINS[:matches][2] = proc {|a,b,&p|
-    p[] if b.rubylog_dereference === a.rubylog_dereference
-  }
+  class << Object.new
+    def singleton_method_added name
+      m = method(name)
+      BUILTINS[name][m.arity] = m
+    end
+
+    def true
+      yield
+    end
+
+    def fail
+    end
+
+    def and a, b
+      a.prove { b.prove { yield } }
+    end
+
+    def cut
+      yield
+      raise Cut
+    end
+
+    def or a, b
+      a.prove { yield }
+      b.prove { yield }
+    end
+
+    def then a,b
+      stands = false
+      a.prove { stands = true ; break }
+      b.prove { yield } if stands
+    end
+
+    def is_false a
+      a.prove { return }
+      yield
+    end
+
+    def is a,b
+      b = b.call_with_rubylog_variables if 
+        b.respond_to? :call_with_rubylog_variables
+      a.rubylog_unify(b) { yield }
+    end
+
+    def matches a,b
+      yield if b.rubylog_dereference === a.rubylog_dereference
+    end
+  end
+
 
   # aliases
   BUILTINS[:&][2] = BUILTINS[:and][2]
