@@ -14,6 +14,7 @@ require 'rubylog/composite_term.rb'
 require 'rubylog/dsl.rb'
 require 'rubylog/dsl/constants.rb'
 require 'rubylog/dsl/first_order_functors.rb'
+require 'rubylog/dsl/global_functors.rb'
 require 'rubylog/dsl/second_order_functors.rb'
 require 'rubylog/proc_method_additions.rb'
 

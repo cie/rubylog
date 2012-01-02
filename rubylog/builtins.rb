@@ -59,22 +59,72 @@ module Rubylog
         a.rubylog_unify(e) { yield }
       end
     end
+
+    def all a,b
+      a.prove {
+        stands = false; 
+        b.prove { stands = true; break } 
+        return if not stands
+      }
+      yield
+    end
+
+    def any a,b
+      a.prove { b.prove { yield; return } }
+    end
+
+    def one a,b
+      stands = false
+      a.prove { 
+        b.prove {
+          return if stands
+          stands = true
+        } 
+      }
+      yield if stands
+    end
+
+    def none a,b
+      a.prove { b.prove { return } }
+      yield 
+    end
+
+    def all a
+      a.prove { }
+      yield
+    end
+
+    def any a
+      a.prove { yield; return }
+    end
+
+    def one a
+      stands = false
+      a.prove { 
+        return if stands
+        stands = true
+      }
+      yield if stands
+    end
+
   end
 
 
   # aliases
   BUILTINS[:&][2] = BUILTINS[:and][2]
   BUILTINS[:|][2] = BUILTINS[:or][2]
-  BUILTINS[:~][1] = BUILTINS[:is_false][1]
-  BUILTINS[:not][1] = BUILTINS[:is_false][1]
+  BUILTINS[:~][1] = 
+    BUILTINS[:not][1] =
+    BUILTINS[:none][1] =
+    BUILTINS[:fails][1] = BUILTINS[:is_false][1]
   BUILTINS[:false][0] = BUILTINS[:fail][0]
 
-  [:and, :or, :then, :is_false, :&, :|, :~, :not].each do |f|
-    DSL::SecondOrderFunctors.send :include, DSL.functor_module(f)
+  [:is, :matches, :in].each do |f|
+    DSL.add_first_order_functor f
   end
 
-  [:is, :matches, :in].each do |f|
-    DSL::FirstOrderFunctors.send :include, DSL.functor_module(f)
+  [:and, :or, :then, :is_false, :&, :|, :~, :not, :all, :any, :one, :none].each do |f|
+    DSL.add_second_order_functor f
   end
 
 end
