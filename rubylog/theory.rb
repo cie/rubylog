@@ -60,25 +60,14 @@ module Rubylog
 
 
     def solve goal
-      with_vars_of (goal = goal.rubylog_compile_variables) do
-        goal.prove { yield(*goal.rubylog_variables.map{|v|v.value}) }
-      end
+      goal = goal.rubylog_compile_variables 
+      goal.prove { yield(*goal.rubylog_variables.map{|v|v.value}) }
     end
 
     def true? goal
-      with_vars_of (goal = goal.rubylog_compile_variables) do
-        goal.prove { return true }
-        return false
-      end
-    end
-
-    def with_vars_of term
-      begin
-        @variable_bindings << term.rubylog_variables
-        yield
-      ensure
-        @variable_bindings.pop
-      end
+      goal = goal.rubylog_compile_variables
+      goal.prove { return true }
+      false
     end
 
     protected
