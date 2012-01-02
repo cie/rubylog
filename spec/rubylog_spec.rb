@@ -131,14 +131,15 @@ class << $theory = Rubylog::Theory.new!
         $theory.database[:likes][2].should include(:john.likes(:drinking.in :bar) - :true)
       end
 
-      it "can be asserted with a bang" do
-        :john.is_happy!
+      it "can be asserted with a bang, and it returns the zeroth arg" do
+        :john.is_happy!.should == :john
         $theory.database[:is_happy][1].should include(:john.is_happy.-:true)
-        :john.likes! :beer
+        :john.likes!(:beer).should == :john
         $theory.database[:likes][2].should include(:john.likes(:beer).-:true)
-        :john.likes! :drinking.in :bar
+        :john.likes!(:drinking.in :bar).should == :john
         $theory.database[:likes][2].should include(:john.likes(:drinking.in :bar).-:true)
       end
+
 
     end
 
@@ -391,6 +392,30 @@ class << $theory = Rubylog::Theory.new!
         
       end
 
+      it "can yield solutions with vars substituted" do
+        :john.likes! :beer
+        :john.likes! :milk
+        :jane.likes! :milk
+
+        (A.likes B).solutions.should == [
+          :john.likes(:beer),
+          :john.likes(:milk),
+          :jane.likes(:milk)
+        ]
+        (A.likes(B).and A.is :john).solutions.should == [
+          :john.likes(:beer).and(:john.is :john),
+          :john.likes(:milk).and(:john.is :john)
+        ]
+        (:john.likes(B)).solutions.should == [
+          :john.likes(:beer),
+          :john.likes(:milk)
+        ]
+        (A.likes(:milk)).solutions.should == [
+          :john.likes(:milk),
+          :jane.likes(:milk)
+        ]
+      end
+
     end
 
     describe "using ruby code in clauses" do
@@ -452,6 +477,12 @@ class << $theory = Rubylog::Theory.new!
 
     describe "rules" do
       describe "with prolog body" do
+        it "cannot be asserted in a builtin's desc" do
+          lambda {
+            :john.likes(:beer).and! :jane.likes(:milk)
+          }.should raise_error(Rubylog::BuiltinPredicateError)
+        end
+
         it "can be asserted with if" do
           $theory.predicate [:we_have, 2]
           :john.is_happy.if :-@.we_have(:beer)

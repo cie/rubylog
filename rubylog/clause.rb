@@ -73,13 +73,25 @@ module Rubylog
 
     # CompositeTerm methods
     include Rubylog::CompositeTerm
-    def rubylog_cterm_compile_variables vars=[], vars_by_name={}
-      Clause.new @functor, 
-        *@args.rubylog_compile_variables(vars, vars_by_name)
+    def rubylog_clone &block
+      block.call Clause.new @functor,
+        *@args.map{|a|a.rubylog_clone &block}
     end
 
     # Second-order functors (:is_false, :and, :or, :then)
     include Rubylog::DSL::SecondOrderFunctors
+
+    # convenience methods
+    def solutions
+      goal = rubylog_compile_variables
+      variables = goal.rubylog_variables
+      goal.map do |values|
+        values = case variables.count
+          when 0 then []; when 1 then [values]; else values end
+        vars_hash = Hash[variables.zip values]
+        goal.rubylog_clone {|i| vars_hash[i] || i }
+      end
+    end
   end
 
 end

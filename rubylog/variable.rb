@@ -32,19 +32,9 @@ module Rubylog
     end
 
     # Term methods
-    
-    include Term
-    def rubylog_compile_variables vars=[], vars_by_name={}
-      if dont_care?
-        dup
-      else
-        unless (result = vars_by_name[@name])
-          vars << (result = vars_by_name[@name] = dup)
-        end
-        result
-      end
-    end
 
+    # rubylog_clone stays as is
+    
     def rubylog_variables
       [self]
     end

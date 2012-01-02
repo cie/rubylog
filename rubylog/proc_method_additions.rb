@@ -25,8 +25,8 @@ module Rubylog
     end
 
     # CompositeTerm methods
-    def rubylog_cterm_compile_variables *_
-      dup
+    def rubylog_clone 
+      yield dup
     end
   end
 end

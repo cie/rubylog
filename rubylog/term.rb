@@ -1,8 +1,7 @@
 module Rubylog
   module Term
-    #def rubylog_compile_variables vars=[], vars_by_name={}
-    def rubylog_compile_variables *_
-      self
+    def rubylog_clone
+      yield self
     end
 
     def rubylog_variables

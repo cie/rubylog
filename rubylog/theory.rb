@@ -85,7 +85,7 @@ module Rubylog
 
 
     def check_assertable predicate, head, body
-      raise BuiltinPredicateError, head.desc.inspect, caller[2..-1] if predicate.is_a? Proc
+      raise BuiltinPredicateError, head.desc.inspect, caller[2..-1] unless predicate.is_a? Predicate
       raise DiscontinuousPredicateError, head.desc.inspect, caller[2..-1] if not predicate.empty? and predicate != @last_predicate and not predicate.discontinuous?
     end
       

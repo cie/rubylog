@@ -17,8 +17,8 @@ class Array
 
   # CompositeTerm methods
   include Rubylog::CompositeTerm
-  def rubylog_cterm_compile_variables vars=[], vars_by_name={}
-    map{|a|a.rubylog_compile_variables vars, vars_by_name}
+  def rubylog_clone &block
+    block[map{|t|t.rubylog_clone &block}]
   end
   
 end

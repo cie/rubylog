@@ -26,23 +26,24 @@ module Rubylog::DSL
   
   @functor_modules ||= {}
 
-  def self.functor_module a
-    @functor_modules[a] ||= Module.new do
-      define_method a do |*args, &block|
+  def self.functor_module f
+    @functor_modules[f] ||= Module.new do
+      define_method f do |*args, &block|
         args << block if block
-        Rubylog::Clause.new a, self, *args 
+        Rubylog::Clause.new f, self, *args 
       end
 
-      a_bang =  :"#{a}!"
-      define_method a_bang do |*args, &block|
+      f_bang =  :"#{f}!"
+      define_method f_bang do |*args, &block|
         args << block if block
-        Rubylog.theory.assert Rubylog::Clause.new(a, self, *args), :true
+        Rubylog.theory.assert Rubylog::Clause.new(f, self, *args), :true
+        self
       end
 
-      a_qmark = :"#{a}?"
-      define_method a_qmark do |*args, &block|
+      f_qmark = :"#{f}?"
+      define_method f_qmark do |*args, &block|
         args << block if block
-        Rubylog.theory.true? Rubylog::Clause.new(a, self, *args)
+        Rubylog.theory.true? Rubylog::Clause.new(f, self, *args)
       end
     end
   end
