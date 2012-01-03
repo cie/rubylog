@@ -10,7 +10,11 @@ module Rubylog
     end
 
     def solve
-      Rubylog.theory.solve(self) {|*a| yield *a}
+      if block_given?
+        Rubylog.theory.solve(self) {|*a| yield *a}
+      else
+        Rubylog.theory.solve(self) {|*a|}
+      end
     end
   end
 end

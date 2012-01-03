@@ -81,10 +81,6 @@ module Rubylog
       yield
     end
 
-    def read_evaled a
-      a.rubylog_unify(eval gets){ yield }
-    end
-
     def all a,b
       a.prove {
         stands = false; 
@@ -144,12 +140,7 @@ module Rubylog
     BUILTINS[:fails][1] = BUILTINS[:is_false][1]
   BUILTINS[:false][0] = BUILTINS[:fail][0]
 
-  [:is, :matches, :in, :_p, :_puts, :_print, :read_evaled].each do |f|
-    DSL.add_first_order_functor f
-  end
-
-  [:and, :or, :then, :is_false, :&, :|, :~, :not, :all, :any, :one, :none, :fails].each do |f|
-    DSL.add_second_order_functor f
-  end
+  DSL.add_first_order_functor :is, :matches, :in, :_p, :_puts, :_print
+  DSL.add_second_order_functor :and, :or, :then, :is_false, :&, :|, :~, :not, :all, :any, :one, :none, :fails
 
 end
