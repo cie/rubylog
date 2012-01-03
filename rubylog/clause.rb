@@ -29,6 +29,10 @@ module Rubylog
       }"
     end
 
+    def to_s
+      inspect
+    end
+
     def arity
       @arity
     end

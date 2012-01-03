@@ -55,10 +55,34 @@ module Rubylog
     end
 
     def in a,b
-      b = b.rubylog_resolve_function
+      b = b.rubylog_resolve_function.rubylog_dereference
       b.each do |e|
         a.rubylog_unify(e) { yield }
       end
+    end
+
+    def _p a
+      p a.rubylog_deep_dereference
+      yield
+    end
+
+    def _puts a
+      puts a.rubylog_deep_dereference
+      yield
+    end
+
+    def _print a
+      print a.rubylog_deep_dereference
+      yield
+    end
+
+    def nl
+      puts
+      yield
+    end
+
+    def read_evaled a
+      a.rubylog_unify(eval gets){ yield }
     end
 
     def all a,b
@@ -120,7 +144,7 @@ module Rubylog
     BUILTINS[:fails][1] = BUILTINS[:is_false][1]
   BUILTINS[:false][0] = BUILTINS[:fail][0]
 
-  [:is, :matches, :in].each do |f|
+  [:is, :matches, :in, :_p, :_puts, :_print, :read_evaled].each do |f|
     DSL.add_first_order_functor f
   end
 

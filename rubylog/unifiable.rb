@@ -11,5 +11,9 @@ module Rubylog
     def rubylog_dereference
       self
     end
+
+    def rubylog_deep_dereference
+      self
+    end
   end
 end

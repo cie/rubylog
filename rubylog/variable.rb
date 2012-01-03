@@ -14,6 +14,10 @@ module Rubylog
       @name.to_s
     end
 
+    def to_s
+      @name.to_s
+    end
+
     def == other
       Variable === other and @name == other.name
     end
@@ -59,6 +63,14 @@ module Rubylog
     def rubylog_dereference
       if @assigned
         @value.rubylog_dereference
+      else
+        self
+      end
+    end
+
+    def rubylog_deep_dereference
+      if @assigned
+        @value.rubylog_deep_dereference
       else
         self
       end

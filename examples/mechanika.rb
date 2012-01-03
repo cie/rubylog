@@ -6,9 +6,14 @@ class << TimeTheory = Rubylog::Theory.new!
 end
 
 class << MechanikaTheory = Rubylog::Theory.new!
-  p TimeTheory.public_interface.instance_methods
   Symbol.send :include, TimeTheory.public_interface
-  Symbol.rubylog_functor :filozofus
+  Symbol.rubylog_functor \
+    :filozofus,
+    :ember
+  Rubylog::Clause.rubylog_functor\
+    :learn
+
+  X.ember.if X.filozofus
 
   [:Szokratesz, :Demokritosz, :Platon, :Arisztotelesz, :Arkhimedesz, :Ptolemaiosz].each{|q|q.filozofus!}
 
@@ -18,8 +23,30 @@ class << MechanikaTheory = Rubylog::Theory.new!
   :Arisztotelesz.during! [-384,-322]
   :Arkhimedesz.  during! [-287,-212]
   :Ptolemaiosz.  during! [  85, 161]
-      
 
 
-  pp *(X.during Y).solutions
+  Clause.learn.if(
+    (
+      Clause._puts &
+      Vars.is {|clause|clause.rubylog_variables} &
+      (V.in Vars).all(V._print & '.is '._print & V.is{eval gets}) &
+      Clause &
+      "Correct"._puts 
+    ) | (
+      "Wrong"._puts &
+      Clause &
+      Clause._p &
+      :fail
+    )
+  )
+
+
+
+    
+  (
+    :repeat &
+    X.ember.all(X.during([A,B]).learn)
+  ).true?
+
+  #pp *(X.during Y).solutions
 end

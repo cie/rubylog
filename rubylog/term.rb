@@ -12,6 +12,7 @@ module Rubylog
       self
     end
 
+
   end
 
 
