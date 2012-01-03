@@ -28,24 +28,26 @@ class << MechanikaTheory = Rubylog::Theory.new!
   Clause.learn.if(
     (
       Clause._puts &
-      Vars.is {|clause|clause.rubylog_variables.select{|v|v.assigned?}} &
-      (V.in Vars).all(V._print & '.is '._print & V.is{eval gets}) &
-      Clause &
-      "Correct"._puts 
+      Vars.is {|clause|clause.rubylog_variables.select{|v|
+        !v.assigned?}} &
+      (V.in Vars).all(
+        V._print & '.is '._print & V.is{eval gets} &
+        Clause &
+        "Correct"._puts 
+      )
     ) | (
       "Wrong"._puts &
       Clause &
       Clause._p &
+      (ANY.in 1..10).all(:nl) &
       :fail
     )
   )
 
-
-
     
   (
     :repeat &
-    X.ember.all(X.during([A,B]).learn)
+    X.ember.one(X.during([Szuletett,Meghalt]).learn.fails)
   ).true?
 
   #pp *(X.during Y).solutions

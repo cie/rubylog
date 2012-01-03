@@ -148,7 +148,7 @@ module Rubylog
     DSL.add_first_order_functor f
   end
 
-  [:and, :or, :then, :is_false, :&, :|, :~, :not, :all, :any, :one, :none].each do |f|
+  [:and, :or, :then, :is_false, :&, :|, :~, :not, :all, :any, :one, :none, :fails].each do |f|
     DSL.add_second_order_functor f
   end
 
