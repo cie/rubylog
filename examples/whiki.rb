@@ -2,9 +2,10 @@ require 'rubylog'
 require 'pp'
 
 class << Rubylog::Theory.new!
-  Symbol.rubylog_functor :lugar, :during
+  Symbol.rubylog_functor :lugar_historico, :during
+  Integer.rubylog_functor :during
 
-  A.lugar.if A.in [
+  A.lugar_historico.if A.in [
     :Hispania_prehistorica,
     :Hispania_romana,
     :Hispania_visigoda,
@@ -13,13 +14,18 @@ class << Rubylog::Theory.new!
     :Reino_Constitucional_Espanol
   ]
 
-  :Hispania_prehistorica.during! -800000..200
+  :Hispania_prehistorica.during! [-800000,200]
+  A.during([X,Y]).if A.matches(Integer).and {|a,x,y| (x..y) === a}
 
   
 
 
+  def self.solve k
+    pp *k.solutions
+  end
 
-  pp (:Hispania_prehistorica.during A).solutions
+  puts
+  pp *(A.lugar_historico.and A.during(P).and 200.during(P)).variable_hashes
 
 
 end

@@ -83,13 +83,24 @@ module Rubylog
 
     # convenience methods
     def solutions
-      goal = rubylog_compile_variables
-      variables = goal.rubylog_variables
-      goal.map do |values|
+      goal = rubylog_compile_variables # XXX compiling twice 
+      goal.variable_hashes.map do |hash|
+        goal.rubylog_clone {|i| hash[i] || i }
+      end
+    end
+
+    def variable_hashes
+      rubylog_compile_variables.variable_hashes 
+    end
+
+    protected
+
+    def variable_hashes_without_compile
+      variables = rubylog_variables
+      map do |values|
         values = case variables.count
           when 0 then []; when 1 then [values]; else values end
-        vars_hash = Hash[variables.zip values]
-        goal.rubylog_clone {|i| vars_hash[i] || i }
+        Hash[variables.zip values]
       end
     end
   end

@@ -22,6 +22,7 @@ module Rubylog
       Variable === other and @name == other.name
     end
 
+
     def value
       return nil if (val = rubylog_dereference).kind_of? Variable
       val
