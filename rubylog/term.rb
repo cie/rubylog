@@ -8,6 +8,10 @@ module Rubylog
       []
     end
 
+    def rubylog_resolve_function
+      self
+    end
+
   end
 
 

@@ -83,14 +83,14 @@ module Rubylog
 
     # convenience methods
     def solutions
-      goal = rubylog_compile_variables # XXX compiling twice 
-      goal.variable_hashes.map do |hash|
+      goal = rubylog_compile_variables 
+      goal.variable_hashes_without_compile.map do |hash|
         goal.rubylog_clone {|i| hash[i] || i }
       end
     end
 
     def variable_hashes
-      rubylog_compile_variables.variable_hashes 
+      rubylog_compile_variables.variable_hashes_without_compile
     end
 
     protected

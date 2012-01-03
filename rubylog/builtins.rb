@@ -40,21 +40,22 @@ module Rubylog
       yield
     end
 
+    def repeat # XXX not tested
+      yield while true
+    end
+
     def is a,b
-      b = b.call_with_rubylog_variables if 
-        b.respond_to? :call_with_rubylog_variables
+      b = b.rubylog_resolve_function
       a.rubylog_unify(b) { yield }
     end
 
     def matches a,b
-      b = b.call_with_rubylog_variables if 
-        b.respond_to? :call_with_rubylog_variables
+      b = b.rubylog_resolve_function
       yield if b.rubylog_dereference === a.rubylog_dereference
     end
 
     def in a,b
-      b = b.call_with_rubylog_variables if 
-        b.respond_to? :call_with_rubylog_variables
+      b = b.rubylog_resolve_function
       b.each do |e|
         a.rubylog_unify(e) { yield }
       end
