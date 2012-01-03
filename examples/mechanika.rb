@@ -28,7 +28,7 @@ class << MechanikaTheory = Rubylog::Theory.new!
   Clause.learn.if(
     (
       Clause._puts &
-      Vars.is {|clause|clause.rubylog_variables} &
+      Vars.is {|clause|clause.rubylog_variables.select{|v|v.assigned?}} &
       (V.in Vars).all(V._print & '.is '._print & V.is{eval gets}) &
       Clause &
       "Correct"._puts 

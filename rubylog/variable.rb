@@ -3,11 +3,15 @@ module Rubylog
 
     # data structure
 
-    attr_reader :name, :assigned
+    attr_reader :name
     def initialize name
       @name = name
       @assigned = false
       @dont_care = !!(name.to_s =~ /^ANY/)
+    end
+
+    def assigned?
+      @assigned
     end
 
     def inspect
@@ -25,6 +29,7 @@ module Rubylog
     def eql? other
       Variable === other and @name == other.name
     end
+
 
 
     def value
