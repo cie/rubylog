@@ -31,15 +31,16 @@ module Rubylog
 
     def predicate *descs
       descs.each do |desc|
-        @database[desc.first][desc.last] ||= Predicate.new
+        create_predicate *desc
       end
     end
 
     def discontinuous *descs
       descs.each do |desc|
-        (@database[desc.first][desc.last] ||= Predicate.new).discontinuous!
+        create_predicate(*desc).discontinuous!
       end
     end
+
       
 
     attr_reader :database
@@ -51,8 +52,7 @@ module Rubylog
       if predicate
         check_assertable predicate, head, body
       else
-        database[functor][arity] = predicate = Predicate.new
-        @public_interface.send :include, DSL.functor_module(functor)
+        predicate = create_predicate functor, arity
       end
       predicate << Clause.new(:-, head, body)
       @last_predicate = predicate
@@ -78,6 +78,10 @@ module Rubylog
       raise DiscontinuousPredicateError, head.desc.inspect, caller[2..-1] if not predicate.empty? and predicate != @last_predicate and not predicate.discontinuous?
     end
       
+    def create_predicate functor, arity
+      DSL.add_functors_to @public_interface, functor
+      database[functor][arity] = Predicate.new
+    end
     
 
     #class << self
