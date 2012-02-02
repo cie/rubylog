@@ -62,22 +62,40 @@ module Rubylog
       yield if b.rubylog_dereference === a.rubylog_dereference
     end
 
-    def splits a,b
-      if a.is_a? Rubylog::Variable
-
-      else
-
+    def splits_to a,h,t
+      t = t.rubylog_dereference
+      if t.instance_of? Rubylog::Variable
+        a = a.rubylog_dereference
+        if a.instance_of? Rubylog::Variable
+          InternalHelpers.non_empty_list {|l|
+            t.rubylog_unify(l.drop 1) {
+              h.rubylog_unify(l[0]) {
+                a.rubylog_unify(l) {
+                  yield
+                }
+              }
+            }
+          }
+        elsif a.instance_of? Array 
+          if a.size > 0
+            h.rubylog_unify(a.first) { t.rubylog_unify(a.drop 1) { yield } }
+          end
+        end
+      elsif t.instance_of? Array
+        a.rubylog_unify([h]+t) { yield }
       end
     end
 
     def in a,b
       b = b.rubylog_resolve_function.rubylog_dereference
-      if b.is_a? Rubylog::Variable
-        l = []
-        while true do
-          b.rubylog_unify(l + [a]) { yield }
-          l << Rubylog::Variable.new(:_)
-        end
+      if b.instance_of? Rubylog::Variable # XXX not tested
+        InternalHelpers.non_empty_list {|l|
+          a.rubylog_unify(l[-1]) {
+            b.rubylog_unify(l) {
+              yield
+            }
+          }
+        }
       else
         b.each do |e|
           a.rubylog_unify(e) { yield }
@@ -167,5 +185,6 @@ module Rubylog
 
   DSL.add_first_order_functor :is, :matches, :in, :_p, :_puts, :_print
   DSL.add_second_order_functor :and, :or, :then, :is_false, :&, :|, :~, :not, :all, :any, :one, :none, :fails
+  DSL.add_functors_to Array, :splits_to
 
 end

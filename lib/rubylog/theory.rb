@@ -19,6 +19,7 @@ module Rubylog
       }.merge! BUILTINS
       @variable_bindings = []
       @public_interface = Module.new
+      @trace = false
     end
 
     def [] *args
@@ -29,6 +30,9 @@ module Rubylog
       initialize
     end
 
+
+    # directives
+    #
     def predicate *descs
       descs.each do |desc|
         create_predicate *desc
@@ -41,10 +45,11 @@ module Rubylog
       end
     end
 
-      
-
     attr_reader :database
     attr_reader :public_interface
+
+
+    # predicates
 
     def assert head, body=:true
       functor, arity = head.functor, head.arity
@@ -68,6 +73,24 @@ module Rubylog
       goal = goal.rubylog_compile_variables
       goal.prove { return true }
       false
+    end
+
+    # debugging
+    #
+    #
+    def trace?
+      @trace
+    end
+
+    def trace!
+      @trace=true
+      @trace_levels = 0
+    end
+
+    def trace level, *args
+      return unless @trace
+      @trace_levels += level
+      puts "  "*level + args.map{|a|a.inspect}.join(" ") if not args.empty?
     end
 
     protected

@@ -7,7 +7,13 @@ module Rubylog
         each do |rule|
           rule = rule.rubylog_compile_variables
           head, body = rule[0], rule[1]
-          head.args.rubylog_unify(args) { body.prove { yield }}
+          head.args.rubylog_unify(args) { 
+            Rubylog.theory.trace 1, head, InternalHelpers.vars_hash_of(head)
+            body.prove { 
+              yield 
+            }
+            Rubylog.theory.trace -1
+          }
         end
       rescue Cut
       end
