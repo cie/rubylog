@@ -3,10 +3,14 @@ module Rubylog
 
   class << Object.new
     def singleton_method_added name
-      return if name == :singleton_method_added
-      m = method(name)
-      BUILTINS[name][m.arity] = m
+      unless name == :singleton_method_added
+        m = method(name)
+        BUILTINS[name][m.arity] = m
+      end
     end
+
+
+    # prolog builtins
 
     def true
       yield
@@ -44,20 +48,40 @@ module Rubylog
       yield while true
     end
 
+    # unification
+
     def is a,b
       b = b.rubylog_resolve_function
       a.rubylog_unify(b) { yield }
     end
+
+    
 
     def matches a,b
       b = b.rubylog_resolve_function
       yield if b.rubylog_dereference === a.rubylog_dereference
     end
 
+    def splits a,b
+      if a.is_a? Rubylog::Variable
+
+      else
+
+      end
+    end
+
     def in a,b
       b = b.rubylog_resolve_function.rubylog_dereference
-      b.each do |e|
-        a.rubylog_unify(e) { yield }
+      if b.is_a? Rubylog::Variable
+        l = []
+        while true do
+          b.rubylog_unify(l + [a]) { yield }
+          l << Rubylog::Variable.new(:_)
+        end
+      else
+        b.each do |e|
+          a.rubylog_unify(e) { yield }
+        end
       end
     end
 
@@ -127,6 +151,7 @@ module Rubylog
       }
       yield if stands
     end
+
 
   end
 

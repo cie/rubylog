@@ -22,11 +22,7 @@ module Rubylog
 
     def rubylog_deep_dereference
       rubylog_clone do |i|
-        if i.is_a? Variable 
-          i.rubylog_deep_dereference
-        else
-          i
-        end
+        i.rubylog_deep_dereference
       end
     end
 

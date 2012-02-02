@@ -51,6 +51,7 @@ module Rubylog
     end
 
 
+
     # Callable methods
     include Rubylog::Callable
 
@@ -101,9 +102,7 @@ module Rubylog
 
     def variable_hashes_without_compile
       variables = rubylog_variables
-      map do |values|
-        values = case variables.count
-          when 0 then []; when 1 then [values]; else values end
+      map do |*values|
         Hash[variables.zip values]
       end
     end

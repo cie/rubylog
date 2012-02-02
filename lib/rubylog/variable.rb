@@ -7,7 +7,7 @@ module Rubylog
     def initialize name
       @name = name
       @assigned = false
-      @dont_care = !!(name.to_s =~ /^ANY/)
+      @dont_care = !!(name.to_s =~ /^(?:ANY|_)/)
     end
 
     def assigned?

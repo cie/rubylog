@@ -7,7 +7,7 @@ RSpec::Matchers.define :stand do
 end
 
 
-class << $theory = Rubylog::Theory.new!
+class << Rubylog.theory
   Symbol.rubylog_functor \
     :likes, :is_happy, :in, :has, :we_have,
     :brother, :father, :uncle, :neq, :happy, :%
@@ -16,7 +16,7 @@ class << $theory = Rubylog::Theory.new!
 
   describe Rubylog do
     before do
-      $theory.clear
+      Rubylog.theory.clear
     end
 
     describe "variables" do
@@ -123,21 +123,21 @@ class << $theory = Rubylog::Theory.new!
 
     describe "facts" do
       it "can be asserted with assert" do
-        $theory.assert(:john.is_happy)
-        $theory.database[:is_happy][1].should include(Rubylog::Clause.new :-, :john.is_happy, :true)
-        $theory.assert(:john.likes :beer)
-        $theory.database[:likes][2].should include(Rubylog::Clause.new :-, :john.likes(:beer), :true)
-        $theory.assert(:john.likes :drinking.in :bar)
-        $theory.database[:likes][2].should include(:john.likes(:drinking.in :bar) - :true)
+        Rubylog.theory.assert(:john.is_happy)
+        Rubylog.theory.database[:is_happy][1].should include(Rubylog::Clause.new :-, :john.is_happy, :true)
+        Rubylog.theory.assert(:john.likes :beer)
+        Rubylog.theory.database[:likes][2].should include(Rubylog::Clause.new :-, :john.likes(:beer), :true)
+        Rubylog.theory.assert(:john.likes :drinking.in :bar)
+        Rubylog.theory.database[:likes][2].should include(:john.likes(:drinking.in :bar) - :true)
       end
 
       it "can be asserted with a bang, and it returns the zeroth arg" do
         :john.is_happy!.should == :john
-        $theory.database[:is_happy][1].should include(:john.is_happy.-:true)
+        Rubylog.theory.database[:is_happy][1].should include(:john.is_happy.-:true)
         :john.likes!(:beer).should == :john
-        $theory.database[:likes][2].should include(:john.likes(:beer).-:true)
+        Rubylog.theory.database[:likes][2].should include(:john.likes(:beer).-:true)
         :john.likes!(:drinking.in :bar).should == :john
-        $theory.database[:likes][2].should include(:john.likes(:drinking.in :bar).-:true)
+        Rubylog.theory.database[:likes][2].should include(:john.likes(:drinking.in :bar).-:true)
       end
 
 
@@ -286,26 +286,26 @@ class << $theory = Rubylog::Theory.new!
 
     describe "queries" do
       it "can be run with true?" do
-        lambda {$theory.true?(:john.likes :beer)}.should raise_error(Rubylog::ExistenceError)
+        lambda {Rubylog.theory.true?(:john.likes :beer)}.should raise_error(Rubylog::ExistenceError)
         :john.likes! :beer
-        $theory.true?(:john.likes :beer).should be_true
-        $theory.true?(:john.likes :milk).should be_false
+        Rubylog.theory.true?(:john.likes :beer).should be_true
+        Rubylog.theory.true?(:john.likes :milk).should be_false
       end
 
       it "can be run with question mark" do
-        lambda {$theory.true?(:john.likes :beer)}.should raise_error(Rubylog::ExistenceError)
+        lambda {Rubylog.theory.true?(:john.likes :beer)}.should raise_error(Rubylog::ExistenceError)
         :john.likes! :beer
         :john.likes?(:beer).should be_true
       end
 
       it "can be run with true?" do
-        lambda {$theory.true?(:john.likes :beer)}.should raise_error(Rubylog::ExistenceError)
+        lambda {Rubylog.theory.true?(:john.likes :beer)}.should raise_error(Rubylog::ExistenceError)
         :john.likes! :beer
         (:john.likes(:beer)).true?.should be_true
       end
       
       it "work with variables" do
-        lambda {$theory.true?(:john.likes X)}.should raise_error(Rubylog::ExistenceError)
+        lambda {Rubylog.theory.true?(:john.likes X)}.should raise_error(Rubylog::ExistenceError)
         :john.likes! :water
         :john.likes?(X).should be_true
       end
@@ -349,6 +349,22 @@ class << $theory = Rubylog::Theory.new!
         X.likes(ANYTHING).each{|x|k << x}
         k.should == [:john]
       end
+
+      it "makes sure all variables are instantiated" do
+        res = []
+        A.likes(B).if {|a,b| res << a << b }
+        A.likes? :beer
+        res.should == [nil,:beer]
+      end
+
+      it "substitutes deeper variables" do
+        res = []
+        A.likes(B).if {|a,b| res << a << b }
+        (A.is(:john).and B.is(:swimming.in C).and 
+         C.is(:sea).and A.likes B).to_a.should == [[:john,:swimming.in(:sea),:sea]]
+        res.should == [:john, :swimming.in(:sea)]
+      end
+
 
       describe "support Enumerable" do
         before do
@@ -465,12 +481,7 @@ class << $theory = Rubylog::Theory.new!
           result.should == [1,2]
         end
 
-        it "makes sure all variables are instantiated" do
-          res = []
-          A.likes(B).if {|a,b| res << a << b }
-          A.likes? :beer
-          res.should == [nil,:beer]
-        end
+
 
       end
     end
@@ -484,7 +495,7 @@ class << $theory = Rubylog::Theory.new!
         end
 
         it "can be asserted with if" do
-          $theory.predicate [:we_have, 2]
+          Rubylog.theory.predicate [:we_have, 2]
           :john.is_happy.if :-@.we_have(:beer)
           :john.is_happy?.should be_false
           :-@.we_have!(:beer)
@@ -492,7 +503,7 @@ class << $theory = Rubylog::Theory.new!
         end
 
         it "can be asserted with unless" do
-          $theory.predicate [:we_have, 2]
+          Rubylog.theory.predicate [:we_have, 2]
           :john.is_happy.unless :-@.we_have(:problem)
           :john.is_happy?.should be_true
           :-@.we_have!(:problem)
@@ -500,8 +511,8 @@ class << $theory = Rubylog::Theory.new!
         end
 
         it "can do simple general implications" do
-          $theory.predicate [:is_happy,1], [:has,2]
-          $theory.discontinuous [:likes,2]
+          Rubylog.theory.predicate [:is_happy,1], [:has,2]
+          Rubylog.theory.discontinuous [:likes,2]
           X.is_happy.if X.likes(Y).and X.has(Y)
           :john.likes! :milk
           :john.is_happy?.should be_false
@@ -603,7 +614,7 @@ class << $theory = Rubylog::Theory.new!
         pete.boy!
         pete.boy?.should be_true
 
-        $theory[:girl][1].discontinuous!
+        Rubylog.theory[:girl][1].discontinuous!
         janet = User.new "Janet"
         janet.girl?.should be_false
         janet.girl!

@@ -35,4 +35,4 @@ require 'object.rb'
 require 'class.rb'
 require 'method.rb'
 
-  
+Rubylog::Theory.new!
