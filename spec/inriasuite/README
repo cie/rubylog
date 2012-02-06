@@ -1,0 +1,122 @@
+This is the README file for version 0.9 of
+the test suite of conformance to the ISO
+Prolog standard based on the Formal specification
+of Pierre Deransart, Ali Ed-Dbali and Lurent Cervoni.
+
+The driver for the tests was written by Jonathan Hodgson.
+
+
+The suite cotains the following files.
+
+README		      This file
+inriasuite.pl         The driver.
+
+and a collection of files containing the tests.
+
+
+abolish                    Tests for abolish/1
+and                        Tests of ','/2
+arg                        Tests of arg/3
+arith_diff                 Tests of '=\='/2
+arith_eq                   Tests of '=:='/2
+arith_gt                   Tests of '>'/2
+arith_gt=                  Tests of '>='/2
+arith_lt                   Tests of '<'/2
+arith_lt=                  Tests of '=<'/2
+asserta                    Tests of asserta/1
+assertz                    Tests of assertz/1
+atom                       Tests of atom/1
+atom_chars                 Tests of atom_chars/2
+atom_codes                 Tests of atom_codes/2
+atom_concat                Tests of atom_concat/3
+atom_length                Tests of atom_length/2
+atomic                     Tests of atomic/1
+bagof                      Tests of bagof/3
+call                       Tests of call/1
+catch-and-throw            Tests of catch/3 and throw/1
+char_code                  Tests of char_code/2
+clause                     Tests of clause/2
+compound                   Tests of compound/1
+copy_term                  Tests of copy_term/2
+current_input              Tests of current_input/1
+current_output             Tests of current_output/2
+current_predicate          Tests of current_predicate/1
+current_prolog_flag        Tests of current_prolog_flag/2
+cut                        Tests of '!'/0
+fail                       Tests of fail/0
+file_manip                 File handling tests (not yet implmented.)
+findall                    Tests of findall/3
+float                      Tests of float/1
+functor                    Tests of functor/3
+halt                       Tests of halt, provided for documentation only.
+				attempts to run these terminate the suite!
+if-then                    Tests of '->'/2
+if-then-else               Tests of '-> ; '/3
+integer                    Tests of integer/1
+is                         Tests of is/2
+nonvar                     Tests of nonvar/1
+not_provable               Tests of '\+'/1
+not_unify                  Tests of '\='/2
+number                     Tests of number/1
+number_chars               Tests of number_chars/2
+number_codes               Tests of number_codes/2
+once                       Tests of once/1
+or                         Tests of ';'/2
+repeat                     Tests of repeat/0
+retract                    Tests of retract/1
+set_prolog_flag            Tests of set_prolog_flag/2
+setof                      Tests of setof/3
+sub_atom                   Tests of sub_atom/5
+term_diff                  Tests of '\=='/2
+term_eq                    Tests of '=='/2
+term_gt                    Tests of '@>'/2
+term_gt=                   Tests of '@>='/2
+term_lt                    Tests of '@<'/2
+term_lt=                   Tests of '@=<'/2
+true                       Tests of true/0
+unify                      Tests of '='/2
+
+
+The driver can be invoked after loading the file  "inriasuite.pl"
+by setting the goal  run_all_tests. Alternatively one can use one of
+the  commented out initialization directives provided at the end
+of the file to run the suite on load.
+
+LIMITATIONS.
+
+At present this suite does not test IO. Nor does it allow for
+tests in which a user defined program  is specified. Future versions
+of the suite will remedy this.
+
+REQUIREMENTS.
+
+The driver is written in vanilla ISO prolog. It uses the following (standard)
+builtins.
+
+!/0
+(=)/2
+(=..)/2
+(==)/2
+(=\=)/2
+(>=)/2
+(\+)/1
+(\==)/2
+asserta/1
+atomic/1
+call/1
+catch/3
+close/1
+copy_term/2
+findall/3
+(is)/2
+nl/0
+open/3
+read/1
+retract/1
+set_prolog_flag/2
+true/0
+var/1
+write/1
+
+
+DATE   3 March 1999
