@@ -1,6 +1,83 @@
-= rubylog
+= Rubylog - Prolog interpreter for ruby
 
-Description goes here.
+Rubylog is an implementation of (part of) the Prolog language as a Ruby DSL. The DSL is inspired by {Jamis Buck}[http://weblog.jamisbuck.org/2006/10/28/prolog-in-ruby], and the implementation is based on {Yield Prolog}[http://yieldprolog.sourceforge.net/].
+
+== Installing
+  $ gem install rubylog
+
+== Using
+
+To get started you have to do three things: require rubylog, include +Rubylog::DSL::Constants+ and declare some functors on a class you want to use:
+  require 'rubylog'
+  include Rubylog::DSL::Constants
+  Symbol.rubylog_functor :likes, :drinks, :has
+
+A Rubylog clause can be created by sending the functor to the first argument, passing the other arguments:
+  :John.likes :beer       # likes(john,beer) in Prolog
+
+A variable is an undefined constant. Don't-care variables start with ANY...
+  A, B, Cat               # the same in Prolog
+  ANY, ANYONE, ANYTHING   # _ in Prolog
+
+Now you can start writing Rubylog predicates. Facts can be asserted with a bang:
+  :John.likes! :beer      # likes(john, beer). in Prolog
+  :John.has! :beer        # has(john, beer). in Prolog
+
+Rules can be asserted with +if+ and +unless+:
+  X.drinks(Y).if X.has(Y).and X.likes(Y)         # drinks(X,Y) :- has(X,Y), likes(X,Y). in Prolog
+
+Queries can be proved with a question mark or with +true?+:
+  John.drinks? :beer         # => true
+  (John.drinks :beer).true?  # => true
+
+Or solutions can be enumerated (clauses include Enumerable)
+  (John.drinks X).each {|x| p x}  # outputs :beer
+  (John.drinks X).to_a            # => [:beer]
+
+At most places you can mix native Ruby with Rubylog by using a proc instead of a clause. Blocks are automatically converted to proc objects:
+  X.drinks(Y).if proc{|x,y| y.to_s =~ /^Z/ }
+  X.drinks(Y).if {|x,y| y.to_s =~ /^Z/ }     # the same
+
+  X.drinks(Y).if X.likes(Y).and proc { Time.now.hour == 12 }
+  X.drinks(Y).if X.likes(Y).and { Time.now.hour == 12 }     # the same
+
+Variable values are passed to the proc, in the order of appearance.
+
+Nullary predicates are just symbols:
+  John.drinks(:beer).if :true.or :false
+
+For predicates requiring a simple value as an argument, you can pass a proc that returns that value
+  X.drinks(Y).if Y.is proc{|x| $favorites[x] }
+  X.drinks(Y).if Y.is {|x| $favorites[x] }      # the same
+
+
+The Prolog built-in predicates and the Rubylog equivalents (see +Rubylog::Builtins+ for details):
+
+<table>
+<tr><th>Prolog</th><th>Rubylog</th></tr>
+<tr><td>+true+</td><td>+:true+</td></tr>
+<tr><td>+fail+</td><td>+:fail+</td></tr>
+<tr><td>+,+</td><td>+and+, +&+</td></tr>
+<tr><td>+;+</td><td>+or+, +|+</td></tr>
+<tr><td>+!+</td><td>+:cut+</td></tr>
+<tr><td>+->+</td><td>+then+</td></tr>
+<tr><td><tt>\\\+</tt></td><td>+is_false+, +fails+, +not+, +~+</td></tr>
+<tr><td>+repeat+</td><td>+repeat+</td></tr>
+<tr><td>+A=B+</td><td>+A.is B+</td></tr>
+<tr><td><tt>X is Y*5</tt></td><td><tt>X.is{|y|y*5}</tt></td></tr>
+<tr><td></td><td>+proc{|x,y|y===x}+ or +X.matches Y+</td></tr>
+<tr><td>+L=[H|T]+</td><td>+L.splits_to(H,T)+</td></tr>
+<tr><td>+member(A,L)+</td><td>+A.in L+ (+L+ can be any enumerable)</td></tr>
+<tr><td>+write(A)+</td><td>+A._puts+, +A._print+, +A._p+</td></tr>
+<tr><td>+nl+</td><td>+:nl+</td></tr>
+<tr><td><tt>\\\+((A, \\\+ B))</tt></td><td>+A.all B+</td></tr>
+<tr><td><tt>(A,B)->true</tt></td><td>+A.any B+</td></tr>
+<tr><td><tt></tt></td><td>+A.one B+</td></tr>
+<tr><td><tt>\\\+((A,B))</tt></td><td><tt>A.none B</tt></td></tr>
+
+</table>
+
+
 
 == Contributing to rubylog
  

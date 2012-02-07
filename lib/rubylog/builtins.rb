@@ -51,6 +51,7 @@ module Rubylog
     # unification
 
     def is a,b
+      a = a.rubylog_resolve_function
       b = b.rubylog_resolve_function
       a.rubylog_unify(b) { yield }
     end
@@ -58,6 +59,7 @@ module Rubylog
     
 
     def matches a,b
+      a = a.rubylog_resolve_function
       b = b.rubylog_resolve_function
       yield if b.rubylog_dereference === a.rubylog_dereference
     end
@@ -87,6 +89,7 @@ module Rubylog
     end
 
     def in a,b
+      a = a.rubylog_resolve_function
       b = b.rubylog_resolve_function.rubylog_dereference
       if b.instance_of? Rubylog::Variable # XXX not tested
         InternalHelpers.non_empty_list {|l|
