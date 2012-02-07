@@ -15,7 +15,7 @@ require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "rubylog"
-  gem.homepage = "rubylog.heroku.com"
+  gem.homepage = "https://github.com/cie/rubylog"
   gem.license = "MIT"
   gem.summary = %Q{An embedded Prolog interpreter}
   gem.description = %Q{Rubylog is an embedded Prolog language and interpreter for Ruby.}
