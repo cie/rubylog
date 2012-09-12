@@ -25,7 +25,7 @@ spec_two = NotSpecification.new(CollectionSpecification.new(1..10, :age))
 # or validates_exclusion_of :age, :in => 1..10
 
 # Rubylog
-U.age_valid.if ~ U.is_included(:age, 1..10)
+U.age_valid.unless U.is_included(:age, 1..10)
 
 # ActiveSpec
 spec = ProcSpecification.new(proc{ |object|
@@ -34,9 +34,10 @@ spec = ProcSpecification.new(proc{ |object|
 })
 spec.satisfied_by? some_object
 
-U.everything_valid.if {|u|
+U.valid.if {|u|
   # do something w/ u and return true/false
 }
+U.valid?
 
 # ActiveSpec
 class UserSpecification < ActiveSpec::Base
@@ -48,18 +49,18 @@ end
 UserSpecification.satisfied_by?(some_user)
 
 # Rubylog
-UserValidationTheory = Rubylog::Theory.new do
+class << UserValidationTheory = Rubylog::Theory.new!
 protected
   U.invalid.if (U.username=N) & N.blank
   U.invalid.if (U.password=P) & P.size=K & K.is_not 6
   U.invalid.if (U.password_confirmation=C) & (U.password=P) & (K.is_not P)
   U.invalid.if (U.age=A) & ~:include[18..30, A]
 public
-  U.valid_user.if ~U.invalid
+  U.valid.unless U.invalid
 end
 
 User.include_theory UserValidationTheory
-some_user.valid_user?
+some_user.valid?
 
 
 # ActiveSpec

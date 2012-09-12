@@ -20,6 +20,7 @@ class << Rubylog.theory
 
     specify "that start with ANY... are dont care" do 
       [ANY, ANYTHING, ANYTIME].each{|x|x.should be_kind_of Rubylog::Variable; x.should be_dont_care}
+      [NOBODY, EVERYBODY, SOMEBODY].each{|x|x.should be_kind_of Rubylog::Variable; x.should_not be_dont_care}
     end
   end
 end

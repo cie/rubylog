@@ -21,4 +21,5 @@ class Array
     block[map{|t|t.rubylog_clone &block}]
   end
   
+  include Rubylog::DSL::SecondOrderFunctors
 end

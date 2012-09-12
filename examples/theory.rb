@@ -18,3 +18,12 @@ class User
 end
 
 
+class << DrinkingTheory = Rubylog::Theory.new!
+  class User
+    rubylog_functor :drinks
+  end
+  include_theory LikingTheory
+  include_theory HavingTheory
+
+  U.drinks(D).if U.likes(D).and U.has(D)
+end
