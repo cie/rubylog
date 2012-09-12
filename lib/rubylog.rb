@@ -7,6 +7,7 @@ require 'set'
 # interfaces
 require 'rubylog/term'
 require 'rubylog/callable'
+require 'rubylog/assertable'
 require 'rubylog/unifiable'
 require 'rubylog/composite_term'
 

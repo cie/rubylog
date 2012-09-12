@@ -17,6 +17,9 @@ class Symbol
     []
   end
 
+  # Assertable methods
+  include Rubylog::Assertable
+
   # Unifiable methods
   include Rubylog::Unifiable
 

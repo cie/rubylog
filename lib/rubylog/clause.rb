@@ -41,16 +41,8 @@ module Rubylog
       [@functor, @arity]
     end
 
-    # assertion routines
-    def if body=nil, &block
-      Rubylog.theory.assert self, body || block
-    end
-
-    def unless body=nil, &block
-      Rubylog.theory.assert self, Clause.new(:is_false, body || block)
-    end
-
-
+    # Assertable methods
+    include Rubylog::Assertable
 
     # Callable methods
     include Rubylog::Callable

@@ -13,14 +13,28 @@ module Rubylog
       Thread.current[:rubylog_theory] = new
     end
 
-    def initialize
+    def initialize &block
       @database = Hash.new{|h,k| h[k] = 
         {}
       }.merge! BUILTINS
       @variable_bindings = []
       @public_interface = Module.new
       @trace = false
+
+      if block
+        with_context &block
+      end
     end
+
+    def with_context &block
+      # execute block in local context
+      old_theory = Thread.current[:rubylog_theory]
+      Thread.current[:rubylog_theory] = self
+      instance_exec &block
+      Thread.current[:rubylog_theory] = old_theory
+    end
+    
+    alias amend with_context
 
     def [] *args
       database[*args]
@@ -45,6 +59,17 @@ module Rubylog
       end
     end
 
+    def functor *functors
+      functors.each do |fct|
+        DSL.add_functors_to @public_interface, fct
+      end
+    end
+
+    def used_by *subjects
+      subjects.each do |s|
+        s.use_theory self
+      end
+    end
     attr_reader :database
     attr_reader :public_interface
 
@@ -52,12 +77,12 @@ module Rubylog
     # predicates
 
     def assert head, body=:true
-      functor, arity = head.functor, head.arity
-      predicate = database[functor][arity]
+      fct, arity = head.functor, head.arity
+      predicate = database[fct][arity]
       if predicate
         check_assertable predicate, head, body
       else
-        predicate = create_predicate functor, arity
+        predicate = create_predicate fct, arity
       end
       predicate << Clause.new(:-, head, body)
       @last_predicate = predicate
@@ -65,16 +90,21 @@ module Rubylog
 
 
     def solve goal
-      goal = goal.rubylog_compile_variables 
-      goal.prove { yield(*goal.rubylog_variables.map{|v|v.value}) }
+      with_context do
+        goal = goal.rubylog_compile_variables 
+        goal.prove { yield(*goal.rubylog_variables.map{|v|v.value}) }
+      end
     end
 
     def true? goal
-      goal = goal.rubylog_compile_variables
-      goal.prove { return true }
+      with_context do
+        goal = goal.rubylog_compile_variables
+        goal.prove { return true }
+      end
       false
     end
 
+    alias prove true?
     # debugging
     #
     #
@@ -101,9 +131,9 @@ module Rubylog
       raise DiscontinuousPredicateError, head.desc.inspect, caller[2..-1] if not predicate.empty? and predicate != @last_predicate and not predicate.discontinuous?
     end
       
-    def create_predicate functor, arity
-      DSL.add_functors_to @public_interface, functor
-      database[functor][arity] = Predicate.new
+    def create_predicate fct, arity
+      functor fct
+      database[fct][arity] = Predicate.new
     end
     
 

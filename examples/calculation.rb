@@ -1,10 +1,12 @@
-$: << File.expand_path(__FILE__+"/../lib")
+$:.unshift File.dirname(__FILE__)+"/../lib"
 
 require 'rubylog'
 
-
 theory = Rubylog::Theory.new do
-  A.write.if {|a| puts a or true}
+  functor :write
+  used_by String
+
+  A.write.if {|a| puts a; true}
   :hello.if "Hello, world!".write
 end
 
