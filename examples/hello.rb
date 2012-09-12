@@ -1,9 +1,14 @@
-require "rubylog"
+$:.unshift File.dirname(__FILE__)+"/../lib"
 
-Rubylog.use :variables, :implicit_predicates, String
+require 'rubylog'
 
-A.write.if {|a| puts a; true}
-:hello.if "Hello, world!".write
+theory = Rubylog::Theory.new do
+  functor :write
+  used_by String
 
-:hello.true?
+  A.write.if {|a| puts a; true}
+  :hello.if "Hello, world!".write
+end
+
+theory.prove :hello
 

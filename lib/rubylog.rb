@@ -30,11 +30,11 @@ require 'rubylog/variable'
 require 'rubylog/builtins'
 
 require 'rubylog/clause'
-require 'array'
-require 'symbol'
-require 'proc'
-require 'object'
-require 'class'
-require 'method'
+require 'rubylog/array'
+require 'rubylog/symbol'
+require 'rubylog/proc'
+require 'rubylog/object'
+require 'rubylog/class'
+require 'rubylog/method'
 
 Rubylog::Theory.new!
