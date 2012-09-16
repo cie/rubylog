@@ -91,7 +91,7 @@ module Rubylog
     def in a,b
       a = a.rubylog_resolve_function
       b = b.rubylog_resolve_function.rubylog_dereference
-      if b.instance_of? Rubylog::Variable # XXX not tested
+      if b.instance_of? Rubylog::Variable
         InternalHelpers.non_empty_list {|l|
           a.rubylog_unify(l[-1]) {
             b.rubylog_unify(l) {

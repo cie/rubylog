@@ -1,16 +1,14 @@
 require 'rubylog'
 
-class << FactorialTheory = Rubylog::Theory.new!
+FactorialTheory = Rubylog::Theory.new do
+  used_by Integer
+  functor :factorial
 
   0.factorial! 1
-  N.factorial(K).if proc{|n|n>0}.and N1.is{|n|n-1}.and N1.factorial(K1).and K.is{|n,_,_,k1| n*k1}
-
-  [0,1,2,7].each do |n|
-    (n.factorial? K).solve{|k| puts "#{n} factorial is #{k}"}
-  end
-
-  Integer.include_theory self
-
+  N.factorial(K).if \
+    lambda{|n|n>0}.
+    and N1.is{|n|n-1}.
+    and N1.factorial(K1).
+    and K.is{|n,_,_,k1| n*k1}
 end
-
 

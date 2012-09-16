@@ -7,19 +7,17 @@ class << Rubylog::DCG = Rubylog::Theory.new!
   Rubylog::Clause.rubylog_functor :-, :compiles_to
 
 
+
   
-
-
 
 end
 
-class << FirstDCG = Rubylog::Theory.new!
-  include_theory Rubylog::DCG
+FirstDCG = Rubylog::Theory.new do
+  use_theory Rubylog::DCG
   String.rubylog_functor :greet
   
   K.greet.means proc{K.matches /^[A-Z]/}.and :greeting.and [K].and :punctuation
   :greeting.means ["Hello"]
   :greeting.means ["Good evening"]
   :punctuation.means ["."].or ["?"].or ["!"]
-
 end

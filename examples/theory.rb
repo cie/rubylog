@@ -1,29 +1,27 @@
 require 'rubylog'
 
-class << AccessControlTheory = Rubylog::Theory.new
-  U.can_access_model(M).
-    if U.cannot_access_model(M).then :cut.and :fail
-  U.can_access_model(M).if M.is(Conversation).and {|u,m|m.users.include? u}
-
-  private
-
-  U.cannot_access_model(M).if U.banned
-  U.banned.if {|u| !u.active?}
-
-end
-
 class User
-  include_theory AccessControlTheory
+  attr_accessor :favorite, :possessions
 
+  def initialize favorite, possessions
+    @favorite, @possessions = favorite, possessions
+  end
 end
 
+LikingTheory = Rubylog::Theory.new do
+  functor :likes
+  U.has(D).if {|u,d| u.favorite == d}
+end
 
-class << DrinkingTheory = Rubylog::Theory.new!
-  class User
-    rubylog_functor :drinks
-  end
-  include_theory LikingTheory
-  include_theory HavingTheory
+HavingTheory = Rubylog::Theory.new do
+  functor :has
+  U.has(D).if {|u,d| u.possessions.include? d}
+end
+
+DrinkingTheory = Rubylog::Theory.new do
+  functor :drinks
+  use_theory LikingTheory, HavingTheory
+  used_by User
 
   U.drinks(D).if U.likes(D).and U.has(D)
 end
