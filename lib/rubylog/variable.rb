@@ -5,7 +5,7 @@ module Rubylog
 
     attr_reader :name
     def initialize name
-      @name = name
+      @name = name || :"_#{object_id}"
       @assigned = false
       @dont_care = !!(name.to_s =~ /^(?:ANY|_)/)
     end
@@ -85,7 +85,6 @@ module Rubylog
     include Callable
 
     def prove
-      # XXX not tested
       v = value
       raise InstantiationError if v.nil?
       v.prove{yield}

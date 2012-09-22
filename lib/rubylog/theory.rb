@@ -1,6 +1,4 @@
 module Rubylog
-  class Cut < StandardError
-  end
 
   def self.theory
     Thread.current[:rubylog_theory]
@@ -9,14 +7,13 @@ module Rubylog
   class Theory
     include Rubylog::DSL::Constants
 
-    def self.new!
-      Thread.current[:rubylog_theory] = new
-    end
+    attr_reader :database, :public_interface
 
     def initialize &block
-      @database = Hash.new{|h,k| h[k] = 
-        {}
-      }.merge! BUILTINS
+      @database = Hash.new{|h,k| h[k] = {} }
+
+      @database.merge! BUILTINS
+
       @variable_bindings = []
       @public_interface = Module.new
       @trace = false
@@ -27,10 +24,12 @@ module Rubylog
     end
 
     def with_context &block
-      # execute block in local context
+      # save current theory
       old_theory = Thread.current[:rubylog_theory]
       Thread.current[:rubylog_theory] = self
+
       instance_exec &block
+
       Thread.current[:rubylog_theory] = old_theory
     end
     
@@ -59,6 +58,8 @@ module Rubylog
       end
     end
 
+    alias dynamic discontinuous
+
     def functor *functors
       functors.each do |fct|
         DSL.add_functors_to @public_interface, fct
@@ -67,11 +68,17 @@ module Rubylog
 
     def used_by *subjects
       subjects.each do |s|
-        s.use_theory self
+        s.send :include, @public_interface
       end
     end
-    attr_reader :database
-    attr_reader :public_interface
+
+    def use_theory *theories
+      theories.each do |theory|
+        @public_interface.send :include, theory.public_interface
+        @database.merge! theory.database
+      end
+    end
+
 
 
     # predicates
@@ -105,6 +112,7 @@ module Rubylog
     end
 
     alias prove true?
+
     # debugging
     #
     #

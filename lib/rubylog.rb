@@ -37,4 +37,3 @@ require 'rubylog/object'
 require 'rubylog/class'
 require 'rubylog/method'
 
-Rubylog::Theory.new!

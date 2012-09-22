@@ -2,11 +2,11 @@ require 'rubylog'
 require 'rubylog/dcg'
 
 Grammar = Rubylog::Theory.new do
-  :sentence.means! :subject.and :verb.and :object
-  :subject .means! :modifier.and :noun
-  :noun.    means! [:cat].or [:mouse].or [:polar_bear]
-  :modifier.means! [:the]
-  :verb    .means! [:chases].or [:eats]
+  :sentence.means :subject.and :verb.and :object
+  :subject .means :modifier.and :noun
+  :noun.    means [:cat].or [:mouse].or [:polar_bear]
+  :modifier.means [:the]
+  :verb    .means [:chases].or [:eats]
 end
 
 Grammar2 = Rubylog::Theory.new do

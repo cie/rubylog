@@ -1,12 +1,4 @@
 module Rubylog::DSL
-  def self.add_first_order_functor *fs
-    add_functors_to FirstOrderFunctors, *fs
-  end
-
-  def self.add_second_order_functor *fs
-    add_functors_to SecondOrderFunctors, *fs
-  end
-
   def self.add_functors_to class_or_module, *functors
     functors.each do |f|
       m = functor_module(f)
@@ -40,13 +32,5 @@ module Rubylog::DSL
     end
   end
 
-  protected 
-
-  def self.add_global_functor f
-    GlobalFunctors.send :define_method, f do |*args, &block|
-      args << block if block
-      Rubylog::Clause.new f, *args 
-    end
-  end
 end
 
