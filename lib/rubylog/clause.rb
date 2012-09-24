@@ -54,6 +54,10 @@ module Rubylog
       predicate.call(*@args) { yield }
       Rubylog.current_theory.trace -1
     end
+    
+    def proof
+    end
+
 
     # enumerable methods
     include Enumerable

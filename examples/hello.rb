@@ -4,7 +4,6 @@ require 'rubylog'
 
 module Hello
   Rubylog.theory "HelloTheory" do
-    functor :write
     subject String
 
     :hello.if "Hello, world!"._puts

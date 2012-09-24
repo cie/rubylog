@@ -59,7 +59,7 @@ class Rubylog::Theory
 
     # undo everything
     Thread.current[:rubylog_current_theory] = old_theory
-    if @implicit
+    if @implicit_started
       stop_implicit
     end
   end
@@ -81,6 +81,7 @@ class Rubylog::Theory
 
   def discontinuous *descs
     descs.each do |desc|
+      raise ArgumentError, "#{desc.inspect} is not an Array" unless desc.is_a? Array
       create_predicate(*desc).discontinuous!
     end
   end
@@ -117,7 +118,7 @@ class Rubylog::Theory
   def explicit
     @implicit = false
 
-    if Thread.current[:rubylog_current_theory] == self
+    if @implicit_started
       stop_implicit
     end
   end
@@ -156,6 +157,13 @@ class Rubylog::Theory
 
   alias prove true?
 
+  def demonstrate goal
+    with_context do
+      goal = goal.rubylog_compile_variables 
+      goal.prove { return  }      
+    end
+  end
+
   # debugging
   #
   #
@@ -188,16 +196,23 @@ class Rubylog::Theory
   end
 
   def start_implicit
-    @public_interface.send :define_method, :method_missing do |m|
-      fct = Rubylog::DSL.normalize_functor(m) or super
-      Rubylog.current_theory.functor fct
-      self.class.send :include, Rubylog::DSL.functor_module(fct)
-      send m
+    [@public_interface, Rubylog::Variable].each do |m|
+      m.send :define_method, :method_missing do |m, *args|
+        fct = Rubylog::DSL.normalize_functor(m) or super
+        raise NameError, "'#{fct}' method already exists" if respond_to? fct
+        Rubylog.current_theory.functor fct
+        self.class.send :include, Rubylog::DSL.functor_module(fct)
+        send m, *args
+      end
     end
+    @implicit_started = true
   end
 
   def stop_implicit
-    @public_interface.remove_method :method_missing
+    [@public_interface, Rubylog::Variable].each do |m|
+      m.send :remove_method, :method_missing
+    end
+    @implicit_started = false
   end
   
 
