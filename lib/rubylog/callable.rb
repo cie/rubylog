@@ -6,14 +6,14 @@ module Rubylog
     #end
 
     def true?
-      Rubylog.theory.true? self
+      Rubylog.current_theory.true? self
     end
 
     def solve
       if block_given?
-        Rubylog.theory.solve(self) {|*a| yield *a}
+        Rubylog.current_theory.solve(self) {|*a| yield *a}
       else
-        Rubylog.theory.solve(self) {|*a|}
+        Rubylog.current_theory.solve(self) {|*a|}
       end
     end
   end

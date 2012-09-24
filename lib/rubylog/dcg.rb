@@ -23,7 +23,7 @@ module Rubylog
     def means body
       head = DCG.add_vars self
       body = DCG.add_vars body, head[-2], head[-1]
-      Rubylog.theory.assert head, body
+      Rubylog.current_theory.assert head, body
     end
   end
 end

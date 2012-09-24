@@ -2,13 +2,14 @@ $:.unshift File.dirname(__FILE__)+"/../lib"
 
 require 'rubylog'
 
-theory = Rubylog::Theory.new do
-  functor :write
-  used_by String
+module Hello
+  Rubylog.theory "HelloTheory" do
+    functor :write
+    subject String
 
-  A.write.if {|a| puts a; true}
-  :hello.if "Hello, world!".write
+    :hello.if "Hello, world!"._puts
+  end
 end
 
-theory.prove :hello
+Hello::HelloTheory.prove :hello
 

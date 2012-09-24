@@ -2,7 +2,9 @@ $:.unshift File.expand_path __FILE__+"/../../lib"
 
 require 'rubylog'
 
-Rubylog::Theory.new do
+theory :RubylogLogi do
+  used_by Symbol
+  implicit
 
   :ruby.used_language!
 

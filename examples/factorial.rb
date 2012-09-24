@@ -1,7 +1,7 @@
 require 'rubylog'
 
-FactorialTheory = Rubylog::Theory.new do
-  used_by Integer
+Rubylog.theory :FactorialTheory do
+  subject Integer
   functor :factorial
 
   0.factorial! 1

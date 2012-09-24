@@ -48,11 +48,11 @@ module Rubylog
     include Rubylog::Callable
 
     def prove
-      Rubylog.theory.trace 1, self, InternalHelpers.vars_hash_of(self)
-      predicate = Rubylog.theory[@functor][@arity]
+      Rubylog.current_theory.trace 1, self, Rubylog::InternalHelpers.vars_hash_of(self)
+      predicate = Rubylog.current_theory[@functor][@arity]
       raise ExistenceError, desc.inspect if not predicate
       predicate.call(*@args) { yield }
-      Rubylog.theory.trace -1
+      Rubylog.current_theory.trace -1
     end
 
     # enumerable methods

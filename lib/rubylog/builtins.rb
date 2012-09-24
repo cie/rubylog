@@ -44,7 +44,7 @@ module Rubylog
       yield
     end
 
-    def repeat # XXX not tested
+    def repeat
       yield while true
     end
 
@@ -92,7 +92,7 @@ module Rubylog
       a = a.rubylog_resolve_function
       b = b.rubylog_resolve_function.rubylog_dereference
       if b.instance_of? Rubylog::Variable
-        InternalHelpers.non_empty_list {|l|
+        Rubylog::InternalHelpers.non_empty_list {|l|
           a.rubylog_unify(l[-1]) {
             b.rubylog_unify(l) {
               yield
@@ -121,7 +121,7 @@ module Rubylog
       yield
     end
 
-    def nl
+    def _nl
       puts
       yield
     end

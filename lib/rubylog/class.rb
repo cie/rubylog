@@ -1,7 +1,7 @@
 class Class
   def use_theory *theories
     raise ArgumentError, "no theory given" if theories.empty?
-    theories.each {|t| t.used_by self }
+    theories.each {|t| t.subject self }
   end
 
   def rubylog_functor *functors

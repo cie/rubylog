@@ -27,9 +27,11 @@ class Symbol
   include Rubylog::Callable
 
   def prove
-    predicate = Rubylog.theory[self][0]
+    Rubylog.current_theory.trace 1, self, Rubylog::InternalHelpers.vars_hash_of(self)
+    predicate = Rubylog.current_theory[self][0]
     raise Rubylog::ExistenceError, desc.inspect if not predicate
     predicate.call(*args) { yield }
+    Rubylog.current_theory.trace -1
   end
 
   # Second-order functors (:is_false, :and, :or, :then)
