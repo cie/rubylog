@@ -1,5 +1,7 @@
 module Rubylog
-  class Cut < StandardError
+  class PredicateCut < StandardError
   end
 
+  class RuleCut < StandardError
+  end
 end

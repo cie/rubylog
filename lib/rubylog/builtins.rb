@@ -21,7 +21,7 @@ module Rubylog
     def fail
     end
 
-    # ,
+    # ','
     def and a, b
       a.prove { b.prove { yield } }
     end
@@ -29,7 +29,7 @@ module Rubylog
     # !
     def cut
       yield
-      raise Cut
+      raise PredicateCut
     end
 
     # ;
@@ -39,13 +39,16 @@ module Rubylog
     end
 
     # ->
-    def in_which_case a,b:not, 
+    def in_which_case a,b
       stands = false
       a.prove { stands = true ; break }
-      b.prove { yield } if stands
+      if stands
+        b.prove { yield }
+        raise RuleCut
+      end
     end
 
-    # not \+
+    # not '\+'
     def false a
       a.prove { return }
       yield
