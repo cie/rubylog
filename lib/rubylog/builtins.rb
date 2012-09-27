@@ -38,15 +38,17 @@ module Rubylog
       b.prove { yield }
     end
 
-    # ->
-    def in_which_case a,b
-      stands = false
-      a.prove { stands = true ; break }
-      if stands
-        b.prove { yield }
-        raise RuleCut
-      end
-    end
+    # currently not supported
+    ## ->
+    #def in_which_case a,b
+      #a.prove { b.prove { yield }; break }
+    #end
+
+    ## ';' when the first argument is '->'(,)
+    #def else a,b
+      #a.prove { yield }
+      #b.prove { yield } if # !!! the first argument of -> failed
+    #end
 
     # not '\+'
     def false a
