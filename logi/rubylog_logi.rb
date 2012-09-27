@@ -3,7 +3,8 @@ $:.unshift File.expand_path __FILE__+"/../../lib"
 require 'rubylog'
 
 theory :RubylogLogi do
-  used_by Symbol
+  include Rubylog::Because
+  subject Symbol
   implicit
 
   :ruby.used_language!
@@ -44,6 +45,6 @@ theory :RubylogLogi do
 
   X.good.if X.bad.is_false
 
-  demonstrate :Rubylog.good
+  :Rubylog.good.because(E).solve { p e }
   
 end

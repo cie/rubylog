@@ -45,10 +45,6 @@ module Rubylog
       yield if call_with_rubylog_variables
     end
 
-    def proof
-      yield self if call_with_rubylog_variables
-    end
-
 
     def call_with_rubylog_variables
       raise Rubylog::InvalidStateError, "variables not available" if not @rubylog_variables

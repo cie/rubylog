@@ -90,12 +90,6 @@ module Rubylog
       v.prove{yield}
     end
 
-    def proof
-      v = value
-      raise InstantiationError if v.nil?
-      v.proof{yield name}
-    end
-
   end
 
 

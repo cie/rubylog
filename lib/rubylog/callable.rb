@@ -5,12 +5,6 @@ module Rubylog
     #  raise "abstract method called"
     #end
 
-    # should return a Clause that serves as a human-and-computer-readable proof
-    # of the statement
-    #def proof
-    #  raise "abstract method called"
-    #end
-
     def true?
       Rubylog.current_theory.true? self
     end

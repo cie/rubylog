@@ -34,9 +34,6 @@ class Symbol
     Rubylog.current_theory.trace -1
   end
 
-  def proof
-  end
-
   # Second-order functors (:is_false, :and, :or, :then)
   include Rubylog::DSL::SecondOrderFunctors
 

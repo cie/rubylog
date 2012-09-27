@@ -157,13 +157,6 @@ class Rubylog::Theory
 
   alias prove true?
 
-  def demonstrate goal
-    with_context do
-      goal = goal.rubylog_compile_variables 
-      goal.prove { return  }      
-    end
-  end
-
   # debugging
   #
   #
