@@ -79,14 +79,14 @@ class Rubylog::Theory
     end
   end
 
-  def discontinuous *descs
+  def discontiguous *descs
     descs.each do |desc|
       raise ArgumentError, "#{desc.inspect} is not an Array" unless desc.is_a? Array
-      create_predicate(*desc).discontinuous!
+      create_predicate(*desc).discontiguous!
     end
   end
 
-  alias dynamic discontinuous
+  alias dynamic discontiguous
 
   def functor *functors
     functors.each do |fct|
@@ -180,7 +180,7 @@ class Rubylog::Theory
 
   def check_assertable predicate, head, body
     raise Rubylog::BuiltinPredicateError, head.desc.inspect, caller[2..-1] unless predicate.is_a? Rubylog::Predicate
-    raise Rubylog::DiscontinuousPredicateError, head.desc.inspect, caller[2..-1] if not predicate.empty? and predicate != @last_predicate and not predicate.discontinuous?
+    raise Rubylog::DiscontiguousPredicateError, head.desc.inspect, caller[2..-1] if not predicate.empty? and predicate != @last_predicate and not predicate.discontinuous?
   end
     
   def create_predicate fct, arity

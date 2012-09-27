@@ -2,7 +2,7 @@ module Rubylog
   class RubylogError < StandardError 
   end
 
-  class DiscontinuousPredicateError < RubylogError
+  class DiscontiguousPredicateError < RubylogError
   end
 
   class BuiltinPredicateError < RubylogError

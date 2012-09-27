@@ -19,12 +19,12 @@ module Rubylog
       end
     end
 
-    def discontinuous!
-      @discontinuous = true
+    def discontiguous!
+      @discontiguous = true
     end
 
-    def discontinuous?
-      @discontinuous
+    def discontiguous?
+      @discontiguous
     end
 
   end
