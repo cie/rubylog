@@ -5,7 +5,7 @@ module Rubylog
     end
 
     def unless body=nil, &block
-      Rubylog.current_theory.assert self, Clause.new(:is_false, body || block)
+      Rubylog.current_theory.assert self, Clause.new(:false, body || block)
     end
   end
 end
