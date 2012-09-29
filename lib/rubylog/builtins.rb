@@ -38,18 +38,6 @@ module Rubylog
       b.prove { yield }
     end
 
-    # currently not supported
-    ## ->
-    #def in_which_case a,b
-      #a.prove { b.prove { yield }; break }
-    #end
-
-    ## ';' when the first argument is '->'(,)
-    #def else a,b
-      #a.prove { yield }
-      #b.prove { yield } if # !!! the first argument of -> failed
-    #end
-
     # not '\+'
     def false a
       a.prove { return }
@@ -114,6 +102,8 @@ module Rubylog
         end
       end
     end
+
+
 
 
 
