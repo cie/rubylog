@@ -13,10 +13,11 @@ zipPair ([],_) = []
 zipPair ((a:as), (b:bs)) = (a,b) : zipPair (as,bs)
 
 =end
+$:.unshift File.dirname(__FILE__)+"/../lib"
+require 'rubylog'
 
-class << Rubylog::Theory.new!
-
-  rubylog_functor 
+Rubylog.theory "FP" do
+  implicit
 
   # multiply 0 _ = []
   # multiply n k = k : multiply (n-1) k

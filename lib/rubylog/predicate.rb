@@ -18,7 +18,7 @@ module Rubylog
             Rubylog.current_theory.trace -1
           }
         end
-      rescue PredicateCut
+      rescue Rubylog::PredicateCut
       end
     end
 

@@ -21,14 +21,17 @@ require 'rubylog/proc_method_additions'
 require 'rubylog/internal_helpers'
 
 # classes
+require 'rubylog/cut'
 require 'rubylog/errors'
+require 'rubylog/primitives'
 require 'rubylog/predicate'
 require 'rubylog/theory'
 require 'rubylog/variable'
 
-# builtins
+# theories
 require 'rubylog/builtins'
 
+# 
 require 'rubylog/clause'
 require 'rubylog/array'
 require 'rubylog/symbol'

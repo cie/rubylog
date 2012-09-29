@@ -3,11 +3,15 @@ $:.unshift File.dirname(__FILE__)+"/../lib"
 require 'rubylog'
 
 module Hello
-  Rubylog.theory "HelloTheory" do
-    subject String
+end
 
-    :hello.if "Hello, world!"._puts
-  end
+Rubylog.theory "Hello::HelloTheory" do
+  subject String
+  implicit
+
+  X.written.if {|x| puts x}
+
+  :hello.if "Hello, world!".written
 end
 
 Hello::HelloTheory.prove :hello

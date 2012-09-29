@@ -4,20 +4,19 @@ module Rubylog
     Thread.current[:rubylog_current_theory]
   end
 
-  def self.theory full_name, &block
+  def self.theory full_name, base=Rubylog::Builtins, &block
     names = full_name.to_s.split("::")
     parent_names, name = names[0...-1], names[-1]
     parent = parent_names.inject(block.binding.eval("Module.nesting[0]") || Object)  {|a,b|a.const_get b}
 
     if not parent.const_defined?(name)
-      theory = Rubylog::Theory.new
+      theory = Rubylog::Theory.new base
       parent.const_set name, theory
-      theory.amend &block
-    elsif (theory = parent.const_get name).is_a?(Rubylog::Theory)
-      theory.amend &block
     else
-      raise TypeError, "#{name} is not a theory"
+      theory = parent.const_get name
+      raise TypeError, "#{name} is not a theory" unless theory.is_a? Rubylog::Theory
     end
+    theory.amend &block
   end
 
 end
@@ -27,8 +26,9 @@ class Rubylog::Theory
 
   attr_reader :database, :public_interface
 
-  def initialize &block
+  def initialize base=Rubylog::Builtins, &block
     clear
+    include base if base
 
     if block
       with_context &block
@@ -37,14 +37,18 @@ class Rubylog::Theory
 
   def clear
     @database = Hash.new{|h,k| h[k] = {} }
-    @database.merge! Rubylog::BUILTINS
-
+    @primitives = Rubylog::Primitives.new self
     @variable_bindings = []
     @public_interface = Module.new
+    @subjects = []
     @trace = false
     @implicit = false
   end
 
+  def primitives
+    @primitives
+  end
+  private :primitives
 
   def with_context &block
     # save current theory
@@ -91,12 +95,16 @@ class Rubylog::Theory
   def functor *functors
     functors.each do |fct|
       Rubylog::DSL.add_functors_to @public_interface, fct
+      @subjects.each do |s|
+        Rubylog::DSL.add_functors_to s, fct
+      end
     end
   end
 
   def subject *subjects
     subjects.each do |s|
       s.send :include, @public_interface
+      @subjects << s
     end
   end
 
