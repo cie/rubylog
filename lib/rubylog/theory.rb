@@ -22,7 +22,16 @@ module Rubylog
 end
 
 class Rubylog::Theory
-  include Rubylog::DSL::Constants
+  def self.const_missing c
+    # different semantics in functions/callable procs than otherwise
+    # @see ProcMethodAdditions#call_with_rubylog_variables
+    if vars = Thread.current[:rubylog_current_variables]
+      var = vars.find{|v|v.name == c} or raise Rubylog::UnknownVariableError c
+      var.value
+    else
+      Rubylog::Variable.new c
+    end
+  end
 
   attr_reader :database, :public_interface
 
@@ -148,10 +157,10 @@ class Rubylog::Theory
   end
 
 
-  def solve goal
+  def solve goal, &block
     with_context do
       goal = goal.rubylog_compile_variables 
-      goal.prove { yield(*goal.rubylog_variables.map{|v|v.value}) }
+      goal.prove { block.call_with_rubylog_variables(goal.rubylog_variables) }
     end
   end
 

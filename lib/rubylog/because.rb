@@ -1,6 +1,6 @@
 Rubylog.theory "Rubylog::Because", nil do
   functor :because
-  subject Rubylog::Callable
+  subject Rubylog::Callable, Rubylog::Clause, Symbol
 
   A.false.false.because(E).if A.because(E)
 

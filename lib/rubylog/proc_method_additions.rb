@@ -7,8 +7,7 @@ module Rubylog
     # and yields if and the number of times the represented predicate is
     # provable. Built-in predicates are implemented this way.
     # Example (definition of a new built-in twice): 
-    #   def self.twice; yield; yield; end
-    #   theory[:twice][0] = method :twice
+    #   def primitives.twice; yield; yield; end
     #
     # Secondly, as a callable term. A callable term is a term that responds to
     # #prove, and yields if and the number of times the represented predicate is
@@ -46,13 +45,21 @@ module Rubylog
     end
 
 
-    def call_with_rubylog_variables
-      raise Rubylog::InvalidStateError, "variables not available" if not @rubylog_variables
-      if arity == -1
-        call *@rubylog_variables.map{|v|v.value}
-      else
-        call *@rubylog_variables[0...arity].map{|v|v.value}
+    def call_with_rubylog_variables vars = nil
+      vars ||= @rubylog_variables
+      raise Rubylog::InvalidStateError, "variables not available" if not vars
+      begin
+        Thread.current[:rubylog_current_variables] = vars
+        return call
+      ensure
+        Thread.current[:rubylog_current_variables] = nil
       end
+      # to pass arguments:
+      #if arity == -1
+      #  call *@rubylog_variables.map{|v|v.value}
+      #else
+      #  call *@rubylog_variables[0...arity].map{|v|v.value}
+      #end
     end
 
     # Term methods

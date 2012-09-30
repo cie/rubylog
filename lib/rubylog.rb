@@ -13,7 +13,6 @@ require 'rubylog/composite_term'
 
 # helpers
 require 'rubylog/dsl'
-require 'rubylog/dsl/constants'
 require 'rubylog/dsl/first_order_functors'
 require 'rubylog/dsl/global_functors'
 require 'rubylog/dsl/second_order_functors'
@@ -21,7 +20,6 @@ require 'rubylog/proc_method_additions'
 require 'rubylog/internal_helpers'
 
 # classes
-require 'rubylog/cut'
 require 'rubylog/errors'
 require 'rubylog/primitives'
 require 'rubylog/predicate'

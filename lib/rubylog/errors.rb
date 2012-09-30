@@ -14,5 +14,11 @@ module Rubylog
   class InvalidStateError < RubylogError
   end
 
+  class InstantiationError < RubylogError
+  end
+
+  class UnknownVariableError < RubylogError
+  end
+
 end
 
