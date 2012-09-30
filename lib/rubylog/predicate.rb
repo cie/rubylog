@@ -3,22 +3,18 @@ module Rubylog
   class Predicate < Array
     # accepts the *args of the called clause
     def call *args
-      begin
+      catch :cut do
         each do |rule|
           rule = rule.rubylog_compile_variables
           head, body = rule[0], rule[1]
           head.args.rubylog_unify(args) { 
             Rubylog.current_theory.trace 1, head, InternalHelpers.vars_hash_of(head)
-            begin
-              body.prove { 
-                yield 
-              }
-            rescue RuleCut
-            end
+            body.prove { 
+              yield 
+            }
             Rubylog.current_theory.trace -1
           }
         end
-      rescue Rubylog::PredicateCut
       end
     end
 

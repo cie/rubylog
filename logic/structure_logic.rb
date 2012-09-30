@@ -1,7 +1,7 @@
 $:.unshift File.expand_path __FILE__+"/../../lib"
 require 'rubylog'
 
-Rubylog.theory :RubylogLogic do
+Rubylog.theory "RubylogLogic" do
   subject Symbol
   implicit
   discontinuous [:implements,2], [:supports,2]

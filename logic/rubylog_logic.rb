@@ -2,7 +2,7 @@ $:.unshift File.expand_path __FILE__+"/../../lib"
 
 require 'rubylog'
 
-theory :RubylogLogi do
+Rubylog.theory "RubylogLogic" do
   include Rubylog::Because
   subject Symbol
   implicit
@@ -43,8 +43,6 @@ theory :RubylogLogi do
   :Rubylog.requirement :unitrusive
 
 
-  X.good.if X.bad.is_false
-
-  :Rubylog.good.because(E).solve { p e }
+  :Rubylog.bad.because(E).each { p e }
   
 end

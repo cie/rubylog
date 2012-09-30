@@ -12,7 +12,7 @@ Rubylog.theory "Rubylog::NullaryBuiltins", nil do
     # !
     def cut!
       yield
-      raise ::Rubylog::PredicateCut
+      throw :cut
     end
   end
 end
