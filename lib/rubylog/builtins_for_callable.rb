@@ -2,6 +2,7 @@ Rubylog.theory "Rubylog::BuiltinsForCallable", nil do
   subject ::Rubylog::Callable
 
   class << primitives
+
     # ','
     def and a, b
       a.prove { b.prove { yield } }
@@ -71,6 +72,33 @@ Rubylog.theory "Rubylog::BuiltinsForCallable", nil do
     end
     
     alias none false
+    
+    def follows_from head, body
+      head = head.rubylog_dereference
+      raise Rubylog::InstantiationError, head if head.is_a? Rubylog::Variable
+      return unless head.respond_to? :functor
+      predicate = Rubylog.current_theory[head.functor][head.arity]
+      if predicate.is_a? Rubylog::Predicate
+        predicate.each do |rule|
+          rule = rule.rubylog_compile_variables
+          rule[0].args.rubylog_unify head.args do
+            rule[1].rubylog_unify body do
+              yield
+            end
+          end
+        end
+      else
+        body.rubylog_unify predicate do
+          yield
+        end
+      end
+    end
+
+    # findall
+    def solutions clause, var, list
+      l = []; clause.solve { l << const_get(var.name) }
+      list.rubylog_unify(l){ yield }
+    end
   end
 
 end

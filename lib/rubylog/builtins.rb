@@ -1,4 +1,5 @@
 require "rubylog/builtins_for_callable"
+require "rubylog/builtins_for_clause"
 require "rubylog/builtins_for_term"
 require "rubylog/builtins_for_array"
 require "rubylog/nullary_builtins"

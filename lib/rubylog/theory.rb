@@ -110,6 +110,15 @@ class Rubylog::Theory
     end
   end
 
+  def functor_for target, *functors
+    functors.each do |fct|
+      Rubylog::DSL.add_functors_to target, fct
+    end
+  end
+
+  def private *descs
+  end
+
   def subject *subjects
     subjects.each do |s|
       s.send :include, @public_interface
@@ -124,22 +133,19 @@ class Rubylog::Theory
     end
   end
 
-  def implicit
-    @implicit = true
+  def implicit val=true
+    @implicit = val
 
-    if Thread.current[:rubylog_current_theory] == self
-      start_implicit
+    if val
+      if Thread.current[:rubylog_current_theory] == self
+        start_implicit
+      end
+    else
+      if @implicit_started
+        stop_implicit
+      end
     end
   end
-
-  def explicit
-    @implicit = false
-
-    if @implicit_started
-      stop_implicit
-    end
-  end
-
 
 
   # predicates
@@ -177,16 +183,12 @@ class Rubylog::Theory
   # debugging
   #
   #
-  def trace?
-    @trace
-  end
-
-  def trace!
-    @trace=true
+  def trace val=true
+    @trace=val
     @trace_levels = 0
   end
 
-  def trace level, *args
+  def print_trace level, *args
     return unless @trace
     @trace_levels += level
     puts "  "*@trace_levels + args.map{|a|a.inspect}.join(" ") if not args.empty?
@@ -197,7 +199,7 @@ class Rubylog::Theory
 
   def check_assertable predicate, head, body
     raise Rubylog::BuiltinPredicateError, head.desc.inspect, caller[2..-1] unless predicate.is_a? Rubylog::Predicate
-    raise Rubylog::DiscontiguousPredicateError, head.desc.inspect, caller[2..-1] if not predicate.empty? and predicate != @last_predicate and not predicate.discontinuous?
+    raise Rubylog::DiscontiguousPredicateError, head.desc.inspect, caller[2..-1] if not predicate.empty? and predicate != @last_predicate and not predicate.discontiguous?
   end
     
   def create_predicate fct, arity

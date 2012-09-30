@@ -8,7 +8,7 @@ Rubylog.theory :FactorialTheory do
 
   0.factorial! 1
   N.factorial(K).if \
-    lambda{N>0; false}.
+    lambda{N>0}.
     and N1.is{N-1}.
     and N1.factorial(K1).
     and K.is{N*K1}
@@ -16,7 +16,9 @@ Rubylog.theory :FactorialTheory do
   7.factorial(N).solve {puts N}
 
   include Rubylog::Because
-  7.factorial(N).false.because(E).solve {puts E}
+  trace!
+  7.factorial(N).because(E).solve {puts E}
+  #7.factorial(N).solutions
 end
 
 

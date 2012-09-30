@@ -48,11 +48,11 @@ module Rubylog
     include Rubylog::Callable
 
     def prove
-      Rubylog.current_theory.trace 1, self, Rubylog::InternalHelpers.vars_hash_of(self)
+      Rubylog.current_theory.print_trace 1, self, Rubylog::InternalHelpers.vars_hash_of(self)
       predicate = Rubylog.current_theory[@functor][@arity]
       raise ExistenceError, desc.inspect if not predicate
       predicate.call(*@args) { yield }
-      Rubylog.current_theory.trace -1
+      Rubylog.current_theory.print_trace -1
     end
     
 
@@ -82,12 +82,12 @@ module Rubylog
     include Rubylog::DSL::SecondOrderFunctors
 
     # convenience methods
-    def solutions
-      goal = rubylog_compile_variables 
-      goal.variable_hashes_without_compile.map do |hash|
-        goal.rubylog_clone {|i| hash[i] || i }
-      end
-    end
+    #def solutions
+      #goal = rubylog_compile_variables 
+      #goal.variable_hashes_without_compile.map do |hash|
+        #goal.rubylog_clone {|i| hash[i] || i }
+      #end
+    #end
 
     def variable_hashes
       rubylog_compile_variables.variable_hashes_without_compile
@@ -102,5 +102,8 @@ module Rubylog
       end
     end
   end
+end
 
+Rubylog.theory "Rubylog::BuiltinsForClause" do
+  subject Rubylog::Clause
 end
