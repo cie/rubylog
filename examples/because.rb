@@ -6,7 +6,8 @@ Rubylog.theory "DrinkingTheory" do
   include Rubylog::Because
   subject Symbol
   implicit
-  discontiguous :likes
+  discontiguous [:likes,2]
+  predicate [:thirsty, 1]
 
   :john.likes! :water
   :john.favorite! :beer
@@ -14,12 +15,14 @@ Rubylog.theory "DrinkingTheory" do
   :john.has! :beer
 
   A.likes(B).if A.favorite(B)
-  A.drinks(B).if A.likes(B).or(A.thirsty).and A.has(B).or
+  A.drinks(B).if A.likes(B).or(A.thirsty).and A.has(B)
 
   implicit false
-  trace!
-  :joe.likes(:water).because(X).solve{ p X }
-  #:joe.drinks(:water).because(X).solve{ p X }
-  #:joe.drinks(:beer).because(X).solve{ p X }
+
+  trace
+  p explain :john.drinks(:water).false
+
+  #:john.drinks(:water).because(X).solve{ p X }
+  #:john.drinks(:beer).because(X).solve{ p X }
 end
 

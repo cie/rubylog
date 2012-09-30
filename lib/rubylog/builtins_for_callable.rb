@@ -96,7 +96,9 @@ Rubylog.theory "Rubylog::BuiltinsForCallable", nil do
 
     # findall
     def solutions clause, var, list
-      l = []; clause.solve { l << const_get(var.name) }
+      l = []; clause.prove do
+        l << var.rubylog_dereference 
+      end
       list.rubylog_unify(l){ yield }
     end
   end

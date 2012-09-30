@@ -7,6 +7,7 @@ require "rubylog/nullary_builtins"
 
 Rubylog.theory "Rubylog::Builtins", nil do
   include Rubylog::BuiltinsForCallable
+  include Rubylog::BuiltinsForClause
   include Rubylog::BuiltinsForTerm
   include Rubylog::BuiltinsForArray
   include Rubylog::NullaryBuiltins

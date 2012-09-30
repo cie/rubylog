@@ -33,7 +33,7 @@ class Rubylog::Theory
     end
   end
 
-  attr_reader :database, :public_interface
+  attr_reader :database, :public_interface, :included_theories
 
   def initialize base=Rubylog::Builtins, &block
     clear
@@ -52,6 +52,7 @@ class Rubylog::Theory
     @subjects = []
     @trace = false
     @implicit = false
+    @included_theories = []
   end
 
   def primitives
@@ -94,7 +95,7 @@ class Rubylog::Theory
 
   def discontiguous *descs
     descs.each do |desc|
-      raise ArgumentError, "#{desc.inspect} is not an Array" unless desc.is_a? Array
+      raise ArgumentError, "#{desc.inspect} should be a predicate indicator" unless desc.is_a? Array
       create_predicate(*desc).discontiguous!
     end
   end
@@ -128,10 +129,30 @@ class Rubylog::Theory
 
   def include *theories
     theories.each do |theory|
+      @included_theories << theory
       @public_interface.send :include, theory.public_interface
       @database.merge! theory.database
     end
   end
+
+
+  def explain c
+    require "rubylog/because"
+    include Rubylog::Because unless included_theories.include? Rubylog::Because
+    expl = Rubylog::Variable.new :_expl
+    c.because(expl).solve do
+      return c.because(expl.value)
+    end
+  end
+
+  def spec_failed goal
+    raise Rubylog::SpecFailed, goal.inspect
+  end
+
+  def specify goal
+    spec_failed goal unless true? goal
+  end
+    
 
   def implicit val=true
     @implicit = val

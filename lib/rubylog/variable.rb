@@ -58,6 +58,7 @@ module Rubylog
       else
         begin
           @assigned = true; @value = other
+          #p "#{inspect}(#{rubylog_dereference.inspect})=#{other.inspect}(#{other.rubylog_dereference.inspect})"
           yield
         ensure
           @assigned = false
@@ -86,7 +87,7 @@ module Rubylog
 
     def prove
       v = value
-      raise InstantiationError if v.nil?
+      raise InstantiationError, self if v.nil?
       v.prove{yield}
     end
 

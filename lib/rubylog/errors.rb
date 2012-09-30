@@ -17,7 +17,13 @@ module Rubylog
   class InstantiationError < RubylogError
   end
 
+  class TypeError < RubylogError
+  end
+
   class UnknownVariableError < RubylogError
+  end
+
+  class SpecFailed < StandardError
   end
 
 end

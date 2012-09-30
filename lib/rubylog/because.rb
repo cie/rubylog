@@ -13,6 +13,7 @@ Rubylog.theory "Rubylog::Because", nil do
   :true.because :true
   A.and(B).because(E.and F).if A.because(E).and B.because(F)
   A.or(B).because(E).if A.because(E).or B.because(E)
+  A.because(:true).if A.follows_from(:true)
   A.because(B.because E).if A.follows_from(B).and B.because(E)
 
   [L]._because_inject(ANY,L).if :cut!
