@@ -58,10 +58,11 @@ module Rubylog
       else
         begin
           @assigned = true; @value = other
-          #p "#{inspect}(#{rubylog_dereference.inspect})=#{other.inspect}(#{other.rubylog_dereference.inspect})"
+          Rubylog.current_theory.print_trace 1, "#{inspect}=#{@value.inspect}"
           yield
         ensure
           @assigned = false
+          Rubylog.current_theory.print_trace -1
         end
       end
     end

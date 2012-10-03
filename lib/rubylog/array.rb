@@ -7,6 +7,7 @@ class Array
     if empty?
       yield if other.empty?
     else
+      return if other.empty?
       self[0].rubylog_unify other[0] do
         self[1..-1].rubylog_unify other[1..-1] do
           yield

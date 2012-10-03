@@ -145,12 +145,20 @@ class Rubylog::Theory
     end
   end
 
-  def spec_failed goal
-    raise Rubylog::SpecFailed, goal.inspect
+  def check_passed goal
+    print "."
   end
 
-  def specify goal
-    spec_failed goal unless true? goal
+  def check_failed goal
+    raise Rubylog::CheckFailed, goal.inspect
+  end
+
+  def check goal
+    if true? goal
+      check_passed goal
+    else
+      check_failed goal 
+    end
   end
     
 
@@ -211,8 +219,8 @@ class Rubylog::Theory
 
   def print_trace level, *args
     return unless @trace
+    puts "  "*@trace_levels + args.map{|a|a.to_s}.join(" ") if not args.empty?
     @trace_levels += level
-    puts "  "*@trace_levels + args.map{|a|a.inspect}.join(" ") if not args.empty?
   end
 
   protected
@@ -231,7 +239,8 @@ class Rubylog::Theory
   def start_implicit
     [@public_interface, Rubylog::Variable].each do |m|
       m.send :define_method, :method_missing do |m, *args|
-        fct = Rubylog::DSL.normalize_functor(m) or super
+        fct = Rubylog::DSL.normalize_functor(m) 
+        return super if fct.nil?
         raise NameError, "'#{fct}' method already exists" if respond_to? fct
         Rubylog.current_theory.functor fct
         self.class.send :include, Rubylog::DSL.functor_module(fct)

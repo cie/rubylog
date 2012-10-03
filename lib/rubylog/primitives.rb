@@ -10,4 +10,8 @@ class Rubylog::Primitives
       @theory[name][m.arity] = m
     end
   end
+
+  def inspect
+    "primitives"
+  end
 end

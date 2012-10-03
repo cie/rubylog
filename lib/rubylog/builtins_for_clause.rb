@@ -8,7 +8,7 @@ Rubylog.theory "Rubylog::BuiltinsForClause", nil do
         args = args.rubylog_dereference
         raise Rubylog::InstantiationError, fct if fct.is_a? Rubylog::Variable
         raise Rubylog::InstantiationError, args if args.is_a? Rubylog::Variable
-        c.rubylog_unify Rubylog::Clause.new(fct, *args) { yield }
+        c.rubylog_unify(Rubylog::Clause.new(fct, *args)) { yield }
       elsif c.is_a? Rubylog::Clause
         c.functor.rubylog_unify fct do
           c.args.rubylog_unify args do

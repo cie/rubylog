@@ -37,4 +37,5 @@ require 'rubylog/proc'
 require 'rubylog/object'
 require 'rubylog/class'
 require 'rubylog/method'
+require 'rubylog/kernel'
 

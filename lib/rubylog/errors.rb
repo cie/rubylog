@@ -23,7 +23,7 @@ module Rubylog
   class UnknownVariableError < RubylogError
   end
 
-  class SpecFailed < StandardError
+  class CheckFailed < StandardError
   end
 
 end
