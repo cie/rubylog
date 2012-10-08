@@ -1,10 +1,8 @@
+$:.unshift File.dirname(__FILE__)+"/../lib"
 require "rubylog"
 
-Rubylog.use :variables, :implicit_predicates, String, Numeric
+theory "Queens" do
 
-4.queens!
-
-0.queens! []
-N.queens
+end
 
 

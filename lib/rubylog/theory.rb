@@ -1,13 +1,22 @@
 module Rubylog
 
+  # @return [Rubylog::Theory] the current theory
   def self.current_theory
     Thread.current[:rubylog_current_theory]
   end
 
+  # Create a new Rubylog theory or modify an existing one.
+  #
+  # You can create theories with the theory method, which is available from
+  # anywhere:
+  #     theory "MyTheory" do
+  #       # ...
+  #     end
   def self.theory full_name, base=Rubylog::Builtins, &block
     names = full_name.to_s.split("::")
     parent_names, name = names[0...-1], names[-1]
-    parent = parent_names.inject(block.binding.eval("Module.nesting[0]") || Object)  {|a,b|a.const_get b}
+    parent = parent_names.inject(block.binding.eval("Module.nesting[0]") || Object)  {|a,b| a.const_get b}
+    p parent
 
     if not parent.const_defined?(name)
       theory = Rubylog::Theory.new base
@@ -21,15 +30,28 @@ module Rubylog
 
 end
 
+# The Theory class represents a collection of rules.
 class Rubylog::Theory
-  def self.const_missing c
+
+  
+  def self.const_missing c # :nodoc:
     # different semantics in functions/callable procs than otherwise
     # @see ProcMethodAdditions#call_with_rubylog_variables
-    if vars = Thread.current[:rubylog_current_variables]
-      var = vars.find{|v|v.name == c} or raise Rubylog::UnknownVariableError c
-      var.value
+    if vars = Thread.current[:rubylog_current_variables] and var = vars.find{|v|v.name == c}
+      var.rubylog_deep_dereference
     else
       Rubylog::Variable.new c
+    end
+  end
+  
+  # Call the given block with variables automatically resolved
+  def self.with_vars vars
+    begin
+      old_vars = Thread.current[:rubylog_current_variables]
+      Thread.current[:rubylog_current_variables] = vars
+      yield
+    ensure
+      Thread.current[:rubylog_current_variables] = old_vars
     end
   end
 
@@ -44,6 +66,7 @@ class Rubylog::Theory
     end
   end
 
+  # Clear all data in the theory and bring it to its initial state.
   def clear
     @database = Hash.new{|h,k| h[k] = {} }
     @primitives = Rubylog::Primitives.new self
@@ -60,21 +83,28 @@ class Rubylog::Theory
   end
   private :primitives
 
+  # TODO separate: static context, demonstration, native
   def with_context &block
-    # save current theory
-    old_theory = Thread.current[:rubylog_current_theory]
-    Thread.current[:rubylog_current_theory] = self
+    begin
+      # save current theory
+      old_theory = Thread.current[:rubylog_current_theory]
+      Thread.current[:rubylog_current_theory] = self
 
-    if @implicit
-      start_implicit
-    end
+      # start implicit mode
+      if @implicit
+        start_implicit
+      end
 
-    instance_exec &block
+      # call the block
+      return instance_exec &block
+    ensure 
+      # restore current theory
+      Thread.current[:rubylog_current_theory] = old_theory
 
-    # undo everything
-    Thread.current[:rubylog_current_theory] = old_theory
-    if @implicit_started
-      stop_implicit
+      # stop implicit mode
+      if @implicit_started
+        stop_implicit
+      end
     end
   end
   
@@ -199,7 +229,11 @@ class Rubylog::Theory
     end
   end
 
-  def true? goal
+  def true? goal=nil, &block
+    if goal.nil? 
+      raise ArgumentError, "No goal given" if block.nil?
+      goal = with_context &block
+    end
     with_context do
       goal = goal.rubylog_compile_variables
       goal.prove { return true }

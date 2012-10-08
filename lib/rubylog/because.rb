@@ -5,12 +5,12 @@ theory "Rubylog::Because", nil do
   functor_for Array, :inject
 
   A.false.false.because(E).if A.because(E).and :cut!
-  :fail.false.because(:fail.false).if :cut!
+  :fail.false.because(:true).if :cut!
   A.and(B).false.because(E.and(F)).if A.false.because(E).and B.false.because(F).and :cut!
   A.and(B).false.because(E).if A.false.because(E).or B.false.because(E).and :cut!
   A.or(B).false.because(E.and F).if A.false.because(E).and B.false.because(F).and :cut!
-  A.false.because(E).if A.follows_from(B).and(B.false.because(E1)).solutions(E1,ES).and ES.inject(:and, E).and :cut!
-  A.false.because(:fail.false).if A.because(ANY).false.and :cut!
+  A.false.because(E).if E.is {A.follows_from(B1).and(B1.false.because(E1)).map{E1}.inject &:and}.and :cut!
+  A.false.because(:true).if A.because(ANY).false.and :cut!
 
   :true.because(:true).if :cut!
   A.and(B).because(E.and F).if A.because(E).and B.because(F).and :cut!

@@ -48,11 +48,9 @@ module Rubylog
     def call_with_rubylog_variables vars = nil
       vars ||= @rubylog_variables
       raise Rubylog::InvalidStateError, "variables not available" if not vars
-      begin
-        Thread.current[:rubylog_current_variables] = vars
+
+      Rubylog::Theory.with_vars vars do
         return call
-      ensure
-        Thread.current[:rubylog_current_variables] = nil
       end
       # to pass arguments:
       #if arity == -1

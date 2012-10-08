@@ -1,7 +1,7 @@
 $:.unshift File.dirname(__FILE__)+"/../lib"
 require 'rubylog'
 
-AccessControlTheory = Rubylog::Theory.new do
+theory "AccessControl" do
   implicit
   U.can_access_model(M).
     if U.cannot_access_model(M).and :cut.and :fail
