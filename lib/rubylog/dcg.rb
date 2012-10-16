@@ -1,29 +1,15 @@
-module Rubylog
-  module DCG
-    def self.add_vars term, s1=nil, s2=nil
-      s1 ||= Variable.new; s2 ||= Variable.new
-      case term
-      when Clause, Symbol
-        case term.functor
-        when :and
-          lhs = add_vars term[0], s1, nil
-          rhs = add_vars term[1], lhs[-1], s2
-          Clause.new :and, lhs, rhs
-        when :or
-          # TODO
-        else
-          Clause.new term.functor, *term.args + [s1, s2]
-        end
-      when Array
-        Clause.new 
-      else
-      end
-    end
+theory "Rubylog::DCG", nil do
+  functor :means
+  subject Rubylog::Clause, Symbol
+  functor_for Array, :and, :or, :matches
+  
+  L.matches(C).if L.matches(C, [])
 
-    def means body
-      head = DCG.add_vars self
-      body = DCG.add_vars body, head[-2], head[-1]
-      Rubylog.current_theory.assert head, body
-    end
-  end
+  L1.matches(A.and(B),L2).iff L1.matches(A,L3).and L3.matches(B,L2)
+  L1.matches(A.or(B),L2).iff L1.matches(A,L2).or L1.matches(B,L2)
+  L1.matches(A,L2).if proc{A.is_a? Proc}.and :cut!.and A
+  L1.matches(A,L2).if L1.splits_to(A,L2)
+  L1.matches(A,L2).if A.means(B).and L1.matches(B,L2)
+
 end
+

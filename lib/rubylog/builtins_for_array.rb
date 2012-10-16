@@ -8,7 +8,7 @@ Rubylog.theory "Rubylog::BuiltinsForArray", nil do
       if t.instance_of? Rubylog::Variable
         a = a.rubylog_dereference
         if a.instance_of? Rubylog::Variable
-          InternalHelpers.non_empty_list {|l|
+          Rubylog::InternalHelpers.non_empty_list {|l|
             t.rubylog_unify(l.drop 1) {
               h.rubylog_unify(l[0]) {
                 a.rubylog_unify(l) {
@@ -26,6 +26,23 @@ Rubylog.theory "Rubylog::BuiltinsForArray", nil do
         a.rubylog_unify([h]+t) { yield }
       end
     end
+
+    def list a
+      a = a.rubylog_dereference
+      if a.instance_of? Rubylog::Variable
+        a.rubylog_unify([]) { yield }
+        Rubylog::InternalHelpers.non_empty_list {|l|
+          a.rubylog_unify(l) { yield }
+        }
+      else
+        yield if a.instance_of? Array
+      end
+    end
   end
+
+  functor :splits_to
+  A.splits_to!([],A)
+  A.splits_to(B,C).if B.list(H,BT).and A.list(H,AT).and AT.splits_to(BT,C)
+
 end
 

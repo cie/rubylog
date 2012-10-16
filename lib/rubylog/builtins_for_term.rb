@@ -9,12 +9,6 @@ Rubylog.theory "Rubylog::BuiltinsForTerm", nil do
       a.rubylog_unify(b) { yield }
     end
 
-    def matches a,b
-      a = a.rubylog_resolve_function
-      b = b.rubylog_resolve_function
-      yield if b.rubylog_dereference === a.rubylog_dereference
-    end
-
     # member
     def in a,b
       a = a.rubylog_resolve_function

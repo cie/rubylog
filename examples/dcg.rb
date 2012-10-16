@@ -1,23 +1,24 @@
-class << Rubylog::DCG = Rubylog::Theory.new!
-  def Rubylog::SecondOrderFunctors.means body
-    Rubylog.theory.assert \
-      Rubylog::DCG.solve(Rubylog::Clause.new(:compiles_to, Clause.new(:-, self, body), Solution)).first || raise "Could not compile clause #{self}.-#{body}"
+$:.unshift File.dirname(__FILE__)+"/../lib"
+require 'rubylog'
+require 'rubylog/dcg'
+
+theory "MyDCG" do
+  include Rubylog::DCG
+  functor :greet
+  subject String
+  
+  K.greet.means! proc{K =~ /\A[A-Z]/}.and :greeting.and [K].and :punctuation
+  :greeting.means! ["Hello"]
+  :greeting.means! ["Good evening"]
+  :punctuation.means! ["."].or ["?"].or ["!"]
+  trace do |l, c, v|
+    print "  "*l + "#{c} #{v}"
+    gets
   end
-
-  Rubylog::Clause.rubylog_functor :-, :compiles_to
-
-
-
-  
-
 end
 
-FirstDCG = Rubylog::Theory.new do
-  use_theory Rubylog::DCG
-  String.rubylog_functor :greet
-  
-  K.greet.means proc{K.matches /^[A-Z]/}.and :greeting.and [K].and :punctuation
-  :greeting.means ["Hello"]
-  :greeting.means ["Good evening"]
-  :punctuation.means ["."].or ["?"].or ["!"]
-end
+p MyDCG.eval {L.matches(:greeting).collect{L} }
+p MyDCG.eval {["Hello", "World", "!"].matches(K.greet).collect{K} }
+
+
+

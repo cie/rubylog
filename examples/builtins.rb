@@ -10,7 +10,7 @@ Rubylog.theory "Try" do
   end
 
   def primitives.hello x
-    puts "Hello #{x}!"
+    puts "Hello #{x.rubylog_deep_dereference}!"
     yield
   end
 
@@ -21,3 +21,4 @@ end
 
 p Try.prove :hello
 p Try.prove :hello_world
+p Try.prove{X.is("World").and X.hello}

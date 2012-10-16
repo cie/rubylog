@@ -1,4 +1,4 @@
-Rubylog.theory "Rubylog::NullaryBuiltins", nil do
+Rubylog.theory "Rubylog::BuiltinsWithoutArgs", nil do
   class << primitives
     # true
     def true

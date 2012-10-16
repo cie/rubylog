@@ -1,4 +1,6 @@
 Rubylog.theory "Rubylog::BuiltinsForClause", nil do
+  subject Rubylog::Clause
+
   class << primitives
 
     def clause c, fct, args

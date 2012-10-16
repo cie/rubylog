@@ -12,14 +12,13 @@ module Rubylog
   #     theory "MyTheory" do
   #       # ...
   #     end
-  def self.theory full_name, base=Rubylog::Builtins, &block
+  def self.theory full_name, *args, &block
     names = full_name.to_s.split("::")
     parent_names, name = names[0...-1], names[-1]
     parent = parent_names.inject(block.binding.eval("Module.nesting[0]") || Object)  {|a,b| a.const_get b}
-    p parent
 
     if not parent.const_defined?(name)
-      theory = Rubylog::Theory.new base
+      theory = Rubylog::Theory.new *args
       parent.const_set name, theory
     else
       theory = parent.const_get name
@@ -38,7 +37,7 @@ class Rubylog::Theory
     # different semantics in functions/callable procs than otherwise
     # @see ProcMethodAdditions#call_with_rubylog_variables
     if vars = Thread.current[:rubylog_current_variables] and var = vars.find{|v|v.name == c}
-      var.rubylog_deep_dereference
+      var.rubylog_dereference
     else
       Rubylog::Variable.new c
     end
@@ -75,6 +74,7 @@ class Rubylog::Theory
     @subjects = []
     @trace = false
     @implicit = false
+    @mind_discontiguous = true
     @included_theories = []
   end
 
@@ -83,7 +83,6 @@ class Rubylog::Theory
   end
   private :primitives
 
-  # TODO separate: static context, demonstration, native
   def with_context &block
     begin
       # save current theory
@@ -109,6 +108,7 @@ class Rubylog::Theory
   end
   
   alias amend with_context
+  alias eval with_context
 
   def [] *args
     database[*args]
@@ -130,6 +130,14 @@ class Rubylog::Theory
     end
   end
 
+  def mind_discontiguous value = true
+    @mind_discontiguous = value
+  end
+
+  def mind_discontiguous?
+    @mind_discontiguous
+  end
+
   alias dynamic discontiguous
 
   def functor *functors
@@ -137,6 +145,14 @@ class Rubylog::Theory
       Rubylog::DSL.add_functors_to @public_interface, fct
       @subjects.each do |s|
         Rubylog::DSL.add_functors_to s, fct
+      end
+    end
+  end
+
+  def prefix_functor *functors
+    functors.each do |fct|
+      define_singleton_method fct do |*args|
+        Rubylog::Clause.new fct, *args
       end
     end
   end
@@ -183,11 +199,11 @@ class Rubylog::Theory
     raise Rubylog::CheckFailed, goal.inspect
   end
 
-  def check goal
-    if true? goal
-      check_passed goal
+  def check goal=nil, &block
+    if true?(goal || block)
+      check_passed goal, &block
     else
-      check_failed goal 
+      check_failed goal, &block
     end
   end
     
@@ -246,14 +262,18 @@ class Rubylog::Theory
   # debugging
   #
   #
-  def trace val=true
-    @trace=val
+  def trace val=true, &block
+    @trace=block || val
     @trace_levels = 0
   end
 
   def print_trace level, *args
     return unless @trace
-    puts "  "*@trace_levels + args.map{|a|a.to_s}.join(" ") if not args.empty?
+    if @trace.respond_to? :call
+      @trace.call @trace_levels, *args if not args.empty?
+    else
+      puts "  "*@trace_levels + args.map{|a|a.to_s}.join(" ") if not args.empty?
+    end
     @trace_levels += level
   end
 
@@ -262,7 +282,7 @@ class Rubylog::Theory
 
   def check_assertable predicate, head, body
     raise Rubylog::BuiltinPredicateError, head.desc.inspect, caller[2..-1] unless predicate.is_a? Rubylog::Predicate
-    raise Rubylog::DiscontiguousPredicateError, head.desc.inspect, caller[2..-1] if not predicate.empty? and predicate != @last_predicate and not predicate.discontiguous?
+    raise Rubylog::DiscontiguousPredicateError, head.desc.inspect, caller[2..-1] if mind_discontiguous? and not predicate.empty? and predicate != @last_predicate and not predicate.discontiguous?
   end
     
   def create_predicate fct, arity

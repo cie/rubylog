@@ -2,7 +2,7 @@ require "rubylog/builtins_for_callable"
 require "rubylog/builtins_for_clause"
 require "rubylog/builtins_for_term"
 require "rubylog/builtins_for_array"
-require "rubylog/nullary_builtins"
+require "rubylog/builtins_without_args"
 
 
 Rubylog.theory "Rubylog::Builtins", nil do
@@ -10,7 +10,7 @@ Rubylog.theory "Rubylog::Builtins", nil do
   include Rubylog::BuiltinsForClause
   include Rubylog::BuiltinsForTerm
   include Rubylog::BuiltinsForArray
-  include Rubylog::NullaryBuiltins
+  include Rubylog::BuiltinsWithoutArgs
 end
 
 

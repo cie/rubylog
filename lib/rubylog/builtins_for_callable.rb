@@ -1,5 +1,5 @@
 Rubylog.theory "Rubylog::BuiltinsForCallable", nil do
-  subject ::Rubylog::Callable
+  subject ::Rubylog::Callable, ::Rubylog::Clause, Symbol, Proc
 
   class << primitives
 
@@ -7,6 +7,7 @@ Rubylog.theory "Rubylog::BuiltinsForCallable", nil do
     def and a, b
       a.prove { b.prove { yield } }
     end
+
     alias & and
 
     # ;
@@ -14,6 +15,7 @@ Rubylog.theory "Rubylog::BuiltinsForCallable", nil do
       a.prove { yield }
       b.prove { yield }
     end
+
     alias | or
 
     # not '\+'
@@ -53,11 +55,6 @@ Rubylog.theory "Rubylog::BuiltinsForCallable", nil do
       yield 
     end
 
-    def all a
-      a.prove { }
-      yield
-    end
-
     def any a
       a.prove { yield; return }
     end
@@ -94,13 +91,6 @@ Rubylog.theory "Rubylog::BuiltinsForCallable", nil do
       end
     end
 
-    # findall
-    def solutions clause, var, list
-      l = []; clause.prove do
-        l << var.rubylog_dereference 
-      end
-      list.rubylog_unify(l){ yield }
-    end
   end
 
 end

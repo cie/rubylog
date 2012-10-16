@@ -25,12 +25,9 @@ require 'rubylog/primitives'
 require 'rubylog/predicate'
 require 'rubylog/theory'
 require 'rubylog/variable'
-
-# theories
-require 'rubylog/builtins'
-
-# 
 require 'rubylog/clause'
+
+# bindings
 require 'rubylog/array'
 require 'rubylog/symbol'
 require 'rubylog/proc'
@@ -38,4 +35,7 @@ require 'rubylog/object'
 require 'rubylog/class'
 require 'rubylog/method'
 require 'rubylog/kernel'
+
+# theories
+require 'rubylog/builtins'
 

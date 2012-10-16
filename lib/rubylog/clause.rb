@@ -79,7 +79,7 @@ module Rubylog
     include Rubylog::CompositeTerm
     def rubylog_clone &block
       block.call Clause.new @functor,
-        *@args.map{|a|a.rubylog_clone &block}
+        *@args.map{|a| a.rubylog_clone &block}
     end
 
     # Second-order functors (:is_false, :and, :or, :then)
@@ -108,6 +108,3 @@ module Rubylog
   end
 end
 
-Rubylog.theory "Rubylog::BuiltinsForClause" do
-  subject Rubylog::Clause
-end
