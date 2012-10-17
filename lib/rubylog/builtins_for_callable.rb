@@ -35,6 +35,10 @@ Rubylog.theory "Rubylog::BuiltinsForCallable", nil do
       yield
     end
 
+    def equiv a,b
+      all(a,b) { all(b,a) { yield } }
+    end
+
     def any a,b
       a.prove { b.prove { yield; return } }
     end

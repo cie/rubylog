@@ -199,10 +199,11 @@ class Rubylog::Theory
   end
 
   def check_passed goal
-    print "."
+    print ":) "
   end
 
   def check_failed goal
+    print ":S"
     raise Rubylog::CheckFailed, goal.inspect, caller[1..-1]
   end
 
