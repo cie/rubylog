@@ -88,12 +88,12 @@ module Rubylog
     include Rubylog::DSL::SecondOrderFunctors
 
     # convenience methods
-    def each_solution
-      goal = rubylog_compile_variables 
-      goal.variable_hashes_without_compile.each do |hash|
-        yield goal.rubylog_clone {|i| hash[i] || i }
-      end
-    end
+    #def each_solution
+      #goal = rubylog_compile_variables 
+      #goal.variable_hashes_without_compile.each do |hash|
+        #yield goal.rubylog_clone {|i| hash[i] || i }
+      #end
+    #end
 
     def variable_hashes
       rubylog_compile_variables.variable_hashes_without_compile

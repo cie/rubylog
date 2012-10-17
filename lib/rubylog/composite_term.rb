@@ -22,7 +22,16 @@ module Rubylog
 
     def rubylog_deep_dereference
       rubylog_clone do |i|
-        i.rubylog_deep_dereference
+        case i
+        when self
+          i
+        when Rubylog::Variable
+          i.rubylog_deep_dereference
+        when Rubylog::CompositeTerm
+          i.rubylog_deep_dereference
+        else
+          i
+        end
       end
     end
 

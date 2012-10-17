@@ -9,6 +9,13 @@ Rubylog.theory "Rubylog::BuiltinsForTerm", nil do
       a.rubylog_unify(b) { yield }
     end
 
+    def is_not a,b
+      a = a.rubylog_resolve_function
+      b = b.rubylog_resolve_function
+      a.rubylog_unify(b) { return }
+      yield
+    end
+
     # member
     def in a,b
       a = a.rubylog_resolve_function

@@ -3,26 +3,14 @@ require 'rubylog'
 require 'rubylog/because'
 
 Rubylog.theory "DrinkingTheory" do
-  include Rubylog::Because
   subject Symbol
-  implicit
-  discontiguous [:likes,2]
-  predicate [:thirsty, 1]
+  functor :likes, :has, :thirsty
+  check_discontiguous false
 
-  :john.likes! :water
-  :john.favorite! :beer
+  :john.likes! :beer 
   :john.has! :milk
-  :john.has! :beer
 
-  A.likes(B).if A.favorite(B)
-  A.drinks(B).if A.likes(B).or(A.thirsty).and A.has(B)
-
-  implicit false
-
-  trace
-  p explain :john.drinks(:water).false
-
-  #:john.drinks(:water).because(X).solve{ p X }
-  #:john.drinks(:beer).because(X).solve{ p X }
+  A.drinks(B).if A.likes(B).and A.has(B)
+  A.drinks(B).if A.thirsty.and A.has(B)
 end
 

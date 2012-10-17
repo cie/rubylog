@@ -12,19 +12,28 @@ module Rubylog
   #     theory "MyTheory" do
   #       # ...
   #     end
-  def self.theory full_name, *args, &block
-    names = full_name.to_s.split("::")
-    parent_names, name = names[0...-1], names[-1]
-    parent = parent_names.inject(block.binding.eval("Module.nesting[0]") || Object)  {|a,b| a.const_get b}
-
-    if not parent.const_defined?(name)
-      theory = Rubylog::Theory.new *args
-      parent.const_set name, theory
+  def self.theory full_name=nil, *args, &block
+    case full_name
+    when nil
+      theory = Rubylog::Theory.new
+    when Rubylog::Theory
+      theory=full_name
     else
-      theory = parent.const_get name
-      raise TypeError, "#{name} is not a theory" unless theory.is_a? Rubylog::Theory
+      names = full_name.to_s.split("::")
+      parent_names, name = names[0...-1], names[-1]
+      parent = parent_names.inject(block.binding.eval("Module.nesting[0]") || Object)  {|a,b| a.const_get b}
+
+      if not parent.const_defined?(name)
+        theory = Rubylog::Theory.new *args
+        parent.const_set name, theory
+      else
+        theory = parent.const_get name
+        raise TypeError, "#{name} is not a theory" unless theory.is_a? Rubylog::Theory
+      end
     end
+
     theory.amend &block
+    theory
   end
 
 end
@@ -37,7 +46,7 @@ class Rubylog::Theory
     # different semantics in functions/callable procs than otherwise
     # @see ProcMethodAdditions#call_with_rubylog_variables
     if vars = Thread.current[:rubylog_current_variables] and var = vars.find{|v|v.name == c}
-      var.rubylog_dereference
+      var.rubylog_deep_dereference
     else
       Rubylog::Variable.new c
     end
@@ -74,7 +83,7 @@ class Rubylog::Theory
     @subjects = []
     @trace = false
     @implicit = false
-    @mind_discontiguous = true
+    @check_discontiguous = true
     @included_theories = []
   end
 
@@ -130,15 +139,13 @@ class Rubylog::Theory
     end
   end
 
-  def mind_discontiguous value = true
-    @mind_discontiguous = value
+  def check_discontiguous value = true
+    @check_discontiguous = value
   end
 
-  def mind_discontiguous?
-    @mind_discontiguous
+  def check_discontiguous?
+    @check_discontiguous
   end
-
-  alias dynamic discontiguous
 
   def functor *functors
     functors.each do |fct|
@@ -196,7 +203,7 @@ class Rubylog::Theory
   end
 
   def check_failed goal
-    raise Rubylog::CheckFailed, goal.inspect
+    raise Rubylog::CheckFailed, goal.inspect, caller[1..-1]
   end
 
   def check goal=nil, &block
@@ -282,7 +289,7 @@ class Rubylog::Theory
 
   def check_assertable predicate, head, body
     raise Rubylog::BuiltinPredicateError, head.desc.inspect, caller[2..-1] unless predicate.is_a? Rubylog::Predicate
-    raise Rubylog::DiscontiguousPredicateError, head.desc.inspect, caller[2..-1] if mind_discontiguous? and not predicate.empty? and predicate != @last_predicate and not predicate.discontiguous?
+    raise Rubylog::DiscontiguousPredicateError, head.desc.inspect, caller[2..-1] if check_discontiguous? and not predicate.empty? and predicate != @last_predicate and not predicate.discontiguous?
   end
     
   def create_predicate fct, arity

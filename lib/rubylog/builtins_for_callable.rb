@@ -69,6 +69,24 @@ Rubylog.theory "Rubylog::BuiltinsForCallable", nil do
     end
     
     alias none false
+
+    def fact head
+      head = head.rubylog_dereference
+      raise Rubylog::InstantiationError, head if head.is_a? Rubylog::Variable
+      return yield if head == :true
+      return unless head.respond_to? :functor
+      predicate = Rubylog.current_theory[head.functor][head.arity]
+      if predicate.is_a? Rubylog::Predicate
+        predicate.each do |rule|
+          if rule[1] == :true
+            rule = rule.rubylog_compile_variables
+            rule[0].args.rubylog_unify head.args do
+              yield
+            end
+          end
+        end
+      end
+    end
     
     def follows_from head, body
       head = head.rubylog_dereference
@@ -77,16 +95,14 @@ Rubylog.theory "Rubylog::BuiltinsForCallable", nil do
       predicate = Rubylog.current_theory[head.functor][head.arity]
       if predicate.is_a? Rubylog::Predicate
         predicate.each do |rule|
-          rule = rule.rubylog_compile_variables
-          rule[0].args.rubylog_unify head.args do
-            rule[1].rubylog_unify body do
-              yield
+          unless rule[1]==:true # do not succeed for facts
+            rule = rule.rubylog_compile_variables
+            rule[0].args.rubylog_unify head.args do
+              rule[1].rubylog_unify body do
+                yield
+              end
             end
           end
-        end
-      else
-        body.rubylog_unify predicate do
-          yield
         end
       end
     end

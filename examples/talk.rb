@@ -27,21 +27,50 @@ theory :Talk do
 
   puts "What do we have to do?"
   puts "We".have(to: X).each{puts X}.nonzero? ? "" : "I don't know"
+
+  #X.can(DoSthg(*A, with:T)).if X.has(T).and T.can DoSthg(*A)
 end
 
 
 
 __END__
 
+> We can convert Latex to Pdf with Pdflatex.
+   
+> We have to convert Latex to Docbook.
+
+> Panadoc can convert Latex to Docbook.
+
+> Can we convert Latex to Docbook?
+No.
+
+> How can we convert Latex to Pdf?
 We can convert Latex to Pdf with Pdflatex.
 
+> What do we have to do?
 We have to convert Latex to Docbook.
 
-Panadoc can convert Latex to Pdf.
+> If we have :x and :x can :y then we can :y with :x.
+ 
+> We have Panadoc.
 
-Can we convert Latex to Docbook?
-How can we convert Latex to Pdf?
-With what can we convert Animated pdf to M4v?
-What do we have to do?
+> Can we convert Latex to Docbook?
+Yes, we can convert Latex to Docbook with Panadoc.
+
+> Can we do all we have to do?
+Yes.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

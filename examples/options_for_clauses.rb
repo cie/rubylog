@@ -34,6 +34,18 @@ theory "Hashes" do
     print "F"
   end
 
+  functor_for Hash, :is
+
+  check({}.is({}))
+  check({x:12}.is({x:12}))
+  check({x:12}.is({y:4}))
+  check({x:12}.is({x:4}).false)
+  check(H.is(x:3).and {H == {x:3}})
+  check(H.is(x:L).and(L.is 5).and {H == {x:5}})
+  check(H.is(x:3).and H.is(k:L).and L.is(4).and {H == {x:3, k:4}})
+
+
+
   check A.likes(B, with: C).is A.likes(B, with: C)
   check A.likes(B, with: C).is A.likes(B, with: D)
   check A.likes(B, with: :milk).is A.likes(B)
@@ -41,6 +53,7 @@ theory "Hashes" do
   check A.likes(B, with: :milk).is A.likes(B, with: D).and D.is :milk
   check (A.likes(B, with: :milk).is A.likes(B, with: :sugar)).false
   check A.likes(B, with: K).is(A.likes(C, with: L)).and K.is(3).and {L == 3}
+
 
 
 
