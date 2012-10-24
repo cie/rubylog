@@ -5,11 +5,10 @@ theory do
   implicit
 
   :subject.improvement!
-  :ANY.improvement!
   :namings.improvement!
-  :reflection.improvement!
   :enumerators.improvement!
   :array_interpolation.improvement!
+  :reflection.improvement!
 
   :proof.showcase!
   :means.showcase!

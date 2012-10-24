@@ -11,10 +11,6 @@ theory "MyDCG" do
   :greeting.means! ["Hello"]
   :greeting.means! ["Good evening"]
   :punctuation.means! ["."].or ["?"].or ["!"]
-  trace do |l, c, v|
-    print "  "*l + "#{c} #{v}"
-    gets
-  end
 end
 
 p MyDCG.eval {L.matches(:greeting).collect{L} }

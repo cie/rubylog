@@ -22,15 +22,10 @@ module Rubylog
 
     def rubylog_deep_dereference
       rubylog_clone do |i|
-        case i
-        when self
+        if i.equal? self
           i
-        when Rubylog::Variable
-          i.rubylog_deep_dereference
-        when Rubylog::CompositeTerm
-          i.rubylog_deep_dereference
         else
-          i
+          i.rubylog_deep_dereference
         end
       end
     end

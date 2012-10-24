@@ -42,8 +42,14 @@ DrinkingTheory = theory do
 
   check :true.proof :true
 
-  check :john.drinks(:milk).proof(:john.drinks(:milk).because :john.thirsty.and :john.has(:milk))
-  check :john.drinks(:milk).proof(:john.drinks(:milk).because :john.likes(:milk).and :john.has(:milk))
-  check :john.drinks(:water).proof(:john.drinks(:water).because :john.thirsty.and :john.has(:water))
+  check :john.drinks(:milk).proof(
+    :john.drinks(:milk).because :john.thirsty.and :john.has(:milk)
+  )
+  check :john.drinks(:milk).proof(
+    :john.drinks(:milk).because :john.likes(:milk).and :john.has(:milk)
+  )
+  check :john.drinks(:water).proof(
+    :john.drinks(:water).because :john.thirsty.and :john.has(:water)
+  )
 end
 
