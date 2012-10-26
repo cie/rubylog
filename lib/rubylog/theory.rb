@@ -85,6 +85,7 @@ class Rubylog::Theory
     @implicit = false
     @check_discontiguous = true
     @included_theories = []
+    @check_number = 0
   end
 
   def primitives
@@ -199,12 +200,15 @@ class Rubylog::Theory
   end
 
   def check_passed goal
-    print ":) "
+    print "#{@check_number += 1} :)\t"
+    puts if @check_number % 10 == 0
   end
 
   def check_failed goal
-    print ":S"
-    raise Rubylog::CheckFailed, goal.inspect, caller[1..-1]
+    puts "#{@check_number += 1} :/\t"
+    puts "Check failed: #{goal.inspect}"
+    puts caller[1]
+    #raise Rubylog::CheckFailed, goal.inspect, caller[1..-1]
   end
 
   def check goal=nil, &block
@@ -280,7 +284,7 @@ class Rubylog::Theory
     if @trace.respond_to? :call
       @trace.call @trace_levels, *args if not args.empty?
     else
-      puts "  "*@trace_levels + args.map{|a|a.to_s}.join(" ") if not args.empty?
+      puts "  "*@trace_levels + args.map{|a|a.rubylog_deep_dereference.to_s}.join(" ") if not args.empty?
     end
     @trace_levels += level
   end

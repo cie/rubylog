@@ -1,5 +1,6 @@
 $:.unshift File.dirname(__FILE__)+"/../lib"
 require 'rubylog'
+require "rubylog/builtins/reflection"
 
 ProofTheory = theory do
   subject Symbol, Rubylog::Clause
@@ -16,8 +17,6 @@ ProofTheory = theory do
   X.proof(X.because(Z)).if X.follows_from(Y).and Y.proof(Z) 
   X.and(Y).proof(A.and(B)).if X.proof(A).and Y.proof(B)
 end
-
-
 
 DrinkingTheory = theory do
   subject Symbol
@@ -52,4 +51,5 @@ DrinkingTheory = theory do
     :john.drinks(:water).because :john.thirsty.and :john.has(:water)
   )
 end
+
 

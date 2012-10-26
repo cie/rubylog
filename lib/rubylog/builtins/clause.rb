@@ -1,4 +1,4 @@
-Rubylog.theory "Rubylog::BuiltinsForClause", nil do
+Rubylog.theory "Rubylog::ClauseBuiltins", nil do
   subject Rubylog::Clause
 
   class << primitives

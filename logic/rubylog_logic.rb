@@ -2,7 +2,7 @@ $:.unshift File.expand_path __FILE__+"/../../lib"
 require 'rubylog'
 
 theory "RubylogLogic" do
-  include Rubylog::Because
+  include Rubylog::ProofBuiltins
   subject Symbol
   implicit
 

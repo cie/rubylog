@@ -20,15 +20,10 @@ module Rubylog
       end
     end
 
-    def rubylog_deep_dereference
-      rubylog_clone do |i|
-        if i.equal? self
-          i
-        else
-          i.rubylog_deep_dereference
-        end
-      end
-    end
+    #should return a copy with rubylog_deep_dereference called for sub-terms
+    #def rubylog_deep_dereference
+      #self.class.new attr1.rubylog_deep_dereference
+    #end
 
     attr_reader :rubylog_variables
 

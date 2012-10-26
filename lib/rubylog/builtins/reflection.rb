@@ -1,78 +1,16 @@
-Rubylog.theory "Rubylog::BuiltinsForCallable", nil do
-  subject ::Rubylog::Callable, ::Rubylog::Clause, Symbol, Proc
-
+Rubylog.theory "Rubylog::ReflectionBuiltins", nil do
   class << primitives
-
-    # ','
-    def and a, b
-      a.prove { b.prove { yield } }
+    def predicate l
+      _functor = Rubylog::Variable.new(:_functor)
+      _arity = Rubylog::Variable.new(:_arity)
+      l.rubylog_unify [f, a] do
+        if f = _functor.value
+          # TODO
+        else
+          # TODO
+        end
+      end
     end
-
-    alias & and
-
-    # ;
-    def or a, b
-      a.prove { yield }
-      b.prove { yield }
-    end
-
-    alias | or
-
-    # not '\+'
-    def false a
-      a.prove { return }
-      yield
-    end
-
-    # ruby iterator predicate allegories
-
-    def all a,b
-      a.prove {
-        stands = false; 
-        b.prove { stands = true; break } 
-        return if not stands
-      }
-      yield
-    end
-
-    def equiv a,b
-      all(a,b) { all(b,a) { yield } }
-    end
-
-    def any a,b
-      a.prove { b.prove { yield; return } }
-    end
-
-    def one a,b
-      stands = false
-      a.prove { 
-        b.prove {
-          return if stands
-          stands = true
-        } 
-      }
-      yield if stands
-    end
-
-    def none a,b
-      a.prove { b.prove { return } }
-      yield 
-    end
-
-    def any a
-      a.prove { yield; return }
-    end
-
-    def one a
-      stands = false
-      a.prove { 
-        return if stands
-        stands = true
-      }
-      yield if stands
-    end
-    
-    alias none false
 
     def fact head
       head = head.rubylog_dereference
@@ -110,8 +48,9 @@ Rubylog.theory "Rubylog::BuiltinsForCallable", nil do
         end
       end
     end
-
   end
-
 end
 
+Rubylog.theory "Rubylog::Builtins" do
+  include Rubylog::ReflectionBuiltins
+end

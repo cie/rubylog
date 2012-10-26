@@ -21,6 +21,10 @@ class Array
   def rubylog_clone &block
     block[map{|t|t.rubylog_clone &block}]
   end
+
+  def rubylog_deep_dereference 
+    map{|t|t.rubylog_deep_dereference}
+  end
   
   include Rubylog::DSL::SecondOrderFunctors
 end

@@ -1,16 +1,16 @@
-require "rubylog/builtins_for_callable"
-require "rubylog/builtins_for_clause"
-require "rubylog/builtins_for_term"
-require "rubylog/builtins_for_array"
-require "rubylog/builtins_without_args"
+require "rubylog/builtins/callable"
+require "rubylog/builtins/clause"
+require "rubylog/builtins/term"
+require "rubylog/builtins/array"
+require "rubylog/builtins/nullary"
 
 
 Rubylog.theory "Rubylog::Builtins", nil do
-  include Rubylog::BuiltinsForCallable
-  include Rubylog::BuiltinsForClause
-  include Rubylog::BuiltinsForTerm
-  include Rubylog::BuiltinsForArray
-  include Rubylog::BuiltinsWithoutArgs
+  include Rubylog::CallableBuiltins
+  include Rubylog::ClauseBuiltins
+  include Rubylog::TermBuiltins
+  include Rubylog::ArrayBuiltins
+  include Rubylog::NullaryBuiltins
 end
 
 

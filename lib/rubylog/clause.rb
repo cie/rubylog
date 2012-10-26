@@ -83,6 +83,10 @@ module Rubylog
       block.call Clause.new @functor,
         *@args.map{|a| a.rubylog_clone &block}
     end
+    def rubylog_deep_dereference
+      Clause.new @functor.rubylog_deep_dereference,
+        *@args.rubylog_deep_dereference
+    end
 
     # Second-order functors (:is_false, :and, :or, :then)
     include Rubylog::DSL::SecondOrderFunctors

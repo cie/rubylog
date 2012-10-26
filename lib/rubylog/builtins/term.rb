@@ -1,4 +1,4 @@
-Rubylog.theory "Rubylog::BuiltinsForTerm", nil do
+Rubylog.theory "Rubylog::TermBuiltins", nil do
   subject ::Rubylog::Term
 
   class << primitives

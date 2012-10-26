@@ -1,9 +1,47 @@
 $:.unshift File.expand_path __FILE__+"/../../lib"
 require "rubylog"
-require "rubylog/because"
+require "rubylog/builtins/proof"
+
+DrinkingTheory = theory do
+  subject Symbol
+  functor :likes, :has, :thirsty, :drinks
+  #  include ProofTheory
+  include Rubylog::ProofBuiltins
+
+  :john.thirsty!
+  :john.likes! :beer 
+  :john.likes! :milk
+  :john.has! :milk
+  :john.has! :water
+
+  A.drinks(D).if A.likes(D).and A.has(D)
+  A.drinks(D).if A.thirsty.and A.has(D)
+
+  check :john.drinks(:milk)
+  check :john.drinks(:water)
+
+  check :john.drinks(:milk).proof(ANY)
+  check :john.drinks(:water).proof(ANY)
+
+
+  check :true.proof :true
+
+
+  check :john.drinks(:milk).proof(
+    :john.drinks(:milk).because :john.thirsty.and :john.has(:milk)
+  )
+  check :john.drinks(:milk).proof(
+    :john.drinks(:milk).because :john.likes(:milk).and :john.has(:milk)
+  )
+  check :john.drinks(:water).proof(
+    :john.drinks(:water).because :john.thirsty.and :john.has(:water)
+  )
+end
+
+__END__
 
 theory "BecauseLogic" do
-  include Rubylog::Because
+  include Rubylog::ProofBuiltins
 
   (:true.because :true).req!
   (:fail.because ANY).false.req!

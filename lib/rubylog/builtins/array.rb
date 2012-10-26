@@ -1,4 +1,4 @@
-Rubylog.theory "Rubylog::BuiltinsForArray", nil do
+Rubylog.theory "Rubylog::ArrayBuiltins", nil do
   subject ::Array
 
   class << primitives
