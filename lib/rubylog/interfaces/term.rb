@@ -12,6 +12,10 @@ module Rubylog
       self
     end
 
+    def rubylog_variables_hash
+      vars = rubylog_variables
+      Hash[vars.zip(vars.map{|v|v.value})]
+    end
 
   end
 

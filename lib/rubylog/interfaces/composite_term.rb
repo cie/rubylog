@@ -1,5 +1,7 @@
 module Rubylog
   module CompositeTerm
+
+
     def rubylog_compile_variables 
       vars = []; vars_by_name = {}
       rubylog_clone do |i|

@@ -9,7 +9,7 @@ module Rubylog
           head, body = rule[0], rule[1]
           head.args.rubylog_unify(args) { 
             begin
-              Rubylog.current_theory.print_trace 1, head, InternalHelpers.vars_hash_of(head)
+              Rubylog.current_theory.print_trace 1, head, head.rubylog_variables_hash
               body.prove { 
                 yield 
               }

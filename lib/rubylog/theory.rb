@@ -42,15 +42,7 @@ end
 class Rubylog::Theory
 
   
-  def self.const_missing c # :nodoc:
-    # different semantics in functions/callable procs than otherwise
-    # @see ProcMethodAdditions#call_with_rubylog_variables
-    if vars = Thread.current[:rubylog_current_variables] and var = vars.find{|v|v.name == c}
-      var.rubylog_deep_dereference
-    else
-      Rubylog::Variable.new c
-    end
-  end
+  include Rubylog::DSL::Variables
   
   # Call the given block with variables automatically resolved
   def self.with_vars vars
