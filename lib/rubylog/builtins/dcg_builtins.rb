@@ -1,6 +1,6 @@
-theory "Rubylog::DCG", nil do
+theory "Rubylog::DCGBuiltins", nil do
   functor :means
-  subject Rubylog::Clause, Symbol
+  subject Rubylog::Structure, Symbol
   functor_for Array, :and, :or, :matches
   
   L.matches(C).if L.matches(C, [])
@@ -13,3 +13,6 @@ theory "Rubylog::DCG", nil do
 
 end
 
+Rubylog.theory "Rubylog::DefaultBuiltins" do
+  include Rubylog::DCGBuiltins
+end

@@ -3,7 +3,7 @@ require 'rubylog'
 require "rubylog/builtins/reflection"
 
 ProofTheory = theory do
-  subject Symbol, Rubylog::Clause
+  subject Symbol, Rubylog::Structure
   functor :true
 
   :true.true!

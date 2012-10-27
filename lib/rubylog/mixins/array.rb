@@ -26,5 +26,4 @@ class Array
     map{|t|t.rubylog_deep_dereference}
   end
   
-  include Rubylog::DSL::SecondOrderFunctors
 end

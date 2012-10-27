@@ -2,7 +2,7 @@ $:.unshift File.dirname(__FILE__)+"/../lib"
 require "rubylog"
 
 theory "Trees" do
-  subject Integer, Rubylog::Clause
+  subject Integer, Rubylog::Structure
   functor :ch, :pre, :ino
 
   PRE = [1,2,3,4,5,6,7,8,9,10,11]

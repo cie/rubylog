@@ -17,3 +17,6 @@ Rubylog.theory "Rubylog::NullaryBuiltins", nil do
   end
 end
 
+Rubylog.theory "Rubylog::DefaultBuiltins" do
+  include Rubylog::NullaryBuiltins
+end

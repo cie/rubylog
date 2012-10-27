@@ -1,5 +1,5 @@
 module Rubylog
-  class Clause
+  class Structure
 
     # data structure
     attr_reader :functor, :args
@@ -15,7 +15,7 @@ module Rubylog
     end
 
     def == other
-      other.instance_of? Clause and
+      other.instance_of? Structure and
       @functor == other.functor and @args == other.args
     end
     alias eql? ==
@@ -80,16 +80,14 @@ module Rubylog
     # CompositeTerm methods
     include Rubylog::CompositeTerm
     def rubylog_clone &block
-      block.call Clause.new @functor,
+      block.call Structure.new @functor,
         *@args.map{|a| a.rubylog_clone &block}
     end
     def rubylog_deep_dereference
-      Clause.new @functor.rubylog_deep_dereference,
+      Structure.new @functor.rubylog_deep_dereference,
         *@args.rubylog_deep_dereference
     end
 
-    # Second-order functors (:is_false, :and, :or, :then)
-    include Rubylog::DSL::SecondOrderFunctors
 
     # convenience methods
     #def each_solution

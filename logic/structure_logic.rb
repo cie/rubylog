@@ -15,24 +15,24 @@ Rubylog.theory "RubylogLogic" do
 
 
   :Theory.clazz!
-  :Clause.clazz!
+  :Structure.clazz!
   :Predicate.clazz!
   :Variable.clazz!
 
   :Array.implements! :Unifiable
   :Array.implements! :CompositeTerm
   :Array.supports! :SecondOrderFunctors
-  :Clause.implements! :Assertable
-  :Clause.implements! :Callable
-  :Clause.implements! :CompositeTerm
-  :Clause.implements! :Unifiable
+  :Structure.implements! :Assertable
+  :Structure.implements! :Callable
+  :Structure.implements! :CompositeTerm
+  :Structure.implements! :Unifiable
   :Method.implements! :Callable
   :Method.implements! :CompositeTerm
   :Object.implements! :Term
   :Object.implements! :Unifiable
   :Object.supports! :FirstOrderFunctors
   :Proc.implements(X).if :Method.implements(X)
-  :Symbol.implements(X).if :Clause.implements(X)
+  :Symbol.implements(X).if :Structure.implements(X)
   :Variable.implements! :Callable
   :Variable.implements! :Unifiable
 

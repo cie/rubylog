@@ -1,4 +1,3 @@
 class Method
-  include Rubylog::ProcMethodAdditions
-  include Rubylog::DSL::SecondOrderFunctors
+  include Rubylog::Predicate
 end

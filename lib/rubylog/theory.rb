@@ -57,7 +57,7 @@ class Rubylog::Theory
 
   attr_reader :database, :public_interface, :included_theories
 
-  def initialize base=Rubylog::Builtins, &block
+  def initialize base=Rubylog::DefaultBuiltins, &block
     clear
     include base if base
 
@@ -152,7 +152,7 @@ class Rubylog::Theory
   def prefix_functor *functors
     functors.each do |fct|
       define_singleton_method fct do |*args|
-        Rubylog::Clause.new fct, *args
+        Rubylog::Structure.new fct, *args
       end
     end
   end
@@ -237,7 +237,7 @@ class Rubylog::Theory
     else
       predicate = create_predicate fct, arity
     end
-    predicate << Rubylog::Clause.new(:-, head, body)
+    predicate << Rubylog::Structure.new(:-, head, body)
     @last_predicate = predicate
   end
 

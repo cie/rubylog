@@ -42,4 +42,4 @@ X.drinks(D).if X.likes(D)
      none
 
      # Reflection
-     list clause follows_from
+     list structure follows_from

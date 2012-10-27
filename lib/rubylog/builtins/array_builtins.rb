@@ -46,3 +46,6 @@ Rubylog.theory "Rubylog::ArrayBuiltins", nil do
 
 end
 
+Rubylog.theory "Rubylog::DefaultBuiltins" do
+  include Rubylog::ArrayBuiltins
+end

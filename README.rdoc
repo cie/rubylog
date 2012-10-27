@@ -21,7 +21,7 @@ Rubylog is similar to Prolog, but with a few differences.
 
 In rubylog, you can use any object as 
 
-A Rubylog clauses swap the first argument with the functor. They can be created by calling a method. You have to declare the functor first:
+A Rubylog structures swap the first argument with the functor. They can be created by calling a method. You have to declare the functor first:
   functor :likes
   :john.likes :beer       # likes(john,beer) in Prolog
 
@@ -46,7 +46,7 @@ Queries can be proved a few different ways:
   true? (:john.drinks :beer)  # => true
   prove (:john.drinks :beer)  # => true
 
-Solutions can be enumerated (Clause < Enumerable)
+Solutions can be enumerated (Structure < Enumerable)
   (:john.drinks X).each {p X}      # outputs :beer
   (:john.drinks X).map{X}          # => [:beer]
   (:john.drinks X).count           # => 1

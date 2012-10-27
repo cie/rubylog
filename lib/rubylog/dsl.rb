@@ -22,20 +22,20 @@ module Rubylog::DSL
     @functor_modules[f] ||= Module.new do
       define_method f do |*args, &block|
         args << block if block
-        Rubylog::Clause.new f, self, *args 
+        Rubylog::Structure.new f, self, *args 
       end
 
       f_bang =  :"#{f}!"
       define_method f_bang do |*args, &block|
         args << block if block
-        Rubylog.current_theory.assert Rubylog::Clause.new(f, self, *args), :true
+        Rubylog.current_theory.assert Rubylog::Structure.new(f, self, *args), :true
         self
       end
 
       f_qmark = :"#{f}?"
       define_method f_qmark do |*args, &block|
         args << block if block
-        Rubylog.current_theory.true? Rubylog::Clause.new(f, self, *args)
+        Rubylog.current_theory.true? Rubylog::Structure.new(f, self, *args)
       end
     end
   end

@@ -1,4 +1,4 @@
-class Rubylog::Primitives
+class Rubylog::DSL::Primitives
   def initialize theory
     @theory = theory
   end

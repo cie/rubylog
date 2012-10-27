@@ -5,17 +5,15 @@
 require 'set'
 
 # interfaces
-require 'rubylog/term'
-require 'rubylog/callable'
-require 'rubylog/assertable'
-require 'rubylog/unifiable'
-require 'rubylog/composite_term'
+require 'rubylog/interfaces/term'
+require 'rubylog/interfaces/callable'
+require 'rubylog/interfaces/assertable'
+require 'rubylog/interfaces/unifiable'
+require 'rubylog/interfaces/composite_term'
 
 # helpers
 require 'rubylog/dsl'
-require 'rubylog/dsl/first_order_functors'
-require 'rubylog/dsl/global_functors'
-require 'rubylog/dsl/second_order_functors'
+require 'rubylog/dsl/variables'
 require 'rubylog/proc_method_additions'
 require 'rubylog/internal_helpers'
 
@@ -25,7 +23,7 @@ require 'rubylog/primitives'
 require 'rubylog/predicate'
 require 'rubylog/theory'
 require 'rubylog/variable'
-require 'rubylog/clause'
+require 'rubylog/structure'
 
 # bindings
 require 'rubylog/array'

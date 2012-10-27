@@ -38,7 +38,7 @@ class << MechanikaTheory = Rubylog::Theory.new!
     :mennyiseg,
     :during,
     :mertekegysege
-  Rubylog::Clause.rubylog_functor\
+  Rubylog::Structure.rubylog_functor\
     :learn,
     :all_learn,
     :see,
@@ -129,7 +129,7 @@ class << MechanikaTheory = Rubylog::Theory.new!
   :Bay_Zoltan.egy!(:fizikus).elt!([1900,1992]).javasolta!( :m.def("A vákumban terjedő fénysebesség 1/299792458 s alatti útja").during! [1983,ANY] )
 
   Symbol.rubylog_functor :per
-  Rubylog::Clause.rubylog_functor :per
+  Rubylog::Structure.rubylog_functor :per
   MechanikaTheory.discontinuous [:per,3]
 
   :km.per! :m, 1000
@@ -156,7 +156,7 @@ class << MechanikaTheory = Rubylog::Theory.new!
   Symbol.rubylog_functor :mero_eszkoz, :tavolsaga, :magassaga, :atmeroje,
     :hossza, :vastagsaga, :mero_modszer, :sugara, :pontossaga
   Symbol.rubylog_functor :megmerte
-  Rubylog::Clause.rubylog_functor :using
+  Rubylog::Structure.rubylog_functor :using
   MechanikaTheory.discontinuous [:tavolsaga,3], [:magassaga,2], [:hossza,2],
     [:vastagsaga,2], [:atmeroje,2], [:sugara,2], [:megmerte,2], [:pontossaga, 2]
 
@@ -279,7 +279,7 @@ class << MechanikaTheory = Rubylog::Theory.new!
   ]
 
   Numeric.rubylog_functor :pm
-  Rubylog::Clause.rubylog_functor :times, :gives
+  Rubylog::Structure.rubylog_functor :times, :gives
 
   100.0.pm(1.0).times(3.1415.pm(0.00005)).gives!((100 * 3.1415).pm(100*3.1415*(1.0/100.0 + 0.00005/3.1415)))
 
@@ -380,14 +380,14 @@ class << MechanikaTheory = Rubylog::Theory.new!
   def self.ask_something functor=nil, arity=nil, n=nil
     functor ||= MechanikaTheory.database.keys.choose
     arity  ||= MechanikaTheory.database[functor].keys.choose
-    clause = MechanikaTheory.database[functor][arity].choose
-    return unless clause.is_a? Rubylog::Clause
-    head = clause[0]
+    structure = MechanikaTheory.database[functor][arity].choose
+    return unless structure.is_a? Rubylog::Structure
+    head = structure[0]
     solution = head.solutions.choose
     n ||= (0..solution.arity-1).choose
     args = solution.args.dup
     args[n] = X
-    question = Rubylog::Clause.new functor, *args
+    question = Rubylog::Structure.new functor, *args
     ask question
   end   
 

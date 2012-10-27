@@ -1,5 +1,5 @@
 Rubylog.theory "Rubylog::CallableBuiltins", nil do
-  subject ::Rubylog::Callable, ::Rubylog::Clause, Symbol, Proc
+  subject ::Rubylog::Callable, ::Rubylog::Structure, Symbol, Proc
 
   class << primitives
     # ','
@@ -77,3 +77,6 @@ Rubylog.theory "Rubylog::CallableBuiltins", nil do
 
 end
 
+Rubylog.theory "Rubylog::DefaultBuiltins" do
+  include Rubylog::CallableBuiltins
+end

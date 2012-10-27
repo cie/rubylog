@@ -51,6 +51,6 @@ Rubylog.theory "Rubylog::ReflectionBuiltins", nil do
   end
 end
 
-Rubylog.theory "Rubylog::Builtins" do
+Rubylog.theory "Rubylog::DefaultBuiltins" do
   include Rubylog::ReflectionBuiltins
 end

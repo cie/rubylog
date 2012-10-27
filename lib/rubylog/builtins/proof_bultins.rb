@@ -2,7 +2,7 @@ require "rubylog/builtins/reflection"
 
 Rubylog.theory "Rubylog::ProofBuiltins", nil do
   functor :because, :proof
-  subject Rubylog::Callable, Rubylog::Clause, Symbol
+  subject Rubylog::Callable, Rubylog::Structure, Symbol
 
   A.false.false.proof(P).if A.proof(P)
 
@@ -20,3 +20,6 @@ Rubylog.theory "Rubylog::ProofBuiltins", nil do
   
 end
 
+Rubylog.theory "Rubylog::DefaultBuiltins" do
+  include Rubylog::ProofBuiltins
+end

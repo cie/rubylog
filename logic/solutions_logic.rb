@@ -20,7 +20,7 @@ Rubylog.theory "SolutionsLogic" do
     specify :true
   end
   begin
-    Rubylog::Clause.new(:solutions, 4, X, S).solve 
+    Rubylog::Structure.new(:solutions, 4, X, S).solve 
     specify :fail 
   rescue(NoMethodError)
     specify :true

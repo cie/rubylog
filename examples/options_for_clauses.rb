@@ -1,20 +1,20 @@
 $:.unshift File.dirname(__FILE__)+"/../lib"
 require "rubylog"
 
-# Options for clauses
+# Options for structures
 # 
-# This allows us to add different options to clauses:
+# This allows us to add different options to structures:
 #
 # :john.likes! :beer, with: :lemon
 # :john.likes? :beer                 #=> true
 # :john.likes? :beer, with: :snacks  #=> false
 #
-# A clause has
+# A structure has
 #   - a functor
 #   - an Array of arguments
 #   - a Hash of options
 #
-# A clause unifies with another iff
+# A structure unifies with another iff
 #   - its functor unifies with the other's AND
 #   - its array of arguments unifies with the other's AND
 #   - its hash of options unifies with the other's
@@ -27,7 +27,7 @@ require "rubylog"
 #   
 
 theory "Hashes" do
-  subject Symbol, Rubylog::Clause
+  subject Symbol, Rubylog::Structure
   functor :likes
 
   def check_failed *args
