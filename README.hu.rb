@@ -43,3 +43,16 @@ X.drinks(D).if X.likes(D)
 
      # Reflection
      list structure follows_from
+
+
+# Azért nem vezettünk be
+     {a:b}.is {a}
+     {}.isnt {a:b}
+# -t, mert akkor nem lenne kummutatív az unifikáció, és az egyáltalán nem POLA.
+# Azért nem vezettünk be
+     {a:b}.is {}
+# -t, mert az nagyon bonyolult, és nem POLA. Ezért marad
+     {a:b}.is {a:b}
+# és lehet
+     {a:b}.merge!(X)
+# akár.
