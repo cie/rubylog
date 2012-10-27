@@ -1,5 +1,6 @@
 $:.unshift File.dirname(__FILE__)+"/../lib"
 require "rubylog"
+__END__
 
 theory "SplitsToLogic" do
   check [].splits_to [],[]

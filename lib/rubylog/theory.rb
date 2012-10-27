@@ -69,7 +69,7 @@ class Rubylog::Theory
   # Clear all data in the theory and bring it to its initial state.
   def clear
     @database = Hash.new{|h,k| h[k] = {} }
-    @primitives = Rubylog::Primitives.new self
+    @primitives = Rubylog::DSL::Primitives.new self
     @variable_bindings = []
     @public_interface = Module.new
     @subjects = []
@@ -119,16 +119,17 @@ class Rubylog::Theory
 
   # directives
   #
-  def predicate *descs
-    descs.each do |desc|
-      create_predicate *desc
+  def predicate *indicators
+    indicators.each do |indicator|
+      check_indicator indicator
+      create_procedure *indicator
     end
   end
 
-  def discontiguous *descs
-    descs.each do |desc|
-      raise ArgumentError, "#{desc.inspect} should be a predicate indicator" unless desc.is_a? Array
-      create_predicate(*desc).discontiguous!
+  def discontiguous *indicators
+    indicators.each do |indicator|
+      check_indicator indicator
+      create_procedure(*indicator).discontiguous!
     end
   end
 
@@ -163,7 +164,7 @@ class Rubylog::Theory
     end
   end
 
-  def private *descs
+  def private *indicators
   end
 
   def subject *subjects
@@ -235,9 +236,9 @@ class Rubylog::Theory
     if predicate
       check_assertable predicate, head, body
     else
-      predicate = create_predicate fct, arity
+      predicate = create_procedure fct, arity
     end
-    predicate << Rubylog::Structure.new(:-, head, body)
+    predicate.assertz Rubylog::Structure.new(:-, head, body)
     @last_predicate = predicate
   end
 
@@ -285,13 +286,13 @@ class Rubylog::Theory
 
 
   def check_assertable predicate, head, body
-    raise Rubylog::BuiltinPredicateError, head.desc.inspect, caller[2..-1] unless predicate.is_a? Rubylog::Predicate
-    raise Rubylog::DiscontiguousPredicateError, head.desc.inspect, caller[2..-1] if check_discontiguous? and not predicate.empty? and predicate != @last_predicate and not predicate.discontiguous?
+    raise Rubylog::NonAssertableError, head.indicator.inspect, caller[2..-1] unless predicate.respond_to? :assertz
+    raise Rubylog::DiscontiguousPredicateError, head.indicator.inspect, caller[2..-1] if check_discontiguous? and not predicate.empty? and predicate != @last_predicate and not predicate.discontiguous?
   end
     
-  def create_predicate fct, arity
+  def create_procedure fct, arity
     functor fct
-    database[fct][arity] = Rubylog::Predicate.new
+    database[fct][arity] = Rubylog::SimpleProcedure.new
   end
 
   def start_implicit
@@ -328,6 +329,16 @@ class Rubylog::Theory
     #else
     #end
   #end
+  
+  private
+
+  def check_indicator indicator
+    raise ArgumentError, "#{indicator.inspect} should be a predicate indicator", caller[2..-1] unless indicator.is_a? Array and
+      indicator.length == 2 and
+      indicator[0].is_a? Symbol and
+      indicator[1].is_a? Integer
+  end
+
 
 
 end

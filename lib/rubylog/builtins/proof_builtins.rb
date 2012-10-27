@@ -1,4 +1,4 @@
-require "rubylog/builtins/reflection"
+require "rubylog/builtins/reflection_builtins"
 
 Rubylog.theory "Rubylog::ProofBuiltins", nil do
   functor :because, :proof

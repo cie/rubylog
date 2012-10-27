@@ -9,7 +9,7 @@ class Symbol
     0
   end
 
-  def desc
+  def indicator
     [self, 0]
   end
 
@@ -31,7 +31,7 @@ class Symbol
       Rubylog.current_theory.print_trace 1, self, rubylog_variables_hash
 
       predicate = Rubylog.current_theory[self][0]
-      raise Rubylog::ExistenceError, desc.inspect if not predicate
+      raise Rubylog::ExistenceError, indicator if not predicate
 
       predicate.call(*args) { yield }
 

@@ -1,9 +1,9 @@
 $:.unshift File.expand_path __FILE__+"/../../lib"
 require 'rubylog'
+require 'rubylog/builtins/proof_builtins'
 
 theory "RubylogLogic" do
-  include Rubylog::ProofBuiltins
-  subject Symbol
+  subject Symbol, Rubylog::Structure
   implicit
 
   :ruby.used_language!
@@ -35,13 +35,13 @@ theory "RubylogLogic" do
   :Rubylog.library!
   :Rubylog.programming_language! :ruby
   :Rubylog.design_goal! :prolog.interpreter
-  :Rubylog.design_goal! embedded(:prolog)
+  :Rubylog.design_goal! :prolog.embedded
   :Rubylog.design_goal! :dsl.framework
   :Rubylog.design_goal! :proof_of_concept
   :Rubylog.requirement :correct_implementation
   :Rubylog.requirement :unitrusive
 
 
-  :Rubylog.bad.because(E).each { p e }
+  :Rubylog.bad.proof(E).each { p e }
   
 end

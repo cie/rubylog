@@ -4,7 +4,6 @@ module Rubylog::DSL
       m = functor_module(f)
       class_or_module.send :include, m
       Rubylog::Variable.send :include, m
-      add_global_functor f
     end
   end
   

@@ -1,10 +1,12 @@
 $:.unshift File.expand_path __FILE__+"/../../lib"
 require 'rubylog'
 
+__END__
+
 Rubylog.theory "RubylogLogic" do
   subject Symbol
   implicit
-  discontinuous [:implements,2], [:supports,2]
+  discontiguous [:implements,2], [:supports,2]
 
   :Assertable.interface!
   :Callable.interface!
@@ -26,7 +28,6 @@ Rubylog.theory "RubylogLogic" do
   :Structure.implements! :Callable
   :Structure.implements! :CompositeTerm
   :Structure.implements! :Unifiable
-  :Method.implements! :Callable
   :Method.implements! :CompositeTerm
   :Object.implements! :Term
   :Object.implements! :Unifiable
@@ -50,7 +51,7 @@ Rubylog.theory "RubylogLogic" do
 
   X.has_rb_file_in(Folder).if {|x,folder| File.exists? "#{folder}/#{lib}"}
 
-  p (X.implements :Callable).to_a
+  check {(X.implements :Callable).map{X}.sort == [:Structure, :Method]}
 
 end
 

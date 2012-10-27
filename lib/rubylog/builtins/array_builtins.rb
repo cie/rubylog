@@ -40,10 +40,6 @@ Rubylog.theory "Rubylog::ArrayBuiltins", nil do
     end
   end
 
-  functor :splits_to
-  A.splits_to!([],A)
-  A.splits_to(B,C).if B.list(H,BT).and A.list(H,AT).and AT.splits_to(BT,C)
-
 end
 
 Rubylog.theory "Rubylog::DefaultBuiltins" do
