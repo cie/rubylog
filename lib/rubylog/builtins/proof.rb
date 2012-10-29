@@ -21,6 +21,6 @@ Rubylog.theory "Rubylog::ProofBuiltins", nil do
   
 end
 
-Rubylog.theory "Rubylog::DefaultBuiltins" do
+Rubylog::DefaultBuiltins.amend do
   include Rubylog::ProofBuiltins
 end

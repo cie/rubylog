@@ -1,7 +1,3 @@
-$:.unshift File.expand_path __FILE__+"/../../lib"
-require "rubylog"
-
-
 theory "Rubylog::MapLogic" do
   functor :likes
   subject Symbol

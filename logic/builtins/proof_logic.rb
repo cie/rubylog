@@ -1,12 +1,8 @@
-$:.unshift File.expand_path __FILE__+"/../../lib"
-require "rubylog"
 require "rubylog/builtins/proof"
 
 DrinkingTheory = theory do
   subject Symbol
   functor :likes, :has, :thirsty, :drinks
-  #  include ProofTheory
-  include Rubylog::ProofBuiltins
 
   :john.thirsty!
   :john.likes! :beer 

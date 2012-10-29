@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+require "rubylog"
+
+files = ARGV.empty? ?  './logic/**/*_logic.rb' : ARGV
+files = Dir[files]
+
+files.each do |x|
+  puts
+  puts x
+  require x
+end
+
+
+
+

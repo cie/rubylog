@@ -1,6 +1,3 @@
-$:.unshift File.expand_path __FILE__+"/../../lib"
-require 'rubylog'
-
 __END__
 
 Rubylog.theory "RubylogLogic" do

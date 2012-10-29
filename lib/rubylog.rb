@@ -27,7 +27,7 @@ require 'rubylog/variable'
 require 'rubylog/structure'
 
 # builtins
-require 'rubylog/builtins/default_builtins'
+require 'rubylog/builtins/default'
 
 # mixins
 require 'rubylog/mixins/array'

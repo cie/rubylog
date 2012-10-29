@@ -21,6 +21,7 @@ Jeweler::Tasks.new do |gem|
   gem.description = %Q{Rubylog is an embedded Prolog language and interpreter for Ruby.}
   gem.email = "kallo.bernat@gmail.com"
   gem.authors = ["Bernát Kalló"]
+  gem.executables = Dir["bin/*"].map{|x|File.basename x}
   # dependencies defined in Gemfile
 end
 Jeweler::RubygemsDotOrgTasks.new
@@ -47,7 +48,11 @@ RoodiTask.new do |t|
   t.verbose = false
 end
 
-task :default => :spec
+task :logic do
+  run "ruby"
+end
+
+task :default => :logic
 
 require 'yard'
 YARD::Rake::YardocTask.new

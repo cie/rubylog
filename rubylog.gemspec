@@ -4,16 +4,19 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{rubylog}
-  s.version = "0.0.1"
+  s.name = "rubylog"
+  s.version = "1.0.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Bern\303\241t Kall\303\263"]
-  s.date = %q{2012-02-07}
-  s.description = %q{Rubylog is an embedded Prolog language and interpreter for Ruby.}
-  s.email = %q{kallo.bernat@gmail.com}
+  s.authors = ["Bern\u{e1}t Kall\u{f3}"]
+  s.date = "2012-10-29"
+  s.description = "Rubylog is an embedded Prolog language and interpreter for Ruby."
+  s.email = "kallo.bernat@gmail.com"
+  s.executables = ["rubylogic"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
+    "README.hu.rb",
+    "README.hu.rdoc",
     "README.rdoc"
   ]
   s.files = [
@@ -22,50 +25,94 @@ Gem::Specification.new do |s|
     "Gemfile",
     "Gemfile.lock",
     "LICENSE.txt",
+    "README.hu.rb",
+    "README.hu.rdoc",
     "README.rdoc",
     "Rakefile",
     "VERSION",
     "examples/4queens.rb",
-    "examples/calculation.rb",
+    "examples/access_control.rb",
+    "examples/because.rb",
+    "examples/builtins.rb",
     "examples/concepts.rb",
+    "examples/dcg.rb",
+    "examples/enumerators.rb",
+    "examples/es/historia_de_espana.rb",
     "examples/factorial.rb",
     "examples/fp.rb",
     "examples/hello.rb",
-    "examples/historia_de_espana.rb",
+    "examples/hu/mechanika.rb",
     "examples/idea.rb",
+    "examples/introspection.rb",
     "examples/lists.rb",
-    "examples/mechanika.rb",
+    "examples/non-dsl.rb",
+    "examples/options_for_clauses.rb",
     "examples/parse.rb",
+    "examples/presentation.rb",
+    "examples/proof.rb",
+    "examples/qc_theory.rb",
+    "examples/talk.rb",
     "examples/theory.rb",
-    "lib/array.rb",
-    "lib/class.rb",
-    "lib/method.rb",
-    "lib/object.rb",
-    "lib/proc.rb",
+    "examples/tree.rb",
     "lib/rubylog.rb",
-    "lib/rubylog/builtins.rb",
-    "lib/rubylog/callable.rb",
-    "lib/rubylog/structure.rb",
-    "lib/rubylog/composite_term.rb",
+    "lib/rubylog/builtins/dcg.rb",
+    "lib/rubylog/builtins/default.rb",
+    "lib/rubylog/builtins/logic.rb",
+    "lib/rubylog/builtins/proof.rb",
+    "lib/rubylog/builtins/reflection.rb",
+    "lib/rubylog/builtins/req.rb",
+    "lib/rubylog/builtins/term.rb",
     "lib/rubylog/dsl.rb",
-    "lib/rubylog/dsl/constants.rb",
-    "lib/rubylog/dsl/first_order_functors.rb",
-    "lib/rubylog/dsl/global_functors.rb",
-    "lib/rubylog/dsl/second_order_functors.rb",
+    "lib/rubylog/dsl/primitives.rb",
+    "lib/rubylog/dsl/variables.rb",
     "lib/rubylog/errors.rb",
-    "lib/rubylog/internal_helpers.rb",
-    "lib/rubylog/predicate.rb",
-    "lib/rubylog/proc_method_additions.rb",
-    "lib/rubylog/term.rb",
+    "lib/rubylog/interfaces/assertable.rb",
+    "lib/rubylog/interfaces/callable.rb",
+    "lib/rubylog/interfaces/composite_term.rb",
+    "lib/rubylog/interfaces/predicate.rb",
+    "lib/rubylog/interfaces/procedure.rb",
+    "lib/rubylog/interfaces/term.rb",
+    "lib/rubylog/mixins/array.rb",
+    "lib/rubylog/mixins/class.rb",
+    "lib/rubylog/mixins/hash.rb",
+    "lib/rubylog/mixins/kernel.rb",
+    "lib/rubylog/mixins/method.rb",
+    "lib/rubylog/mixins/object.rb",
+    "lib/rubylog/mixins/proc.rb",
+    "lib/rubylog/mixins/symbol.rb",
+    "lib/rubylog/procedure.rb",
+    "lib/rubylog/structure.rb",
     "lib/rubylog/theory.rb",
-    "lib/rubylog/unifiable.rb",
     "lib/rubylog/variable.rb",
-    "lib/symbol.rb",
+    "logic/all_logic.rb",
+    "logic/builtins/proof_logic.rb",
+    "logic/dereference_logic.rb",
+    "logic/directory_structure_logic.rb",
+    "logic/map_logic.rb",
+    "logic/rubylog_logic.rb",
+    "logic/splits_to_logic.rb",
+    "logic/structure_logic.rb",
     "rubylog.gemspec",
-    "script/inriasuite2spec",
-    "script/inriasuite2spec.pl",
     "spec/bartak_guide_spec.rb",
-    "spec/inriasuite.rb",
+    "spec/builtins/all_spec.rb",
+    "spec/builtins/and_spec.rb",
+    "spec/builtins/array_spec.rb",
+    "spec/builtins/branch_or_spec.rb",
+    "spec/builtins/cut_spec.rb",
+    "spec/builtins/fail_spec.rb",
+    "spec/builtins/false_spec.rb",
+    "spec/builtins/in_spec.rb",
+    "spec/builtins/is_false_spec.rb",
+    "spec/builtins/is_spec.rb",
+    "spec/builtins/matches_spec.rb",
+    "spec/builtins/or_spec.rb",
+    "spec/builtins/splits_to.rb",
+    "spec/builtins/then_spec.rb",
+    "spec/builtins/true_spec.rb",
+    "spec/clause_spec.rb",
+    "spec/compilation_spec.rb",
+    "spec/custom_classes_spec.rb",
+    "spec/dereference.rb",
     "spec/inriasuite/README",
     "spec/inriasuite/abolish",
     "spec/inriasuite/and",
@@ -88,7 +135,7 @@ Gem::Specification.new do |s|
     "spec/inriasuite/call",
     "spec/inriasuite/catch-and-throw",
     "spec/inriasuite/char_code",
-    "spec/inriasuite/structure",
+    "spec/inriasuite/clause",
     "spec/inriasuite/compound",
     "spec/inriasuite/copy_term",
     "spec/inriasuite/current_input",
@@ -133,22 +180,23 @@ Gem::Specification.new do |s|
     "spec/inriasuite/term_lt=",
     "spec/inriasuite/true",
     "spec/inriasuite/unify",
+    "spec/inriasuite_spec.rb",
+    "spec/queries_spec.rb",
     "spec/recursion_spec.rb",
-    "spec/rubylog/builtins/splits_to.rb",
-    "spec/rubylog/structure_spec.rb",
-    "spec/rubylog/variable_spec.rb",
-    "spec/rubylog_spec.rb",
+    "spec/ruby_code_spec.rb",
+    "spec/rules_spec.rb",
     "spec/spec_helper.rb",
-    "spec/theory_spec.rb"
+    "spec/theory_spec.rb",
+    "spec/unification_spec.rb",
+    "spec/variable_spec.rb"
   ]
-  s.homepage = %q{https://github.com/cie/rubylog}
+  s.homepage = "https://github.com/cie/rubylog"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.7}
-  s.summary = %q{An embedded Prolog interpreter}
+  s.rubygems_version = "1.8.15"
+  s.summary = "An embedded Prolog interpreter"
 
   if s.respond_to? :specification_version then
-    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then

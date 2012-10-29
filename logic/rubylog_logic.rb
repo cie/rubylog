@@ -1,5 +1,3 @@
-$:.unshift File.expand_path __FILE__+"/../../lib"
-require 'rubylog'
 require 'rubylog/builtins/proof_builtins'
 
 theory "RubylogLogic" do

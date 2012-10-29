@@ -75,10 +75,10 @@ Rubylog.theory "Rubylog::ReflectionBuiltinsForStructure", nil do
     end
   end
 end
-Rubylog.theory "Rubylog::ReflectionBuiltins" do
+Rubylog.theory "Rubylog::ReflectionBuiltins", nil do
   include Rubylog::ReflectionBuiltinsForStructure
 end
 
-Rubylog.theory "Rubylog::DefaultBuiltins" do
+Rubylog::DefaultBuiltins.amend do
   include Rubylog::ReflectionBuiltins
 end

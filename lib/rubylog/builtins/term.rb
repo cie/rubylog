@@ -37,6 +37,6 @@ Rubylog.theory "Rubylog::TermBuiltins", nil do
   end
 end
 
-Rubylog.theory "Rubylog::DefaultBuiltins" do
+Rubylog::DefaultBuiltins.amend do
   include Rubylog::TermBuiltins
 end

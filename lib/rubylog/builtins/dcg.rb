@@ -12,6 +12,6 @@ theory "Rubylog::DCGBuiltins", nil do
   L1.matches(A,L2).if A.means(B).and L1.matches(B,L2)
 end
 
-Rubylog.theory "Rubylog::DefaultBuiltins" do
+Rubylog::DefaultBuiltins.amend do
   include Rubylog::DCGBuiltins
 end

@@ -5,6 +5,6 @@ theory "Rubylog::ReqBuiltins", nil do
   :all_reqs_pass.if R.req.all R
 end
 
-Rubylog.theory "Rubylog::DefaultBuiltins" do
+Rubylog::DefaultBuiltins.amend do
   include Rubylog::ReqBuiltins
 end
