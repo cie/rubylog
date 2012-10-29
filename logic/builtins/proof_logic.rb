@@ -9,7 +9,6 @@ DrinkingTheory = theory do
   :john.likes! :milk
   :john.has! :milk
   :john.has! :water
-
   A.drinks(D).if A.likes(D).and A.has(D)
   A.drinks(D).if A.thirsty.and A.has(D)
 
@@ -32,6 +31,8 @@ DrinkingTheory = theory do
   check :john.drinks(:water).proof(
     :john.drinks(:water).because :john.thirsty.and :john.has(:water)
   )
+
+
 end
 
 __END__

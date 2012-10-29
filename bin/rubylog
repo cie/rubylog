@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+require "rubylog"
+
+files = ARGV.empty? ?  Dir['./logic/**/*_logic.rb'] : Dir[*ARGV].map{|f| File.expand_path f }
+
+files.each do |x|
+  require x
+end
+
+
+
+

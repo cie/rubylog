@@ -34,6 +34,11 @@ Rubylog.theory "Rubylog::TermBuiltins", nil do
         end
       end
     end
+
+    def not_in a, b
+      self.in(a, b) { return }
+      yield
+    end
   end
 end
 

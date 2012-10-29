@@ -10,7 +10,7 @@ theory do
   "spec".dir!.contains! "functional tests written in RSpec"
   "logic".dir!.contains! "integration tests written in Rubylog"
 
-  gitignore = File.open(".gitignore"){|f|f.read}.split("\n")
-  check X.dir.equiv(X.dir_in(".").and X.not_in(gitignore))
+  gitignore = File.readlines(".gitignore").map{|l| l.chop}
+  check X.dir.equiv(X.dirname_in(".").and X.not_in(gitignore))
 end
 
