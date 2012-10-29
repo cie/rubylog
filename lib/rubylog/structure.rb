@@ -66,8 +66,8 @@ module Rubylog
     include Enumerable
     alias each solve
 
-    # Unifiable methods
-    include Rubylog::Unifiable
+    # Term methods
+    include Rubylog::Term
     def rubylog_unify other
       return super{yield} unless other.instance_of? self.class
       return unless other.functor == @functor

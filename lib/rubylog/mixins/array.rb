@@ -1,7 +1,6 @@
 class Array
 
-  # Unifiable methods
-  include Rubylog::Unifiable
+  # Term methods
   def rubylog_unify other
     return super{yield} unless other.instance_of? self.class
     if empty?

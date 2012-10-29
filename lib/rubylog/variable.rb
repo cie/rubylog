@@ -49,9 +49,6 @@ module Rubylog
       [self]
     end
 
-    # Unifiable methods
-    include Unifiable
-
     def rubylog_unify other
       if @assigned
         rubylog_dereference.rubylog_unify(other) do yield end

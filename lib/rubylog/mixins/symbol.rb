@@ -20,8 +20,8 @@ class Symbol
   # Assertable methods
   include Rubylog::Assertable
 
-  # Unifiable methods
-  include Rubylog::Unifiable
+  # Term methods
+  include Rubylog::Term
 
   # Callable methods
   include Rubylog::Callable

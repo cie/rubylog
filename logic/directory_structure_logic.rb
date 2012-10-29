@@ -1,5 +1,6 @@
 $:.unshift File.expand_path __FILE__+"/../../lib"
 require "rubylog"
+require "rubylog/builtins/fs"
 
 theory do
   subject String
@@ -12,7 +13,6 @@ theory do
   "logic".dir!.contains! "integration tests written in Rubylog"
 
   gitignore = File.open(".gitignore"){|f|f.read}.split("\n")
-
-  check X.dir.equiv(X.in(Dir["*/"].map{|d|d[0...-1]}).and X.in(gitignore).false)
+  check X.dir.equiv(X.dir_in(".").and X.in(gitignore).false)
 end
 

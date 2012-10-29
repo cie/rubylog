@@ -1,6 +1,7 @@
-require "rubylog/builtins/reflection_builtins"
+require "rubylog/builtins/reflection"
 
 Rubylog.theory "Rubylog::ProofBuiltins", nil do
+  include Rubylog::ReflectionBuiltins
   functor :because, :proof
   subject Rubylog::Callable, Rubylog::Structure, Symbol
 

@@ -1,6 +1,5 @@
 class Hash
-  # Unifiable methods
-  include Rubylog::Unifiable
+  include Rubylog::Term
   def rubylog_unify other
     return super{yield} unless other.instance_of? self.class
     if empty?
