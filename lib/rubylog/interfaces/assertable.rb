@@ -3,7 +3,7 @@ module Rubylog::Assertable
     Rubylog.current_theory.assert self, body || block
   end
 
-  def iff body=nil, &block
+  def if! body=nil, &block
     Rubylog.current_theory.assert self, Rubylog::Structure.new(:and, :cut!, body || block)
   end
 

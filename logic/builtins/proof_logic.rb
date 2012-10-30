@@ -32,6 +32,15 @@ DrinkingTheory = theory do
     :john.drinks(:water).because :john.thirsty.and :john.has(:water)
   )
 
+  check {:john.likes(:water).false.proof(X).map{X} == [:john.likes(:water).false]}
+  check {:john.likes(:beer).false.proof(X).map{X} == []}
+  check {:john.likes(:beer).and(:john.likes(:water)).false.proof(X).map{X} == [:john.likes(:water).false]}
+
+  p :john.drinks(:beer).false.proof(X).map{X}
+  check :john.drinks(:beer).false.proof(
+    :john.drinks(:beer).false.because :john.has(:beer).false
+  )
+  #check :john.drinks(X).all(:john.likes(X)).false.proof()
 
 end
 
