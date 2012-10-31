@@ -204,11 +204,24 @@ class Rubylog::Theory
     #raise Rubylog::CheckFailed, goal.inspect, caller[1..-1]
   end
 
+  def check_raised_exception goal, exception
+    puts "#{@check_number += 1} :(\t"
+    puts "Check raised exception: #{exception}"
+    puts exception.backtrace
+  end
+
   def check goal=nil, &block
-    if true?(goal || block)
-      check_passed goal, &block
+    goal ||= block
+    begin 
+      result = true?(goal)
+    rescue
+      check_raised_exception goal, $!
     else
-      check_failed goal, &block
+      if result
+        check_passed goal, &block
+      else
+        check_failed goal, &block
+      end
     end
   end
     

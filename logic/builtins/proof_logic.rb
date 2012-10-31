@@ -1,3 +1,4 @@
+$:.unshift File.expand_path __FILE__+"/../../../lib"
 require "rubylog/builtins/proof"
 
 DrinkingTheory = theory do
@@ -36,10 +37,13 @@ DrinkingTheory = theory do
   check {:john.likes(:beer).false.proof(X).map{X} == []}
   check {:john.likes(:beer).and(:john.likes(:water)).false.proof(X).map{X} == [:john.likes(:water).false]}
 
-  p :john.drinks(:beer).false.proof(X).map{X}
   check :john.drinks(:beer).false.proof(
     :john.drinks(:beer).false.because :john.has(:beer).false
   )
+  trace
+  p :john.drinks(:water).false.proof(X).map{X}
+  trace false
+  check :john.drinks(:water).false.proof(ANY).false
   #check :john.drinks(X).all(:john.likes(X)).false.proof()
 
 end

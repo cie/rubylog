@@ -18,6 +18,7 @@ require 'rubylog/interfaces/procedure'
 require 'rubylog/dsl'
 require 'rubylog/dsl/variables'
 require 'rubylog/dsl/primitives'
+require 'rubylog/dsl/array_splat'
 require 'rubylog/errors'
 
 # classes

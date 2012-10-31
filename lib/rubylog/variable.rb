@@ -89,6 +89,12 @@ module Rubylog
       v.prove{yield}
     end
 
+
+    # Array splats
+    def to_a
+      [Rubylog::DSL::ArraySplat.new(self)]
+    end
+
   end
 
 
