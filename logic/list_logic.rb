@@ -17,7 +17,8 @@ theory do
   check [1,2].is([A,*B]).and A.is(1).and B.is([2])
 
   check {[*A].is([*B]).and A.is([1,2]).map{B} == [[1,2]]}
-  #check [*A].is([*B]).and { p A; p B }
+  check [*A].is [*B]
+  check { [*A].is([*B]).each { } } # no infinite recursion
   
 
 

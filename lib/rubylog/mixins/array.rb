@@ -45,10 +45,18 @@ class Array
           end
         end
       else
-        # nothing
+        # failed
       end
     else
       if self[0].is_a? Rubylog::DSL::ArraySplat
+        # optimize [*A] = [*B]
+        if other[0].is_a? Rubylog::DSL::ArraySplat and self.length == 1 and other.length == 1
+          self[0].var.rubylog_unify other[0].var do
+            yield
+          end
+          return
+        end
+
         self[0].var.rubylog_unify [] do
           self[1..-1].rubylog_unify other do
             yield
