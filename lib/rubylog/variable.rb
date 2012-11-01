@@ -18,9 +18,6 @@ module Rubylog
       @name.to_s
     end
 
-    def to_s
-      @name.to_s
-    end
 
     def == other
       Variable === other and @name == other.name
@@ -95,6 +92,11 @@ module Rubylog
       [Rubylog::DSL::ArraySplat.new(self)]
     end
     alias to_ary to_a
+
+    # String variables
+    def to_s
+      "#{String::RUBYLOG_VAR_START}#{@name}#{String::RUBYLOG_VAR_END}"
+    end
 
   end
 

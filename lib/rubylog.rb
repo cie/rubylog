@@ -38,6 +38,7 @@ require 'rubylog/mixins/kernel'
 require 'rubylog/mixins/method'
 require 'rubylog/mixins/object'
 require 'rubylog/mixins/proc'
+require 'rubylog/mixins/string'
 require 'rubylog/mixins/symbol'
 
 
