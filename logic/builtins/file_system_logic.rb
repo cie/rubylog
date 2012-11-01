@@ -1,4 +1,4 @@
-require "rubylog/builtins/file_system"
+load "lib/rubylog/builtins/file_system.rb"
 
 theory do
   check "lib".dirname_in(".")
@@ -13,4 +13,10 @@ theory do
   check (Dir.pwd+"/lib/rubylog").dir_in("lib")
   check "rubylog.rb".filename_in("lib")
   check "rubylog".dirname_in("lib")
+
+
+  check "rubylog.rb".filename("rubylog", "rb")
+  check A.filename("rubylog", "rb").and A.is "rubylog.rb"
+  check "rubylog.rb".filename(F, "rb").and F.is "rubylog"
+  check "rubylog.rb".filename("rubylog", E).and E.is "rb"
 end

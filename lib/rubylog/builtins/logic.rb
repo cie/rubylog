@@ -56,7 +56,7 @@ Rubylog.theory "Rubylog::LogicBuiltinsForCallable", nil do
     end
 
     # Equivalent with +a.all(b).and b.all(a)+
-    def equiv a,b
+    def iff a,b
       all(a,b) { all(b,a) { yield } }
     end
 

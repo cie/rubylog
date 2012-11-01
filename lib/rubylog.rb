@@ -23,7 +23,7 @@ require 'rubylog/errors'
 
 # classes
 require 'rubylog/theory'
-require 'rubylog/procedure'
+require 'rubylog/simple_procedure'
 require 'rubylog/variable'
 require 'rubylog/structure'
 

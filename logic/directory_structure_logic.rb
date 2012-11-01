@@ -11,6 +11,6 @@ theory do
   "logic".dir!.contains! "integration tests written in Rubylog"
 
   gitignore = File.readlines(".gitignore").map{|l| l.chop}
-  check X.dir.equiv(X.dirname_in(".").and X.not_in(gitignore))
+  check X.dir.iff(X.dirname_in(".").and X.not_in(gitignore))
 end
 

@@ -70,12 +70,16 @@ class Rubylog::Theory
     @database[indicator]
   end
 
+  def []= indicator, predicate
+    @database[indicator] = predicate
+  end
+
   def keys
-    database.keys
+    @database.keys
   end
 
   def each_pair
-    database.each_pair {|*a| yield *a }
+    @database.each_pair {|*a| yield *a }
   end
 
   # Clear all data in the theory and bring it to its initial state.
@@ -191,13 +195,10 @@ class Rubylog::Theory
 
   def include *theories
     theories.each do |theory|
-      collisions = (keys & theory.keys)
-      collisions.each {|k| raise MultitheoryError, k unless @database[k].respond_to? :multitheory and @database[k].multitheory?}
-
       @included_theories << theory
       @public_interface.send :include, theory.public_interface
       theory.each_pair do |indicator, predicate|
-        if keys.include? indicator
+        if keys.include? indicator and self[indicator].respond_to? :multitheory? and self[indicator].multitheory?
           raise TypeError, "You can only use a procedure as a multitheory predicate (#{indicator})" unless predicate.respond_to? :each
           predicate.each do |rule|
             @database[indicator].assertz rule
