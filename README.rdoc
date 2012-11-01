@@ -1,118 +1,183 @@
 = Rubylog - Prolog interpreter for ruby
 
-Rubylog is a language similar to Prolog implemented as a Ruby DSL. The language is inspired by {Jamis Buck}[http://weblog.jamisbuck.org/2006/10/28/prolog-in-ruby], and the implementation is based on {Yield Prolog}[http://yieldprolog.sourceforge.net/].
+Rubylog is a Prolog-like language for Ruby implemented as a DSL. The language is inspired by {Jamis Buck}[http://weblog.jamisbuck.org/2006/10/28/prolog-in-ruby], and the implementation is based on {Yield Prolog}[http://yieldprolog.sourceforge.net/].
 
 == Installing
+
   $ gem install rubylog
 
 Or, if you use +bundler+:
+
   gem 'rubylog', '~>1.0.0'
 
 == Using
 
-First, you have to enter in Rubylog mode with the theory method:
+First, you have to create a theory and write your code in the block given to it:
 
   require 'rubylog'
-  theory "MyTheory" do
+
+  MyTheory = theory do
     # your code here
   end
 
-Rubylog is similar to Prolog, but with a few differences.
+All further examples in this file should be written within the +theory+ block.
 
-In rubylog, you can use any object as 
+=== Data types
 
-A Rubylog structures swap the first argument with the functor. They can be created by calling a method. You have to declare the functor first:
-  functor :likes
-  :john.likes :beer       # likes(john,beer) in Prolog
+Rubylog is similar to Prolog, but there are quite a few differences. In Rubylog, you can use any Ruby object as a term (you can assign them to variables, for example). You just have to declare it as a +subject+:
 
-A variable can be written as any non-defined constant. Don't-care variables start with ANY...
+  subject String
+
+==== Structures
+
+In Prolog, the main (and the only) complex data type is the structure (+likes('John', 'beer')+). In Rubylog, we also have Rubylog::Structure. The syntax for structures, however is different: the first argument comes first, then the functor, and then the rest of the arguments. Technically, it's a method call: 
+
+  p 'John'.likes('beer')       # write(likes(john,beer)) in Prolog
+
+But you have to declare any functor before using it:
+
+  functor :likes, :drinks, :has, :good
+
+Or, you can enter implicit mode while you start using new functors. Then your functors will be declared automatically:
+
+  implicit
+  # your code ...
+  implicit false
+
+Make sure you stop implicit mode before running any queries, otherwise strange +TypeError+'s will occur.
+
+==== Lists / Arrays
+
+In Prolog, lists are structures under the hood. In Rubylog however, lists are Ruby +Array+'s, and the relation is vice versa: Structures depend on Arrays, because the list of arguments is an Array.
+
+==== Other composite terms
+
++Rubylog::Structure+ and +Array+ are just two examples of composite terms. If you want some other kind of composite term, you can implement +Rubylog::CompositeTerm+.
+
+
+==== Variables
+
+Any non-defined constant within the +theory+ block is treated as a variable. Variables that start with ANY... are treated as don't-care variables.
+
   A, B, Cat               # the same in Prolog
   ANY, ANYONE, ANYTHING   # _ in Prolog
 
-Now you can start writing Rubylog predicates. Facts can be asserted with a bang:
-  :john.likes! :beer      # likes(john, beer). 
-  :john.has! :beer        # has(john, beer). 
+=== Predicates
+
+The theory object is the core of the Rubylog proving system. It manages the predicates that are known to be true in its database. The database is a two-leveled hash with the functor and the arity as the indices:
+
+  p database[:likes][2]
+
+There are two types of Predicates: Primitives and Procedures. Primitives are those which are implemented in pure Ruby code, Procedures are implemented with asserted clauses.  There is a bunch of built-in predicates, which are mostly Primitives, but not necessarily.
+
+Procedures are created as you assert a new type of clause.
+
+You can assert facts with a bang and rules with +if+:
+
+  'John'.likes! 'milk'                           # likes(john, milk). 
+  X.drinks(Y).if X.has(Y).and X.likes(Y)         # drinks(X,Y) :- has(X,Y), likes(X,Y).
 
 Fact assertions return the first argument, so they can be chained:
-  :john.likes!(:beer).has!(:beer)
 
-Rules can be asserted with +if+ and +unless+:
-  X.drinks(Y).if X.has(Y).and X.likes(Y)         # drinks(X,Y) :- has(X,Y), likes(X,Y).
+  'John'.likes!('beer').has!('beer')
+
+You can also assert rules with +unless+:
+
   A.good.unless A.bad                            # good(A) :- \+(bad(A)).
 
-Queries can be proved a few different ways:
-  :john.drinks? :beer         # => true
-  (:john.drinks :beer).true?  # => true
-  true? (:john.drinks :beer)  # => true
-  prove (:john.drinks :beer)  # => true
+Nullary predicates are symbols, similar to Prolog:
 
-Solutions can be enumerated (Structure < Enumerable)
-  (:john.drinks X).each {p X}      # outputs :beer
-  (:john.drinks X).map{X}          # => [:beer]
-  (:john.drinks X).count           # => 1
-These blocks are evaluated in dynamic mode, where variables are substituted with their value.
+  'John'.drinks('beer').if :false.and(:cut!).or(:true)
 
-You can use a block or a proc instead of a clause. 
-  X.drinks(Y).if X.has(Y)
-  X.drinks(Y).if {Y.to_s =~ /ale\Z/i}
-  X.drinks(Y).if proc { Y.to_s =~ /ale\Z/i } .and { Time.now.hour == 12 }     
-These blocks are evaluated in dynamic mode.
 
-You can write nullary predicates as symbols.
-  :john.drinks(:beer).if :false.and(:cut!).or(:true)
 
-You can use a block or a proc instead of a value in the predicates +is+, +in+:
-  X.drinks(Y).if Y.is { "BEER".downcase.to_sym }
-  X.drinks(Y).if Y.in { $favorites }
+=== Built-in predicates
 
-You can use a variable as a comprehension to create a partial list:
-  [1,2,3].is [A,*R]    # => A=1, R=[2,3]
-  [1,2,3].is [A]+R  
+Some built-in predicates and their Prolog equivalents:
 
-The Prolog built-in predicates and the Rubylog equivalents (see +Rubylog::Builtins+ for details):
+  Rubylog  Prolog
+  -------  ------ 
+  true     true
+  fail     fail
+  and      ,
+  or       ;
+  false    \+
+  is       =
+  is_not   =/=
+  in       member
+  cut!     !
 
-  Prolog              Rubylog
-  ----------------------------------------
-  true                :true
-  fail                :fail
-  ,                   and  &
-  ;                   or  |
-  !                   :cut!
-  ->                  
-  \+                  false  none
-  repeat              
-  A=B                 A.is B
-  X is Y*5            X.is{Y*5}
-  L=[H|T]             L.is [H,*T]   L.is [H]+T
-  append(A,B,L)       L.is [*A,*B]
-  member(A,L)         A.in L   L.is [*ANY,A,*ANY] 
-  write(A)            { p A }
-  nl                  { puts }
-  \+((A, \+ B))       A.all B
-  (A,B)->true         A.any B
-                      A.one B
-  \+((A,B))           A.none B
-  A->true             A.any
-                      A.one
-  findall(V,G,L)      L.is{G.map{V}}
 
+=== Unification
+
+In Rubylog, unification works quite the same in Prolog, but with the +is+ functor. One difference is the case of Arrays, where you can use splats:
+
+  [1,2,3,4].is [A,B,*T]      # [1,2,3,4] = [A,B|T]
+  [1,2,3,4].is [*H,*T]       # append(H, T, [1,2,3,4])
+
+The +in+ predicate can take any enumerable as the second argument.
+
+=== Moving between Ruby and Rubylog
+==== Running a query
+
+If you want to run a query, you have many different syntaxes:
+
+  'John'.drinks? 'beer'         # => true
+  ('John'.drinks 'beer').true?  # => true
+  true? ('John'.drinks 'beer')  # => true
+  prove ('John'.drinks 'beer')  # => true
+
+==== Enumerations
+
++Structure+ implements +Enumerable+, and yields for each solution, so you can call any Enumerable method on a Structure.
+
+  ('John'.drinks X).each {p X}      # outputs 'beer'
+  ('John'.drinks X).map{X}          # => ['beer']
+  ('John'.drinks X).count           # => 1
+
+==== Procs as predicates
+
+You can invoke Ruby codes in Rubylog rules with a proc or a block:
+
+  'John'.drinks(Y).if proc { Y.to_s =~ /ale\Z/i } .and { Time.now.hour == 12 }
+  'John'.drinks(Y).if { Y.to_s =~ /ale\Z/i }
+
+==== Procs as functions
+
++is+ and +in+ can take a proc or block argument, which they execute and take its return value:
+
+  X.good.if X.is { 'BEER'.downcase }
+  X.good.if X.in { get_good_drinks() }
+
+==== Different modes of Rubylog
+
+Rubylog has two modes, dynamic and static. Any block passed to Rubylog structures (as an enumeration, as a predicate , are executed in dynamic mode.
+
+  ('John'.drinks X).and { X != 'beer'}.each { p X }
+  ^^^^^^^^^^^^^^^^^^^^^^              ^^^^^^          static mode
+                         ^^^^^^^^^^^^        ^^^^^    dynamic mode
+
+In static mode you usually write structures and assert them or run them as a query. In dynamic mode you write normal Ruby code, and it is executed only when the demonstration runs. Undefined constants in static mode are converted to +Rubylog::Variable+ objects. However, in dynamic mode, they are substituted with the corresponding value of the variable (if any).
+
+All built-in rubylog predicates except for +cut!+ are clean logical programming predicates. That means they have no side-effect when you execute them. If you want some side-effect, you must go into dynamic mode. This means there is an obvious syntactic sign of possible non-cleanness: either the bang or the braces.
 
 
 
 == Contributing
 
 === To the language
-* Post the code sample in a gist.
-* Create an issue on the {issue tracker}[https://github.com/cie/rubylog/issues] and link to the gist.
+* Create an issue on the {issue tracker}[https://github.com/cie/rubylog/issues].
+* We will discuss it.
+* Maybe I'll introduce it.
 
-=== To the interpreter
-* Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
-* Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it.
-* Fork the project.
-* Start a feature/bugfix branch.
-* Commit and push until you are happy with your contribution.
-* Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
-* Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
+=== To the implementation
+* Create an issue on the {issue tracker}[https://github.com/cie/rubylog/issues].
+* We will discuss it.
+* Maybe I'll implement it.
+* If not, fork the project.
+* Implement it.
+* Have fun.
+* Post a pull request.
 
 == Copyright
 
