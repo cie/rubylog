@@ -4,10 +4,10 @@ module Rubylog
     # data structure
 
     attr_reader :name
-    def initialize name
-      @name = name || :"_#{object_id}"
+    def initialize name = :"_#{object_id}"
+      @name = name 
       @assigned = false
-      @dont_care = !!(name.to_s =~ /^(?:ANY|_)/)
+      @dont_care = !!(name.to_s =~ /^(?:ANY|_)/i)
     end
 
     def assigned?
