@@ -17,9 +17,10 @@ class String
 
     a, b = self_has_vars ? [self, other] : [other, self]
     
-    m = a.rubylog_regexp.match(b)
-    a.rubylog_string_variables.rubylog_unify m.captures do
-      yield
+    if (m = a.rubylog_regexp.match b)
+      a.rubylog_string_variables.rubylog_unify m.captures do
+        yield
+      end
     end
   end
 

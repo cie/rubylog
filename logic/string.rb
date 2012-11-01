@@ -7,6 +7,7 @@ theory do
   check { "#{Base}.#{Ext}".is("hello.rb").map{Base} == ["hello"] }
   check { "#{Base}.#{Ext}".is("hello.rb").map{Ext} == ["rb"] }
   check { "www.google.com".is("#{A}.#{B}").map{[A,B]} == [["www.google", "com"]] }
+  check { "h#{S}o".is("auto").map{S} == [] }
 
   functor_for String, :palindrome
 end
