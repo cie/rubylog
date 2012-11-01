@@ -40,7 +40,7 @@ Rubylog.theory "Rubylog::ReflectionBuiltinsForStructure", nil do
       raise Rubylog::InstantiationError, head if head.is_a? Rubylog::Variable
       return yield if head == :true
       return unless head.respond_to? :functor
-      predicate = Rubylog.current_theory[head.functor][head.arity]
+      predicate = Rubylog.current_theory[head.indicator]
       if predicate.respond_to? :each # if it is a procedure
         predicate.each do |rule|
           if rule[1] == :true
@@ -59,7 +59,7 @@ Rubylog.theory "Rubylog::ReflectionBuiltinsForStructure", nil do
       head = head.rubylog_dereference
       raise Rubylog::InstantiationError, head if head.is_a? Rubylog::Variable
       return unless head.respond_to? :functor
-      predicate = Rubylog.current_theory[head.functor][head.arity]
+      predicate = Rubylog.current_theory[head.indicator]
       if predicate.respond_to? :each
         predicate.each do |rule|
           unless rule[1]==:true # do not succeed for facts

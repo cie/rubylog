@@ -51,7 +51,7 @@ module Rubylog
     def prove
       begin
         Rubylog.current_theory.print_trace 1, self, rubylog_variables_hash
-        predicate = Rubylog.current_theory[@functor][@arity]
+        predicate = Rubylog.current_theory[indicator]
         raise Rubylog::ExistenceError, indicator.inspect if not predicate
         count = 0
         predicate.call(*@args) { yield; count+=1 }

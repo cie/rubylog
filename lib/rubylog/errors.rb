@@ -5,6 +5,9 @@ module Rubylog
   class DiscontiguousPredicateError < RubylogError
   end
 
+  class MultitheoryError < RubylogError
+  end
+
   class BuiltinPredicateError < RubylogError
   end
 

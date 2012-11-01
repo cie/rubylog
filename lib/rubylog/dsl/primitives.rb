@@ -7,7 +7,7 @@ class Rubylog::DSL::Primitives
     unless name == :singleton_method_added
       m = method(name)
       @theory.functor name unless m.arity.zero?
-      @theory[name][m.arity] = m
+      @theory[[name, m.arity]] = m
     end
   end
 

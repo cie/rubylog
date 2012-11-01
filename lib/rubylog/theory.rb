@@ -55,7 +55,7 @@ class Rubylog::Theory
     end
   end
 
-  attr_reader :database, :public_interface, :included_theories
+  attr_reader :public_interface, :included_theories
 
   def initialize base=Rubylog::DefaultBuiltins, &block
     clear
@@ -66,9 +66,21 @@ class Rubylog::Theory
     end
   end
 
+  def [] indicator
+    @database[indicator]
+  end
+
+  def keys
+    database.keys
+  end
+
+  def each_pair
+    database.each_pair {|*a| yield *a }
+  end
+
   # Clear all data in the theory and bring it to its initial state.
   def clear
-    @database = Hash.new{|h,k| h[k] = {} }
+    @database = {}
     @primitives = Rubylog::DSL::Primitives.new self
     @variable_bindings = []
     @public_interface = Module.new
@@ -112,24 +124,20 @@ class Rubylog::Theory
   alias amend with_context
   alias eval with_context
 
-  def [] *args
-    database[*args]
-  end
-
 
   # directives
   #
   def predicate *indicators
     indicators.each do |indicator|
       check_indicator indicator
-      create_procedure *indicator
+      create_procedure indicator
     end
   end
 
   def discontiguous *indicators
     indicators.each do |indicator|
       check_indicator indicator
-      create_procedure(*indicator).discontiguous!
+      create_procedure(indicator).discontiguous!
     end
   end
 
@@ -139,6 +147,13 @@ class Rubylog::Theory
 
   def check_discontiguous?
     @check_discontiguous
+  end
+
+  def multitheory *indicators
+    indicators.each do |indicator|
+      check_indicator indicator
+      create_procedure(indicator).multitheory!
+    end
   end
 
   def functor *functors
@@ -176,9 +191,21 @@ class Rubylog::Theory
 
   def include *theories
     theories.each do |theory|
+      collisions = (keys & theory.keys)
+      collisions.each {|k| raise MultitheoryError, k unless @database[k].respond_to? :multitheory and @database[k].multitheory?}
+
       @included_theories << theory
       @public_interface.send :include, theory.public_interface
-      @database.merge! theory.database
+      theory.each_pair do |indicator, predicate|
+        if keys.include? indicator
+          raise TypeError, "You can only use a procedure as a multitheory predicate (#{indicator})" unless predicate.respond_to? :each
+          predicate.each do |rule|
+            @database[indicator].assertz rule
+          end
+        else
+          @database[indicator] = predicate
+        end
+      end
     end
   end
 
@@ -244,12 +271,12 @@ class Rubylog::Theory
   # predicates
 
   def assert head, body=:true
-    fct, arity = head.functor, head.arity
-    predicate = database[fct][arity]
+    indicator = head.indicator
+    predicate = @database[indicator]
     if predicate
       check_assertable predicate, head, body
     else
-      predicate = create_procedure fct, arity
+      predicate = create_procedure indicator
     end
     predicate.assertz Rubylog::Structure.new(:-, head, body)
     @last_predicate = predicate
@@ -303,9 +330,9 @@ class Rubylog::Theory
     raise Rubylog::DiscontiguousPredicateError, head.indicator.inspect, caller[2..-1] if check_discontiguous? and not predicate.empty? and predicate != @last_predicate and not predicate.discontiguous?
   end
     
-  def create_procedure fct, arity
-    functor fct
-    database[fct][arity] = Rubylog::SimpleProcedure.new
+  def create_procedure indicator
+    functor indicator[0]
+    @database[indicator] = Rubylog::SimpleProcedure.new
   end
 
   def start_implicit

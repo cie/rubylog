@@ -29,8 +29,17 @@ module Rubylog::Procedure
     @discontiguous
   end
 
+  def multitheory!
+    @multitheory = true
+  end
+
+  def multitheory?
+    @multitheory
+  end
+
   # In case of a procedure, `each` can be implemented, which should yield all
   # clauses. This makes reflection possible.
+  #
   # def each
   #   yield ...
   # end
