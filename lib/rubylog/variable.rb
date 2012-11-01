@@ -94,6 +94,7 @@ module Rubylog
     def to_a
       [Rubylog::DSL::ArraySplat.new(self)]
     end
+    alias to_ary to_a
 
   end
 
