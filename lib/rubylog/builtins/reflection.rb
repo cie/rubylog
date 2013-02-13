@@ -4,22 +4,23 @@ Rubylog.theory "Rubylog::ReflectionBuiltinsForStructure", nil do
   class << primitives
 
     # Succeeds if +c+ is a structure, with functor +fct+ and arguments +args+
-    #def structure c, fct, args
-      #c = c.rubylog_dereference
-      #if c.is_a? Rubylog::Variable
-        #fct = fct.rubylog_dereference
-        #args = args.rubylog_dereference
-        ##raise Rubylog::InstantiationError, fct if fct.is_a? Rubylog::Variable
-        #raise Rubylog::InstantiationError, args if args.is_a? Rubylog::Variable
-        #c.rubylog_unify(Rubylog::Structure.new(fct, *args)) { yield }
-      #elsif c.is_a? Rubylog::Structure
-        #c.functor.rubylog_unify fct do
-          #c.args.rubylog_unify args do
-            #yield
-          #end
-        #end
-      #end
-    #end
+    def structure c, fct, args
+      c = c.rubylog_dereference
+      if c.is_a? Rubylog::Variable
+        fct = fct.rubylog_dereference
+        args = args.rubylog_dereference
+        # We enable variable functors
+        #raise Rubylog::InstantiationError, fct if fct.is_a? Rubylog::Variable
+        raise Rubylog::InstantiationError, args if args.is_a? Rubylog::Variable
+        c.rubylog_unify(Rubylog::Structure.new(fct, *args)) { yield }
+      elsif c.is_a? Rubylog::Structure
+        c.functor.rubylog_unify fct do
+          c.args.rubylog_unify args do
+            yield
+          end
+        end
+      end
+    end
 
     # I don't remember what this is supposed to be.
     #def predicate l
@@ -73,6 +74,15 @@ Rubylog.theory "Rubylog::ReflectionBuiltinsForStructure", nil do
         end
       end
     end
+
+    # Succeeds if +a+ unifies with a variable by the name +name+ in the variable binding
+    # context of +name+.
+    # Removed because of the "every built-in prediate is pure logical" principle
+    #def variable a, name
+      #vars = name.rubylog_variables
+      #raise Rubylog::InvalidStateError, "variables not available" if not vars
+      #vars.find
+    #end
   end
 end
 Rubylog.theory "Rubylog::ReflectionBuiltins", nil do

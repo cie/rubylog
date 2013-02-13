@@ -28,11 +28,17 @@ Rubylog.theory "FP" do
   # dividers n = filter (`divides` n) [1..n `div` 2] 
   #   where a `divides` b = b `mod` a == 0
   # isPerfectNumber n = n == (sum $ dividers n)
+  #
+  class Rubylog::Variable
+    def that k
+      k.map{rubylog_deep_dereference}
+    end
+  end
 
-  (A.divides B).if {|a,b| b % a == 0}
-  (A.divider_of B).if A.in{|a,b| (1..b%2)}.and A.divides B
-  (N.perfect_number).if DS.is{|n| (D.divider_of n).to_a }.and DS.sum N
-  (L.sum S).if S.is{|l| l.inject(0){|a,b|a+b}}
+  (A.divides B).if A.in{1..B-1}.and {B%A == 0}
+  L.dividers_of(N).if L.list_of(X, X.divides(N))
+  
+  (N.perfect_number).if N.sum_of ._. dividers_of(N)
 
 
 

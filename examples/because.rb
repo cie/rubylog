@@ -10,7 +10,7 @@ Rubylog.theory "DrinkingTheory" do
   :john.likes! :beer 
   :john.has! :milk
 
-  A.drinks(B).if A.likes(B).and A.has(B)
+  A.drinks(B).if(A.likes(B).and A.has(B))
   A.drinks(B).if A.thirsty.and A.has(B)
 end
 

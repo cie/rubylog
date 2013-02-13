@@ -40,7 +40,7 @@ class String
   end
 
   def rubylog_regexp
-    /\A#{Regexp.quote(self).gsub(RUBYLOG_VAR_REGEXP, "(.*)")}\z/
+    /\A#{Regexp.quote(self).gsub(RUBYLOG_VAR_REGEXP, "(.*?)")}\z/
   end
 
   def rubylog_string_variables

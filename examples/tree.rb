@@ -16,6 +16,6 @@ theory "Trees" do
 
   p A.pre(PRE).and(A.ino(INO)).map{A}
   
-  p 1.ch(2,3).pre(A).map{A.rubylog_deep_dereference}
+  p 1.ch(2,3).pre(A).map{A}
 end
 

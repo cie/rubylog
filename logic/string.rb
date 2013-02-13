@@ -6,8 +6,13 @@ theory do
   check { "h#{S}o".is("hello").map{S} == ["ell"] }
   check { "#{Base}.#{Ext}".is("hello.rb").map{Base} == ["hello"] }
   check { "#{Base}.#{Ext}".is("hello.rb").map{Ext} == ["rb"] }
-  check { "www.google.com".is("#{A}.#{B}").map{[A,B]} == [["www.google", "com"]] }
   check { "h#{S}o".is("auto").map{S} == [] }
+
+  # backtracked matches
+  check { "abc".is("#{A}#{B}").map{p "#{A}:#{B}"} == [":abc","a:bc","ab:c","abc:"] }
+  check { "www.google.com".is("#{A}.#{B}").map{p [A,B]} == [["www", "google.com"],["www.google", "com"]] }
+  check { "a".is("#{A}#{B}#{C}").map{p "#{A}:#{B}:#{C}"} == ["::a",":a:","a::"] }
+  check { "ab".is("#{A}#{B}#{C}").map{p "#{A}:#{B}:#{C}"} == %w(::ab :a:b :ab: a::b a:b: ab::) }
 
   functor_for String, :palindrome
 end

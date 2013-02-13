@@ -15,8 +15,9 @@ theory do
   check "rubylog".dirname_in("lib")
 
 
-  check "rubylog.rb".filename("rubylog", "rb")
-  check A.filename("rubylog", "rb").and A.is "rubylog.rb"
-  check "rubylog.rb".filename(F, "rb").and F.is "rubylog"
-  check "rubylog.rb".filename("rubylog", E).and E.is "rb"
+  # this is removed in favor of string unification
+  #check "rubylog.rb".filename("rubylog", "rb")
+  #check A.filename("rubylog", "rb").and A.is "rubylog.rb"
+  #check "rubylog.rb".filename(F, "rb").and F.is "rubylog"
+  #check "rubylog.rb".filename("rubylog", E).and E.is "rb"
 end

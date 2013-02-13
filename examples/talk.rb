@@ -5,7 +5,7 @@ theory :Talk do
   subject String
   functor :can, :have
   prefix_functor :convert, :use
-  mind_discontiguous false
+  check_discontiguous false
 
   puts "We can convert Latex to Pdf with Pdflatex."
   "We".can! convert "Latex", to: "Pdf", with: "PdfLatex"
