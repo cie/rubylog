@@ -5,6 +5,7 @@ theory do
   check { "a#{S}d" =~ /a.S.d/ }
   check { "h#{S}o".is("hello").map{S} == ["ell"] }
   check { "#{Base}.#{Ext}".is("hello.rb").map{Base} == ["hello"] }
+  exit
   check { "#{Base}.#{Ext}".is("hello.rb").map{Ext} == ["rb"] }
   check { "h#{S}o".is("auto").map{S} == [] }
 

@@ -5,6 +5,27 @@ class String
   RUBYLOG_VAR_REGEXP_START = /\A#{RUBYLOG_VAR_START}(.*?)#{RUBYLOG_VAR_END}/
   RUBYLOG_VAR_REGEXP_ALL = /\A#{RUBYLOG_VAR_START}(.*?)#{RUBYLOG_VAR_END}\z/
 
+  def self.rubylog_unify_strings a, a_segments, a_vars, b
+    p a, a_segments, a_vars, b
+    if a_segments.count == 1
+      segment = a_segments[0]
+      if b.end_with?(segment)
+        p b[0...b.length-segment.length]
+        a_vars[0].rubylog_unify b[0...b.length-segment.length] do
+          yield
+        end
+      end
+    else
+      b.scan /#{Regexp.quote(a_segments[0])}/ do
+        a_vars[0].rubylog_unify Regexp.last_match.begin(0) do
+          rubylog_unify_strings(a, a_segments[1..-1], a_vars[1..-1], b[Regexp.last_match.end(0)..-1]) do
+            yield
+          end
+        end
+      end
+    end
+  end
+
   # Term methods
   def rubylog_unify other
     return super{yield} unless other.instance_of? self.class
@@ -16,12 +37,15 @@ class String
     raise Rubylog::InstantiationError, "Cannot unify two strings with variables inside" if self_has_vars and other_has_vars
 
     a, b = self_has_vars ? [self, other] : [other, self]
-    
-    if (m = a.rubylog_regexp.match b)
-      a.rubylog_string_variables.rubylog_unify m.captures do
-        yield
-      end
+    a_segments, a_vars = a.rubylog_segments
+
+    return unless b.start_with? a_segments[0]
+    b = b[a_segments[0].length..-1]; a_segments.shift
+
+    String.rubylog_unify_strings(a, a_segments, a_vars, b) do
+      yield
     end
+
   end
 
   # CompositeTerm methods
@@ -39,14 +63,22 @@ class String
     end
   end
 
-  def rubylog_regexp
-    /\A#{Regexp.quote(self).gsub(RUBYLOG_VAR_REGEXP, "(.*?)")}\z/
-  end
+  # returns a list of substrings which are before, between and after the rubylog
+  # string variables
+  def rubylog_segments
+    segments = [[0]]
+    vars = []
 
-  def rubylog_string_variables
-    scan(RUBYLOG_VAR_REGEXP).map do |x|
-      rubylog_get_string_variable(x.first)
+    scan RUBYLOG_VAR_REGEXP do
+      match = Regexp.last_match
+      segments.last << match.begin(0)
+      segments << [match.end(0)]
+      vars << rubylog_get_string_variable(match[1])
     end
+
+    segments.last << segments.length
+    segments = segments.map{|s|self[*s]}
+    return segments, vars
   end
 
   protected
