@@ -55,7 +55,7 @@ class Rubylog::Theory
     end
   end
 
-  attr_reader :public_interface, :included_theories
+  attr_reader :public_interface, :included_theories, :prefix_functor_modules
 
   def initialize base=Rubylog::DefaultBuiltins, &block
     clear
@@ -94,6 +94,7 @@ class Rubylog::Theory
     @check_discontiguous = true
     @included_theories = []
     @check_number = 0
+    @prefix_functor_modules = []
   end
 
   def primitives
@@ -171,9 +172,10 @@ class Rubylog::Theory
 
   def prefix_functor *functors
     functors.each do |fct|
-      define_singleton_method fct do |*args|
-        Rubylog::Structure.new fct, *args
-      end
+      m = Module.new
+      Rubylog::DSL.add_prefix_functors_to m, fct
+      @prefix_functor_modules << m
+      extend m
     end
   end
 
@@ -195,7 +197,10 @@ class Rubylog::Theory
 
   def include *theories
     theories.each do |theory|
+
       @included_theories << theory
+
+      # include all public_interface predicates
       @public_interface.send :include, theory.public_interface
       theory.each_pair do |indicator, predicate|
         if keys.include? indicator and self[indicator].respond_to? :multitheory? and self[indicator].multitheory?
@@ -207,6 +212,13 @@ class Rubylog::Theory
           @database[indicator] = predicate
         end
       end
+
+      # include prefix_functors
+      theory.prefix_functor_modules.each do |m|
+        @prefix_functor_modules << m
+        extend m
+      end
+
     end
   end
 

@@ -98,6 +98,8 @@ Rubylog.theory "Rubylog::LogicBuiltinsForCallable", nil do
 
   end
 
+  prefix_functor :all, :any, :one, :none, :iff
+
 end
 
 Rubylog.theory "Rubylog::LogicBuiltins", nil do

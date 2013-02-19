@@ -6,6 +6,7 @@ module Rubylog::DSL
       Rubylog::Variable.send :include, m
     end
   end
+
   
   @functor_modules ||= {}
 
@@ -35,6 +36,32 @@ module Rubylog::DSL
       define_method f_qmark do |*args, &block|
         args << block if block
         Rubylog.current_theory.true? Rubylog::Structure.new(f, self, *args)
+      end
+    end
+  end
+
+  def self.add_prefix_functors_to class_or_module, *functors
+    functors.each do |f|
+      class_or_module.class_eval do
+        define_method f do |*args, &block|
+          args << block if block
+          Rubylog::Structure.new f, *args 
+        end
+
+        f_bang =  :"#{f}!"
+        define_method f_bang do |*args, &block|
+          args << block if block
+          # TODO consider self.assert
+          Rubylog.current_theory.assert Rubylog::Structure.new(f, *args), :true
+          self
+        end
+
+        f_qmark = :"#{f}?"
+        define_method f_qmark do |*args, &block|
+          args << block if block
+          #TODO consider self.true?
+          Rubylog.current_theory.true? Rubylog::Structure.new(f, *args)
+        end
       end
     end
   end
