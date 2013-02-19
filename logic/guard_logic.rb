@@ -100,5 +100,16 @@ theory do
   check "Hello".capitalized
 
 
+  # chained hash guards
+  functor_for String, :funny
+  S[upcase: {[:[],1..-2] => "ELL"}].funny!
+  check "hello".funny
+  check "Bell!".funny
+  check "BELL!".funny
+  check "DELL".funny.false
+  check "help!".funny.false
+  check "hello!".funny.false
+
+
 
 end
