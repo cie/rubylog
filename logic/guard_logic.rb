@@ -89,6 +89,16 @@ theory do
   check "af".char.false
   check "Hello".char.false
 
+  # list hash guards
+  functor_for String, :capitalized
+  S[[:[],0] => /[A-Z]/].capitalized!
+  check "a".capitalized.false
+  check " ".capitalized.false
+  check "".capitalized.false
+  check "af".capitalized.false
+  check "A".capitalized
+  check "Hello".capitalized
+
 
 
 end
