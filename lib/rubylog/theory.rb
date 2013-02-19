@@ -79,7 +79,11 @@ class Rubylog::Theory
   end
 
   def each_pair
-    @database.each_pair {|*a| yield *a }
+    if block_given?
+      @database.each_pair {|*a| yield *a }
+    else
+      @database.each_pair
+    end
   end
 
   # Clear all data in the theory and bring it to its initial state.
