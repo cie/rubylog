@@ -3,8 +3,8 @@
 Rubylog.theory "Rubylog::DefaultBuiltins", nil do
 end
 
-require "rubylog/builtins/logic"
-require "rubylog/builtins/term"
+require File.dirname(__FILE__)+"/logic"
+require File.dirname(__FILE__)+"/term"
 
 
 

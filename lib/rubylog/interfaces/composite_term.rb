@@ -1,21 +1,32 @@
 module Rubylog::CompositeTerm
   def rubylog_compile_variables 
     vars = []; vars_by_name = {}
-    rubylog_clone do |i|
-      if i.is_a? Rubylog::Variable
-        if i.dont_care?
-          i = i.dup
+    rubylog_clone do |subterm|
+      case subterm
+      when Rubylog::Variable
+        var = subterm
+
+        if var.dont_care?
+          var.dup
         else
-          i = vars_by_name[i.name] || begin
-            r = i.dup
-            vars << r
-            vars_by_name[i.name] = r
+          new_var = vars_by_name[var.name]
+          if new_var
+            new_var.guards = new_var.guards + var.guards
+            new_var
+          else
+            new_var = var.dup
+            vars << new_var
+            vars_by_name[var.name] = new_var
+            new_var
           end
         end
-      elsif i.is_a? Rubylog::CompositeTerm
-        i.instance_variable_set :"@rubylog_variables", vars
+
+      when Rubylog::CompositeTerm
+        subterm.instance_variable_set :"@rubylog_variables", vars
+        subterm
+      else
+        subterm
       end
-      i
     end
   end
 

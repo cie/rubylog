@@ -6,12 +6,13 @@ module Rubylog
     attr_reader :name
     def initialize name = :"_#{object_id}"
       @name = name 
-      @assigned = false
+      @bound = false
       @dont_care = !!(name.to_s =~ /^(?:ANY|_)/i)
+      @guards = []
     end
 
-    def assigned?
-      @assigned
+    def bound?
+      @bound
     end
 
     def inspect
@@ -46,23 +47,43 @@ module Rubylog
       [self]
     end
 
+    # unify two variables
     def rubylog_unify other
-      if @assigned
+      # check if we are bound
+      if @bound
+        # if we are bound
+        # proceed to our dereferenced value
         rubylog_dereference.rubylog_unify(other) do yield end
       else
-        begin
-          @assigned = true; @value = other
-          Rubylog.current_theory.print_trace 1, "#{inspect}=#{@value.inspect}"
-          yield
-        ensure
-          @assigned = false
-          Rubylog.current_theory.print_trace -1
+        # if we are unbound
+        
+        # dereference the other
+        other = other.rubylog_dereference
+
+        # if the other is a variable
+        if other.is_a? Rubylog::Variable
+          # we union our guards with the other's
+          other.append_guards guards do
+            bind_to other do
+              yield
+            end
+          end
+        else
+          # if the other is a value
+          # bind to it and 
+          bind_to other do
+            # check our guards
+            if guards.all? {|g|g.rubylog_matches_as_guard? other}
+              yield
+            end
+          end
         end
       end
     end
 
+
     def rubylog_dereference
-      if @assigned
+      if @bound
         @value.rubylog_dereference
       else
         self
@@ -70,7 +91,7 @@ module Rubylog
     end
 
     def rubylog_deep_dereference
-      if @assigned
+      if @bound
         @value.rubylog_deep_dereference
       else
         self
@@ -97,6 +118,47 @@ module Rubylog
     def to_s
       "#{String::RUBYLOG_VAR_START}#{@name}#{String::RUBYLOG_VAR_END}"
     end
+
+    # guards
+    def [] *guards
+      @guards += guards
+      self
+    end
+
+    attr_reader :guards
+    attr_writer :guards
+
+
+    protected
+
+    # yields with self bound to the given value
+    def bind_to other
+      begin
+        @bound = true; @value = other
+        Rubylog.current_theory.print_trace 1, "#{inspect}=#{@value.inspect}"
+
+        yield
+
+      ensure
+        @bound = false
+        Rubylog.current_theory.print_trace -1
+      end
+    end
+
+    # yields with self.guards = self.guards + other_guards, then restores guards
+    def append_guards other_guards
+      original_guards = @guards
+
+      @guards = @guards + other_guards
+
+      begin
+        yield
+      ensure
+        @guards = original_guards
+      end
+    end
+
+
 
   end
 
