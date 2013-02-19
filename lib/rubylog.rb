@@ -35,7 +35,7 @@ require dir+'rubylog/builtins/default'
 # mixins
 require dir+'rubylog/mixins/array'
 require dir+'rubylog/mixins/class'
-#require dir+'rubylog/mixins/hash'
+require dir+'rubylog/mixins/hash'
 require dir+'rubylog/mixins/kernel'
 require dir+'rubylog/mixins/method'
 require dir+'rubylog/mixins/object'

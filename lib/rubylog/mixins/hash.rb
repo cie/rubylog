@@ -1,9 +1,8 @@
 class Hash
-  include Rubylog::Term
-  def rubylog_unify other
-    return super{yield} unless other.instance_of? self.class
-    (keys+other.keys).uniq.each do
-      
+  def rubylog_matches_as_guard? other
+    self.each_pair do |k,v|
+      return false unless v === other.send(k)
     end
+    true
   end
 end

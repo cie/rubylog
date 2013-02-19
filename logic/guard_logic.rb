@@ -70,6 +70,24 @@ theory do
   check 100.0.small.false
 
 
+  # proc guards
+  functor_for Numeric, :big
+  A[proc{|a|a > 20}].big!
+  check -100.big.false
+  check 0.big.false
+  check 10.big.false
+  check 20.big.false
+  check 21.big
+  check 200.big
+
+  # hash guards
+  functor_for String, :char
+  S[length: 1].char!
+  check "a".char
+  check " ".char
+  check "".char.false
+  check "af".char.false
+  check "Hello".char.false
 
 
 

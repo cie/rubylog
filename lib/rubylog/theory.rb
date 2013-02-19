@@ -237,22 +237,27 @@ class Rubylog::Theory
   end
 
   def check_passed goal
-    print "#{@check_number += 1} :)\t"
-    puts if @check_number % 10 == 0
+    print "#{n = check_number} :)\t"
   end
 
   def check_failed goal
-    puts "#{@check_number += 1} :/\t"
+    puts "#{check_number} :/\t"
     puts "Check failed: #{goal.inspect}"
     puts caller[1]
     #raise Rubylog::CheckFailed, goal.inspect, caller[1..-1]
   end
 
   def check_raised_exception goal, exception
-    puts "#{@check_number += 1} :(\t"
+    puts "#{check_number} :(\t"
     puts "Check raised exception: #{exception}"
     puts exception.backtrace
   end
+
+  def check_number
+    caller[2] =~ /:(\d+):/
+    $1
+  end
+  private :check_number
 
   def check goal=nil, &block
     goal ||= block
