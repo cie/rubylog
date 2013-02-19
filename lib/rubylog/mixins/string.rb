@@ -1,9 +1,9 @@
 class String
   RUBYLOG_VAR_START = "\u0091" # "\u00ab"
   RUBYLOG_VAR_END   = "\u0092" # "\u00bb"
-  RUBYLOG_VAR_REGEXP = /#{RUBYLOG_VAR_START}(.*?)#{RUBYLOG_VAR_END}/
-  RUBYLOG_VAR_REGEXP_START = /\A#{RUBYLOG_VAR_START}(.*?)#{RUBYLOG_VAR_END}/
-  RUBYLOG_VAR_REGEXP_ALL = /\A#{RUBYLOG_VAR_START}(.*?)#{RUBYLOG_VAR_END}\z/
+  RUBYLOG_VAR_REGEXP = /#{RUBYLOG_VAR_START}([^\[]+?)\[(.*?)\]#{RUBYLOG_VAR_END}/
+
+  RubylogStringVariableGuards = [[]]
 
   def self.rubylog_unify_strings a, a_segments, a_vars, b
     #p a, a_segments, a_vars, b
@@ -52,7 +52,8 @@ class String
   include Rubylog::CompositeTerm
   def rubylog_clone &block
     scan RUBYLOG_VAR_REGEXP do
-      Rubylog::Variable.new($1.to_sym).rubylog_clone(&block)
+      guards = RubylogStringVariableGuards[$2.to_i] 
+      Rubylog::Variable.new($1.to_sym)[*guards].rubylog_clone(&block)
     end
     block[self]
   end

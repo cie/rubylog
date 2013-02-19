@@ -116,7 +116,13 @@ module Rubylog
 
     # String variables
     def to_s
-      "#{String::RUBYLOG_VAR_START}#{@name}#{String::RUBYLOG_VAR_END}"
+      if @guards.empty?
+        "#{String::RUBYLOG_VAR_START}#{@name}[]#{String::RUBYLOG_VAR_END}"
+      else
+        String::RubylogStringVariableGuards << @guards
+        guard_index = String::RubylogStringVariableGuards.length-1
+        "#{String::RUBYLOG_VAR_START}#{@name}[#{guard_index}]#{String::RUBYLOG_VAR_END}"
+      end
     end
 
     # guards

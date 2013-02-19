@@ -18,9 +18,19 @@ theory do
   check { "abc".is("#{A[length: 1]}#{B}").map{"#{A}:#{B}"} == ["a:bc"] }
 
   functor_for String, :palindrome
-  S[lambda{|s|s.empty?}].palindrome!
-  S[lambda{|s|s.length == 1}].palindrome!
-  S[lambda{|s|s.length > 1}].palindrome.if S.is("#{A[length:1]}#{B}#{A}").and B.palindrome
-  #check all  X.in(["", "dd", "aba", "faaf", "ffaaff", "ffffaaffff", "rererer", "lol"]), X.palindrome
-  #check none X.in(["ji", "doo", "taaaz", "faad", "rerere"]), X.palindrome
+  S[empty?: true].palindrome!
+  S[length: 1].palindrome!
+  S[lambda{|s|s.length > 1}].palindrome.if S.is("#{A[length: 1]}#{B}#{A}").and B.palindrome
+  check "".palindrome
+  check "dd".palindrome
+  check "aba".palindrome
+  check "faaf".palindrome
+  check "ffaaff".palindrome
+  check "rererer".palindrome
+  check "lol".palindrome
+  check "ji".palindrome.false
+  check "doo".palindrome.false
+  check "taaaz".palindrome.false
+  check "faad".palindrome.false
+  check "rerere".palindrome.false
 end

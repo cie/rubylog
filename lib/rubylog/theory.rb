@@ -289,6 +289,10 @@ class Rubylog::Theory
     end
   end
 
+  def thats
+    Rubylog::DSL::Thats.new
+  end
+
 
   # predicates
 

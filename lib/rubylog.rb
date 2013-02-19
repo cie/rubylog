@@ -21,6 +21,7 @@ require dir+'rubylog/dsl'
 require dir+'rubylog/dsl/variables'
 require dir+'rubylog/dsl/primitives'
 require dir+'rubylog/dsl/array_splat'
+require dir+'rubylog/dsl/thats'
 require dir+'rubylog/errors'
 
 # classes
