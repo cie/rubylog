@@ -11,7 +11,7 @@ First, install the gem
 
   $ gem install rubylog
 
-or, if you use +bundler+, add this file to your +Gemfile+:
+or, if you use +bundler+, add this line to your +Gemfile+:
 
   gem 'rubylog', '~>1.0.0'
 
@@ -27,68 +27,57 @@ First, you have to create a theory and write your code in the block given to it:
 
 All further examples in this file should be written within the +theory+ block.
 
+
 === Data types
 
-Rubylog is similar to Prolog, but there are quite a few differences. In Rubylog, you can use any Ruby object as a term (you can assign them to variables, for example). You just have to declare it as a +subject+:
+Rubylog is similar to Prolog, but there are quite a few differences. In Rubylog,
+you can use any Ruby object as data.
 
-  subject String
+Rubylog variables are (undefined) constant names:
 
-==== Structures
+  A, B, ANYTHING
 
-In Prolog, the main (and the only) complex data type is the structure (+likes('John', 'beer')+). In Rubylog, we also have Rubylog::Structure. The syntax for structures, however is different: the first argument comes first, then the functor, and then the rest of the arguments. Technically, it's a method call: 
+A variables whose name starts with +ANY...+ (case-insensitive) is a don't-care
+variable (like +_+ in Prolog).
 
-  p 'John'.likes('beer')       # write(likes(john,beer)) in Prolog
+Structures are in a different order than they are in prolog:
 
-But you have to declare any functor before using it:
+  functor_for String, :likes
+  'John'.likes('beer')
 
-  functor :likes, :drinks, :has, :good
+which would be +likes('John','beer')+ in prolog.
 
-Or, you can enter implicit mode while you start using new functors. Then your functors will be declared automatically:
+Lists are just Ruby arrays:
 
-  implicit
-  # your code ...
-  implicit false
+  [1, 2, 3]
 
-Make sure you stop implicit mode before running any queries, otherwise strange +TypeError+'s will occur.
+They can have splats:
 
-==== Lists / Arrays
+  [1, 2, *T]
 
-In Prolog, lists are structures under the hood. In Rubylog however, lists are Ruby +Array+'s, and the relation is vice versa: Structures depend on Arrays, because the list of arguments is an Array.
-
-==== Other composite terms
-
-+Rubylog::Structure+ and +Array+ are just two examples of composite terms. If you want some other kind of composite term, you can implement +Rubylog::CompositeTerm+.
-
-
-==== Variables
-
-Any non-defined constant within the +theory+ block is treated as a variable. Variables that start with ANY... are treated as don't-care variables.
-
-  A, B, Cat               # the same in Prolog
-  ANY, ANYONE, ANYTHING   # _ in Prolog
+Which would be +[1,2|T]+ in Prolog, however, in Rubylog, splats are not limited
+to the end.
 
 === Predicates
 
-The theory object is the core of the Rubylog proving system. It manages the predicates that are known to be true in its database. The database is a two-leveled hash with the functor and the arity as the indices:
+You can assert a rule with the +if+ method:
 
-  p database[:likes][2]
+  X.drinks(Y).if X.has(Y).and X.likes(Y)        
 
-There are two types of Predicates: Primitives and Procedures. Primitives are those which are implemented in pure Ruby code, Procedures are implemented with asserted clauses.  There is a bunch of built-in predicates, which are mostly Primitives, but not necessarily.
+This would be +drinks(X,Y) :- has(X,Y), likes(X,Y)+ in Prolog.
 
-Procedures are created as you assert a new type of clause.
+You can assert facts with +if(:true)+, or, as a shorthand you can use the bang
+syntax:
 
-You can assert facts with a bang and rules with +if+:
+  'John'.likes! 'milk'                         
 
-  'John'.likes! 'milk'                           # likes(john, milk). 
-  X.drinks(Y).if X.has(Y).and X.likes(Y)         # drinks(X,Y) :- has(X,Y), likes(X,Y).
-
-Fact assertions return the first argument, so they can be chained:
+Bang assertions return their first argument (which is +'John'+ in this case), so they can be chained:
 
   'John'.likes!('beer').has!('beer')
 
-You can also assert rules with +unless+:
+You can also use +unless+:
 
-  A.good.unless A.bad                            # good(A) :- \+(bad(A)).
+  A.good.unless A.bad              
 
 Nullary predicates are symbols, similar to Prolog:
 
@@ -102,50 +91,72 @@ Some built-in predicates and their Prolog equivalents:
 
   Rubylog  Prolog
   -------  ------ 
-  true     true
-  fail     fail
-  and      ,
-  or       ;
-  false    \+
-  is       =
-  is_not   =/=
-  in       member
-  cut!     !
+  :true     true
+  :fail     fail
+  .and      ,
+  .or       ;
+  :false    \+
+  .is       =
+  .is_not   =/=
+  .in       member
+  :cut!     !
 
+There are some new ones:
+
+  is_not, not_in, all, any, one, none, iff
 
 === Unification
 
-In Rubylog, unification works quite the same in Prolog, but with the +is+ functor. One difference is the case of Arrays, where you can use splats:
+In Rubylog, unification works quite the same in Prolog, with the +is+ functor.
 
-  [1,2,3,4].is [A,B,*T]      # [1,2,3,4] = [A,B|T]
-  [1,2,3,4].is [*H,*T]       # append(H, T, [1,2,3,4])
+  A.is(B)
 
-The +in+ predicate can take any enumerable as the second argument.
+Using arrays, you can benefit the splats:
+
+  [1,2,3,4].is([A,B,*T])      # [1,2,3,4] = [A,B|T]     in prolog
+  [1,2,3,4].is([*H,*T])       # append(H, T, [1,2,3,4]) in prolog
+
+The +in+ predicate unifies the first argument with any member of the collection:
+
+  4.in([1,2,3,4])
+
+You can use guards:
+
+  A[String].in(["asdf",5,nil]).each { p A }   # outputs "asdf"
+  A[/x/].in(["asdf","xyz"]).each { p A }      # outputs "xyz"
+  A[thats < 5].in([4,5,6]).each { p A }       # outputs 4
 
 === Moving between Ruby and Rubylog
 ==== Running a query
 
 If you want to run a query, you have many different syntaxes:
 
-  'John'.drinks? 'beer'         # => true
-  ('John'.drinks 'beer').true?  # => true
-  true? ('John'.drinks 'beer')  # => true
   prove ('John'.drinks 'beer')  # => true
+  true? ('John'.drinks 'beer')  # => true
+  ('John'.drinks 'beer').true?  # => true
+  'John'.drinks? 'beer'         # => true
 
 ==== Enumerations
 
-+Structure+ implements +Enumerable+, and yields for each solution, so you can call any Enumerable method on a Structure.
++Structure+ implements +Enumerable+, and yields the solutions. Within the
+enumeration block, you can access the values of your variables.
 
+  'John'.drinks! 'beer'
   ('John'.drinks X).each {p X}      # outputs 'beer'
   ('John'.drinks X).map{X}          # => ['beer']
   ('John'.drinks X).count           # => 1
 
 ==== Procs as predicates
 
-You can invoke Ruby codes in Rubylog rules with a proc or a block:
+You can invoke Ruby codes in Rubylog rules with a proc:
 
-  'John'.drinks(Y).if proc { Y.to_s =~ /ale\Z/i } .and { Time.now.hour == 12 }
-  'John'.drinks(Y).if { Y.to_s =~ /ale\Z/i }
+  'John'.likes(Y).if proc{ Y =~ /ale/ }
+
+or in most cases you can use just a block:
+
+  'John'.likes(Y).if { Y =~ /ale/ }
+
+The predicate succeeds if the block returns a true value.
 
 ==== Procs as functions
 
@@ -154,19 +165,77 @@ You can invoke Ruby codes in Rubylog rules with a proc or a block:
   X.good.if X.is { 'BEER'.downcase }
   X.good.if X.in { get_good_drinks() }
 
-==== Different modes of Rubylog
+==== The two modes of Rubylog
 
-Rubylog has two modes, dynamic and static. Any block passed to Rubylog structures (as an enumeration, as a predicate , are executed in dynamic mode.
+Rubylog has two modes, DSL and native. DSL code is executed only once
+at compile time, and is used for describing the Rubylog program. Native code is
+executed runtime. Any block passed to Rubylog structures native code.
 
   ('John'.drinks X).and { X != 'beer'}.each { p X }
-  ^^^^^^^^^^^^^^^^^^^^^^              ^^^^^^          static mode
-                         ^^^^^^^^^^^^        ^^^^^    dynamic mode
+  ^^^^^^^^^^^^^^^^^^^^^^              ^^^^^^          dsl mode
+                         ^^^^^^^^^^^^        ^^^^^    native mode
 
-In static mode you usually write structures and assert them or run them as a query. In dynamic mode you write normal Ruby code, and it is executed only when the demonstration runs. Undefined constants in static mode are converted to +Rubylog::Variable+ objects. However, in dynamic mode, they are substituted with the corresponding value of the variable (if any).
+In dsl mode, variables are +Rubylog::Variable+ objects. In native mode,
+variables are substituted with their respecitve value (or +nil+ if they are not
+bound).
 
-All built-in rubylog predicates except for +cut!+ are clean logical programming predicates. That means they have no side-effect when you execute them. If you want some side-effect, you must go into dynamic mode. This means there is an obvious syntactic sign of possible non-cleanness: either the bang or the braces.
+All built-in rubylog predicates are clean logical programming predicates witout
+a side-effect. If you want some side-effect, you always go into native mode.
+
+=== Rubylog as a test suite
+
+You can write simple tests using the +check+ method:
+
+  theory do
+    check :true
+    check { 5+5 == 10 }
+  end
+
+You sould put this file in +"./logic/something\_logic.rb"+. Then you can run it
+with 
+
+  rubylog logic/something_logic.rb
+
+Or you can run all files in +logic/**/*_logic.rb+ with
+
+  rubylog
+
+=== Other built-in libraries
+
+==== File system
+
+You can make some queries on the file system:
+
+  require "rubylog/builtins/file_system"
+
+  theory do
+    check "README".filename_in "."
+
+    X.dirname_in(".").each { puts X }
+  end
 
 
+==== Reflection
+
+You can make some metaprogramming with Rubylog
+
+
+  require "rubylog/builtins/reflection"
+
+  theory do
+    functor_for String, :likes
+
+    check "John".likes("Jane").structure(:likes, ["John", "Jane"])
+
+    "John".likes(X).if X.likes("John")
+    "Jane".likes!("John")
+    check "John".likes("Jane").follows_from "Jane".likes("John")
+
+    "John".likes!("milk")
+    check "John".likes("milk").fact
+    check "John".likes("beer").fact.false
+
+  end
 
 == Contributing
 
@@ -186,6 +255,6 @@ All built-in rubylog predicates except for +cut!+ are clean logical programming 
 
 == Copyright
 
-Copyright (c) 2012 Bernát Kalló. See LICENSE.txt for
+Copyright (c) 2013 Bernát Kalló. See LICENSE.txt for
 further details.
 
