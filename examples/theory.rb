@@ -28,5 +28,5 @@ Rubylog.theory "DrinkingTheory" do
 end
 
 joe = User.new :beer, [:water, :beer]
-p DrinkingTheory.true? joe.drinks :water
-p DrinkingTheory.true? joe.drinks :beer
+p DrinkingTheory.true? joe.drinks :water # false
+p DrinkingTheory.true? joe.drinks :beer # true

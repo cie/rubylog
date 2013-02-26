@@ -15,10 +15,10 @@ theory do
   N.hanoi.if N.move('left', 'right', 'center')
 
   puts "\nWhat's the solution for a single disc?"
-  check 1.hanoi
+  prove 1.hanoi
 
   puts "\n\nWhat's the solution for 5 discs?"
-  check 5.hanoi
+  prove 5.hanoi
 
 
 end

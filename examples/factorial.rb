@@ -1,7 +1,7 @@
 $:.unshift File.dirname(__FILE__)+"/../lib"
 require 'rubylog'
 
-Rubylog.theory :FactorialTheory do
+FactorialTheory = theory do
   subject Integer
   functor :factorial
 

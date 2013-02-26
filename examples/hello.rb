@@ -2,17 +2,14 @@ $:.unshift File.dirname(__FILE__)+"/../lib"
 
 require 'rubylog'
 
-module Hello
-end
 
-Rubylog.theory "Hello::HelloTheory" do
-  subject String
-  implicit
+HelloTheory = theory do
+  functor_for String, :written
 
-  X.written.if {|x| puts x}
+  X.written.if {puts X; true}
 
   :hello.if "Hello, world!".written
 end
 
-Hello::HelloTheory.prove :hello
+HelloTheory.prove :hello
 
