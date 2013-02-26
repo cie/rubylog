@@ -6,16 +6,14 @@ Rubylog.theory :FactorialTheory do
   functor :factorial
 
   0.factorial! 1
-  N[thats > 0].factorial(K).if \
-    lambda{N>0}.
-    and N1.is{N-1}.
+  N[thats > 0].factorial(K).if
+    N1.is{N-1}.
     and N1.factorial(K1).
     and K.is{N*K1}
 
   7.factorial(N).solve {puts N}
 
   include Rubylog::Because
-  trace!
   7.factorial(N).because(E).solve {puts E}
   #7.factorial(N).solutions
 end

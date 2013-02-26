@@ -253,14 +253,19 @@ class Rubylog::Theory
     puts exception.backtrace
   end
 
+  # returns the line number of the most recen +check+ call
   def check_number
-    caller[2] =~ /:(\d+):/
+    i = caller.index{|l| l.end_with? "in `check'" }
+    caller[i+1] =~ /:(\d+):/
     $1
   end
   private :check_number
 
+  # Tries to prove goal (or block if goal is not given). If it proves, calles
+  # +check_passed+. If it fails, calls +check_failed+. If it raises an exception, calls +check_raised_exception+.
   def check goal=nil, &block
     goal ||= block
+    result = nil
     begin 
       result = true?(goal)
     rescue
@@ -272,9 +277,12 @@ class Rubylog::Theory
         check_failed goal, &block
       end
     end
+    result
   end
     
-
+  # Starts (if +val+ is not given or true) or stops (if +val+ is false) implicit mode.
+  #
+  # In implicit mode you can start using infix functors without declaring them.
   def implicit val=true
     @implicit = val
 

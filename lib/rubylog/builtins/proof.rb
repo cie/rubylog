@@ -1,4 +1,4 @@
-require "rubylog/builtins/reflection"
+require File.expand_path __FILE__+"/../reflection"
 
 Rubylog.theory "Rubylog::ProofBuiltins", nil do
   include Rubylog::ReflectionBuiltins

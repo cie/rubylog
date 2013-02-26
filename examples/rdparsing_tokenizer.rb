@@ -10,6 +10,7 @@ theory do
   A[/\A[0-9]+\z/].atom(K).if K.is{A.to_i}
   "(#{A})".atom(K).if A.expr(K)
 
+  check "5".atom(5)
   check "5".expr(5)
   check "5+3*2".expr(11)
   check "1+2+3+4".expr(10)

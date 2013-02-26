@@ -12,4 +12,11 @@ class Rubylog::DSL::Thats < BasicObject
   def == *msg
     method_missing :==, *msg
   end
+
+  debug = true
+  if debug
+    def inspect
+      @messages
+    end
+  end
 end

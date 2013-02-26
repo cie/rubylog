@@ -1,6 +1,7 @@
 theory do
   check "asdf".is "asdf"
-  check { "a#{S}d" =~ /a.S.d/ }
+  check { "abc#{S}def" =~ /abc.S\[\].def/ }
+  check { "abc#{S[length: 1]}def" =~ /abc.S\[\d+\].def/ }
   check { "h#{S}o".is("hello").map{S} == ["ell"] }
   check { "#{Base}.#{Ext}".is("hello.rb").map{Base} == ["hello"] }
   
@@ -17,10 +18,14 @@ theory do
   check { "abc".is("#{A[/\A.\z/]}#{B}").map{"#{A}:#{B}"} == ["a:bc"] }
   check { "abc".is("#{A[length: 1]}#{B}").map{"#{A}:#{B}"} == ["a:bc"] }
 
+
+  # palindromes
   functor_for String, :palindrome
+
   S[empty?: true].palindrome!
   S[length: 1].palindrome!
   S[lambda{|s|s.length > 1}].palindrome.if S.is("#{A[length: 1]}#{B}#{A}").and B.palindrome
+
   check "".palindrome
   check "dd".palindrome
   check "aba".palindrome

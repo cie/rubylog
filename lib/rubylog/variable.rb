@@ -16,7 +16,11 @@ module Rubylog
     end
 
     def inspect
-      @name.to_s
+      if @guards.empty?
+        @name.to_s
+      else
+        "#{@name}#{@guards}"
+      end
     end
 
 

@@ -1,4 +1,4 @@
-load "./lib/rubylog/builtins/dcg.rb"
+require "./lib/rubylog/builtins/dcg.rb"
 theory do
 
   :sentence.means! :subject.and :verb.and :object

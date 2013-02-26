@@ -1,7 +1,7 @@
 class String
   RUBYLOG_VAR_START = "\u0091" # "\u00ab"
   RUBYLOG_VAR_END   = "\u0092" # "\u00bb"
-  RUBYLOG_VAR_REGEXP = /#{RUBYLOG_VAR_START}([^\[]+?)\[(.*?)\]#{RUBYLOG_VAR_END}/
+  RUBYLOG_VAR_REGEXP = /#{RUBYLOG_VAR_START}([^\[]+?)\[(\d*)\]#{RUBYLOG_VAR_END}/
 
   RubylogStringVariableGuards = [[]]
 

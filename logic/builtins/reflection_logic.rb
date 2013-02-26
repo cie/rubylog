@@ -1,4 +1,4 @@
-load "lib/rubylog/builtins/reflection.rb"
+load "./lib/rubylog/builtins/reflection.rb"
 
 theory do
   functor_for String, :likes, :drinks

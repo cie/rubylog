@@ -1,16 +1,21 @@
 = Rubylog - Prolog interpreter for ruby
 
-Rubylog is a Prolog-like language for Ruby implemented as a DSL. The language is inspired by {Jamis Buck}[http://weblog.jamisbuck.org/2006/10/28/prolog-in-ruby], and the implementation is based on {Yield Prolog}[http://yieldprolog.sourceforge.net/].
+Rubylog is a Prolog-like DSL for Ruby. The language is inspired by {Jamis
+Buck}[http://weblog.jamisbuck.org/2006/10/28/prolog-in-ruby], and the
+implementation is based on {Yield Prolog}[http://yieldprolog.sourceforge.net/],
+with lots of sintactic and semantic additions.
 
-== Installing
+== Getting started
+
+First, install the gem
 
   $ gem install rubylog
 
-Or, if you use +bundler+:
+or, if you use +bundler+, add this file to your +Gemfile+:
 
   gem 'rubylog', '~>1.0.0'
 
-== Using
+
 
 First, you have to create a theory and write your code in the block given to it:
 
