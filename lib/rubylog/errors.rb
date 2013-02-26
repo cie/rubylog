@@ -1,6 +1,9 @@
 module Rubylog
   class RubylogError < StandardError 
   end
+  
+  class SyntaxError < RubylogError
+  end
 
   class DiscontiguousPredicateError < RubylogError
   end
