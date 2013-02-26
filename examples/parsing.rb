@@ -1,3 +1,5 @@
+require "readline"
+
 theory do
   functor_for String, :term, :expr, :atom
 
@@ -16,8 +18,9 @@ theory do
   check "(5+3)/2".expr(4)
   check "(5+3(5)/2".expr(ANY).false
 
-  while k = gets
-    puts k
+  puts
+  while k = Readline.readline("> ", true)
+    k.chomp!
     puts k.expr(X).map{X}.first || "error"
   end
 
