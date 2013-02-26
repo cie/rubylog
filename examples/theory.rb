@@ -11,12 +11,12 @@ end
 
 Rubylog.theory "LikingTheory" do
   functor :likes
-  U.likes(D).if {|u,d| u.favorite == d}
+  U.likes(D).if {U.favorite == D}
 end
 
 Rubylog.theory "HavingTheory" do
   functor :has
-  U.has(D).if {|u,d| u.possessions.include? d}
+  U.has(D).if {U.possessions.include? D}
 end
 
 Rubylog.theory "DrinkingTheory" do

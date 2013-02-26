@@ -20,4 +20,10 @@ theory do
 
   check { all?(X.is(4)) { X < 5 } }
 
+  # variables
+  check A.is(ANY).and{ A == nil }
+  check A.is(4)  .and{ A == 4 }
+  check B.is(4)  .and{ A.is_a? Rubylog::Variable }
+  check B.is(ANY).and{ A.is_a? Rubylog::Variable }
+
 end

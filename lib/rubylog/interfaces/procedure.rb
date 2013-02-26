@@ -5,18 +5,23 @@ module Rubylog::Procedure
   def call *args
     catch :cut do
       each do |rule|
-        rule = rule.rubylog_compile_variables
-        head, body = rule[0], rule[1]
-        head.args.rubylog_unify(args) { 
-          begin
-            Rubylog.current_theory.print_trace 1, head, head.rubylog_variables_hash
-            body.prove { 
-              yield 
-            }
-          ensure
-            Rubylog.current_theory.print_trace -1
-          end
-        }
+        begin
+          rule = rule.rubylog_compile_variables
+          head, body = rule[0], rule[1]
+          Rubylog.current_theory.print_trace 1, head.args, "=", args
+          head.args.rubylog_unify(args) { 
+            begin
+              Rubylog.current_theory.print_trace 1, head, head.rubylog_variables_hash
+              body.prove { 
+                yield 
+              }
+            ensure
+              Rubylog.current_theory.print_trace -1
+            end
+          }
+        ensure
+          Rubylog.current_theory.print_trace -1
+        end
       end
     end
   end

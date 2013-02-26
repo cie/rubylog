@@ -1,4 +1,4 @@
-load "./lib/rubylog/builtins/reflection.rb"
+require "./lib/rubylog/builtins/reflection.rb"
 
 theory do
   functor_for String, :likes, :drinks
@@ -29,5 +29,12 @@ theory do
   #check A.variable("A")
   #check A.variable("B").false
   #check { A.variable(B).map{B} == ["A"] }
+  # You can use the fact that automatic variable resolution yields nil if the
+  # variable is undefined:
+  #
+  #     check A.is(ANY).and{ A }.false
+  #     check A.is(ANY).and{ not A }
+  #
+
 
 end

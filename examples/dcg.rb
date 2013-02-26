@@ -1,61 +1,35 @@
-$:.unshift File.dirname(__FILE__)+"/../lib"
-require 'rubylog'
-require 'rubylog/builtins/reflection'
-require 'readline'
+# This is a quick and dirty solution to replace Prolog's DCG syntax.
+# It is slow for long inputs. See examples/dcg2.rb for a more efficient algorithm (the same as Prolog's DCG).
 
-DrinkingTheory = Rubylog::Theory.new do
-  subject String
-  functor :likes, :has, :thirsty, :drinks
-  check_discontiguous false
+theory do
+  functor_for Array, :sentence, :subject, :object, :nominal_phrase, :noun, :verb, :article
 
-  'john'.likes! 'beer'
-  'john'.has! 'milk'
+  [*S,*V,*O].sentence.if S.subject.and V.verb.and O.object
+  S.subject.if S.nominal_phrase
+  O.object .if O.nominal_phrase
+  [*A,*N].nominal_phrase.if A.article.and N.noun
 
-  A.drinks(B).if(A.likes(B).and A.has(B))
-  A.drinks(B).if A.thirsty.and A.has(B)
-end
+  %w(a).article!
+  %w(the).article!
 
-MyDCG = Rubylog::Theory.new DrinkingTheory do
-  functor_for String, :means, :question, :assertion, :phrase, :word, :exec, :write
+  %w(dog).noun!
+  %w(cat).noun!
+  %w(mouse).noun!
 
-  "#{P}?".question(X).if P.phrase(X)
-  "#{P}.".assertion(X).if P.phrase(X)
-  
-  "#{A} and #{B}".phrase(X.and Y).if           A.phrase(X).and B.phrase(Y)
-  "#{A} or #{B}" .phrase(X.or  Y).if           A.phrase(X).and B.phrase(Y)
-  "#{A} if #{B}" .phrase(X.follows_from Y).if  A.phrase(X).and B.phrase(Y)
+  %w(chases).verb!
+  %w(eats).verb!
 
-  "#{A} likes #{B}" .phrase(X.likes(Y)).if  A.word(X).and B.word(Y)
-  "#{A} drinks #{B}".phrase(X.drinks(Y)).if A.word(X).and B.word(Y)
-  "#{A} has #{B}"   .phrase(X.has(Y)).if    A.word(X).and B.word(Y)
+  def check_passed goal; end
 
-  "#{L}".exec.if L.question(P) .and P.all A.assertion(P).all A.write
+  check %w(dog).noun
+  check %w(a dog).nominal_phrase
+  check %w(dog).nominal_phrase.false
+  check %w(the dog chases a cat).sentence
+  check %w(the dog chases a cat stuff).sentence.false
+  check %w(dog chases cat).sentence.false
+  check { %W(the #{S} chases the #{O}).sentence.map{[S,O]}.count == 9 }
 
-  A.write.if { puts A; true }
-
-  A.word(A).if A.is_not ":#{ANY}"
-  A.word(B).if A.is ":#{NAME}".and B.variable(NAME)
-
-  [:likes, :has, :drinks].each do |f|
-    A.send(f,B).fact.each do
-      AS.assertion(A.send(f,B)).each { puts AS; true }
-    end
-    A.send(f,B).follows_from(T).each do
-      AS.assertion(A.send(f,B).follows_from(T)).each { puts AS; true }
-    end
-  end
-
-  while (line = Readline.readline("-> ", true))
-    begin
-      prove line.exec or puts "Error."
-    rescue
-      puts $!
-    end
-  end
+  puts *S.sentence.map{S.join(" ")}
 
 
 end
-
-
-
-
