@@ -26,15 +26,11 @@ Rubylog.theory "Rubylog::LogicBuiltinsForCallable", nil do
       a.prove { b.prove { yield } }
     end
 
-    alias & and
-
     # Succeeds if either +a+ or +b+ succeeds.
     def or a, b
       a.prove { yield }
       b.prove { yield }
     end
-
-    alias | or
 
     # Succeeds if +a+ does not succeed.
     def false a
