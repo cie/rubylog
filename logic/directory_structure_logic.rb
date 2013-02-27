@@ -5,6 +5,7 @@ theory do
   functor :dir, :contains
   check_discontiguous false
 
+  ".git".dir!.contains! "Git repository"
   "bin".dir!.contains! "executables"
   "examples".dir!.contains! "examples and ideas for different applications of Rubylog"
   "lib".dir!.contains! "source code of Rubylog"
