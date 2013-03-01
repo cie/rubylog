@@ -1,8 +1,32 @@
 module Rubylog
 
+  # Returns the current theory.
+  #
+  # It is an internal method used
+  # * FileSystemBuiltins#follows_from and #fact during a demonstration
+  # * Rubylog::Procedure#call only for tracing during a demonstration
+  # * Object#rubylog_matches for tracing during a demonstration
+  # the theory
+  # * Rubylog::Variable#bind_to for tracing during a demonstration
+  #
   # @return [Rubylog::Theory] the current theory
   def self.current_theory
     Thread.current[:rubylog_current_theory]
+  end
+
+  def self.static_current_theory
+    current_theory
+  end
+
+  # Creates a new theory from a new object or optionally from an existing source
+  # object
+  # @return the new theory
+  def self.create_theory source_object=Object.new
+    class << source_object
+      include Rubylog::Theory
+    end
+    source_object.initialize_theory
+    source_object
   end
 
   # Create a new Rubylog theory or modify an existing one.
@@ -45,7 +69,7 @@ module Rubylog
     # use name or original theory
     case full_name
     when nil
-      theory = Object.new.extend Rubylog::Theory
+      theory = create_theory
     when Rubylog::Theory
       theory=full_name
     else
@@ -54,7 +78,7 @@ module Rubylog
       parent = parent_names.inject(block.binding.eval("Module.nesting[0]") || Object)  {|a,b| a.const_get b}
 
       if not parent.const_defined?(name)
-        theory = Object.new.extend Rubylog::Theory
+        theory = create_theory
         parent.const_set name, theory
       else
         theory = parent.const_get name
@@ -65,9 +89,9 @@ module Rubylog
     # include the base
     case base
     when false
-      theory.include Rubylog::DefaultBuiltins
+      theory.include_theory Rubylog::DefaultBuiltins
     when Rubylog::Theory
-      theory.include base
+      theory.include_theory base
     when nil
     end
 
@@ -89,10 +113,11 @@ module Rubylog::Theory
       include Rubylog::DSL::Variables
     end
     theory.initialize_theory
+    theory.include_theory Rubylog::DefaultBuiltins
+    Thread.current[:rubylog_current_theory] = theory
   end
 
   def self.included class_or_module
-    p :hello
     class_or_module.send :include, Rubylog::DSL::Variables
   end
 
@@ -158,32 +183,53 @@ module Rubylog::Theory
   end
   private :primitives
 
-  def with_context &block
+  def with_implicit
     begin
-      # save current theory
-      old_theory = Thread.current[:rubylog_current_theory]
-      Thread.current[:rubylog_current_theory] = self
-
+      @with_implicit = true
       # start implicit mode
       if @implicit
         start_implicit
       end
 
-      # call the block
-      return instance_exec &block
-    ensure 
-      # restore current theory
-      Thread.current[:rubylog_current_theory] = old_theory
-
+      yield
+    ensure
+      @with_implicit = false
       # stop implicit mode
       if @implicit_started
         stop_implicit
       end
     end
   end
+
+  def with_current_theory
+    begin
+      # save current theory
+      old_theory = Thread.current[:rubylog_current_theory]
+      Thread.current[:rubylog_current_theory] = self
+
+      # call the block
+      yield
+    ensure 
+      # restore current theory
+      Thread.current[:rubylog_current_theory] = old_theory
+    end
+  end
+
+  def with_static_current_theory
+    with_current_theory do
+      yield
+    end
+  end
+
+  def amend &block
+    with_static_current_theory do
+      with_implicit do
+        return instance_exec &block
+      end
+    end
+  end
   
-  alias amend with_context
-  alias eval with_context
+  alias eval amend
 
 
   # directives
@@ -251,7 +297,7 @@ module Rubylog::Theory
     end
   end
 
-  def include *theories
+  def include_theory *theories
     theories.each do |theory|
 
       @included_theories << theory
@@ -281,7 +327,7 @@ module Rubylog::Theory
 
   def explain c
     require "rubylog/because"
-    include Rubylog::Because unless included_theories.include? Rubylog::Because
+    include_theory Rubylog::Because unless included_theories.include? Rubylog::Because
     expl = Rubylog::Variable.new :_expl
     c.because(expl).solve do
       return c.because(expl.value)
@@ -339,7 +385,7 @@ module Rubylog::Theory
     @implicit = val
 
     if val
-      if Thread.current[:rubylog_current_theory] == self
+      if @with_implicit
         start_implicit
       end
     else
@@ -370,18 +416,19 @@ module Rubylog::Theory
 
 
   def solve goal, &block
-    with_context do
+    with_current_theory do
       goal = goal.rubylog_compile_variables 
       goal.prove { block.call_with_rubylog_variables(goal.rubylog_variables) }
     end
   end
 
   def true? goal=nil, &block
-    if goal.nil? 
-      raise ArgumentError, "No goal given" if block.nil?
-      goal = with_context &block
-    end
-    with_context do
+    #if goal.nil? 
+      #raise ArgumentError, "No goal given" if block.nil?
+      #goal = with_current_theory &block
+    #end
+
+    with_current_theory do
       goal = goal.rubylog_compile_variables
       goal.prove { return true }
     end
@@ -422,12 +469,13 @@ module Rubylog::Theory
   end
 
   def start_implicit
+    theory = self
     [@public_interface, Rubylog::Variable].each do |m|
       m.send :define_method, :method_missing do |m, *args|
         fct = Rubylog::DSL.normalize_functor(m) 
         return super if fct.nil?
         raise NameError, "'#{fct}' method already exists" if respond_to? fct
-        Rubylog.current_theory.functor fct
+        theory.functor fct
         self.class.send :include, Rubylog::DSL.functor_module(fct)
         send m, *args
       end

@@ -11,5 +11,5 @@ end
 
 
 Rubylog::DefaultBuiltins.amend do
-  include Rubylog::FileSystemBuiltins
+  include_theory Rubylog::FileSystemBuiltins
 end

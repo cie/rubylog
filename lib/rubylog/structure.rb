@@ -49,15 +49,16 @@ module Rubylog
     include Rubylog::Callable
 
     def prove
+      theory = Rubylog.static_current_theory
       begin
-        Rubylog.current_theory.print_trace 1, self, rubylog_variables_hash
-        predicate = Rubylog.current_theory[indicator]
+        theory.print_trace 1, self, rubylog_variables_hash
+        predicate = theory[indicator]
         raise Rubylog::ExistenceError, indicator.inspect if not predicate
         count = 0
         predicate.call(*@args) { yield; count+=1 }
         count
       ensure
-        Rubylog.current_theory.print_trace -1
+        theory.print_trace -1
       end
     end
     

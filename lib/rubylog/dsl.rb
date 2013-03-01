@@ -19,6 +19,8 @@ module Rubylog::DSL
   end
 
   def self.functor_module f
+    
+
     @functor_modules[f] ||= Module.new do
       define_method f do |*args, &block|
         args << block if block
@@ -28,14 +30,14 @@ module Rubylog::DSL
       f_bang =  :"#{f}!"
       define_method f_bang do |*args, &block|
         args << block if block
-        Rubylog.current_theory.assert Rubylog::Structure.new(f, self, *args), :true
+        Rubylog.static_current_theory.assert Rubylog::Structure.new(f, self, *args), :true
         self
       end
 
       f_qmark = :"#{f}?"
       define_method f_qmark do |*args, &block|
         args << block if block
-        Rubylog.current_theory.true? Rubylog::Structure.new(f, self, *args)
+        Rubylog.static_current_theory.true? Rubylog::Structure.new(f, self, *args)
       end
     end
   end
@@ -51,16 +53,14 @@ module Rubylog::DSL
         f_bang =  :"#{f}!"
         define_method f_bang do |*args, &block|
           args << block if block
-          # TODO consider self.assert
-          Rubylog.current_theory.assert Rubylog::Structure.new(f, *args), :true
+          assert Rubylog::Structure.new(f, *args), :true
           self
         end
 
         f_qmark = :"#{f}?"
         define_method f_qmark do |*args, &block|
           args << block if block
-          #TODO consider self.true?
-          Rubylog.current_theory.true? Rubylog::Structure.new(f, *args)
+          true? Rubylog::Structure.new(f, *args)
         end
       end
     end

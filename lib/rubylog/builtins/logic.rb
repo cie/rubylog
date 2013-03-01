@@ -99,11 +99,11 @@ Rubylog.theory "Rubylog::LogicBuiltinsForCallable", nil do
 end
 
 Rubylog.theory "Rubylog::LogicBuiltins", nil do
-  include Rubylog::NullaryLogicBuiltins
-  include Rubylog::LogicBuiltinsForCallable
+  include_theory Rubylog::NullaryLogicBuiltins
+  include_theory Rubylog::LogicBuiltinsForCallable
 end
 
 Rubylog::DefaultBuiltins.amend do
-  include Rubylog::LogicBuiltins
+  include_theory Rubylog::LogicBuiltins
 end
 

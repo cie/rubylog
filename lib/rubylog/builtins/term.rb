@@ -43,5 +43,5 @@ Rubylog.theory "Rubylog::TermBuiltins", nil do
 end
 
 Rubylog::DefaultBuiltins.amend do
-  include Rubylog::TermBuiltins
+  include_theory Rubylog::TermBuiltins
 end

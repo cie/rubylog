@@ -27,16 +27,17 @@ class Symbol
   include Rubylog::Callable
 
   def prove
+    theory = Rubylog.static_current_theory
     begin
-      Rubylog.current_theory.print_trace 1, self, rubylog_variables_hash
+      theory.print_trace 1, self, rubylog_variables_hash
 
-      predicate = Rubylog.current_theory[[self,0]]
+      predicate = theory[[self,0]]
       raise Rubylog::ExistenceError, indicator if not predicate
 
       predicate.call(*args) { yield }
 
     ensure
-      Rubylog.current_theory.print_trace -1
+      theory.print_trace -1
     end
   end
 

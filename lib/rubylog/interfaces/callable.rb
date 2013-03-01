@@ -1,18 +1,19 @@
 module Rubylog::Callable
-  # should yield for each possible solution of the term
-  #def prove
-  #  raise "abstract method called"
-  #end
+  # Clients should implement this method. 
+  # Yields for each possible solution of the predicate
+  def prove
+    raise "#{self.class} should implement #prove"
+  end
 
   def true?
-    Rubylog.current_theory.true? self
+    Rubylog.static_current_theory.true? self
   end
 
   def solve
     if block_given?
-      Rubylog.current_theory.solve(self) {|*a| yield *a}
+      Rubylog.static_current_theory.solve(self) {|*a| yield *a}
     else
-      Rubylog.current_theory.solve(self) {|*a|}
+      Rubylog.static_current_theory.solve(self) {|*a|}
     end
   end
 end
