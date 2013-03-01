@@ -12,10 +12,40 @@ module Rubylog
   #     theory "MyTheory" do
   #       # ...
   #     end
-  def self.theory full_name=nil, *args, &block
+  #      
+  #     # or
+  #       
+  #     MyTheory = theory do
+  #       # ...
+  #     end
+  #
+  # Later you can modify the theory:
+  #     theory "MyTheory" do 
+  #     # or
+  #     theory MyTheory do
+  #     # or
+  #     MyTheory.amend do
+  #     # or
+  #     MyTheory.eval do
+  #       # ...
+  #     end
+  #
+  # You can specify which theory to use as a base:
+  #
+  #     theory "MyTheory", MyOtherTheory do 
+  #     end
+  #
+  # The default base is Rubylog::DefaultBuiltins. To use no default base,
+  # specify +nil+. Then you will not have builtins like +and+.
+  #
+  #     theory "MyTheory", nil do 
+  #     end
+  #
+  def self.theory full_name=nil, base=false, &block
+    # use name or original theory
     case full_name
     when nil
-      theory = Rubylog::Theory.new
+      theory = Object.new.extend Rubylog::Theory
     when Rubylog::Theory
       theory=full_name
     else
@@ -24,7 +54,7 @@ module Rubylog
       parent = parent_names.inject(block.binding.eval("Module.nesting[0]") || Object)  {|a,b| a.const_get b}
 
       if not parent.const_defined?(name)
-        theory = Rubylog::Theory.new *args
+        theory = Object.new.extend Rubylog::Theory
         parent.const_set name, theory
       else
         theory = parent.const_get name
@@ -32,17 +62,44 @@ module Rubylog
       end
     end
 
+    # include the base
+    case base
+    when false
+      theory.include Rubylog::DefaultBuiltins
+    when Rubylog::Theory
+      theory.include base
+    when nil
+    end
+
+    # execute the block
     theory.amend &block
+
+    # return the theory
     theory
   end
 
 end
 
-# The Theory class represents a collection of rules.
-class Rubylog::Theory
 
-  
-  include Rubylog::DSL::Variables
+# The Theory class represents a collection of rules.
+module Rubylog::Theory
+
+  def self.extended theory
+    class << theory
+      include Rubylog::DSL::Variables
+    end
+    theory.initialize_theory
+  end
+
+  def self.included class_or_module
+    p :hello
+    class_or_module.send :include, Rubylog::DSL::Variables
+  end
+
+  def initialize
+    initialize_theory
+    super
+  end
   
   # Call the given block with variables automatically resolved
   def self.with_vars vars
@@ -57,13 +114,8 @@ class Rubylog::Theory
 
   attr_reader :public_interface, :included_theories, :prefix_functor_modules
 
-  def initialize base=Rubylog::DefaultBuiltins, &block
+  def initialize_theory
     clear
-    include base if base
-
-    if block
-      with_context &block
-    end
   end
 
   def [] indicator
