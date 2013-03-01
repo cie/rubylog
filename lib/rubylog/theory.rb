@@ -123,6 +123,7 @@ module Rubylog::Theory
 
   def initialize
     initialize_theory
+    include_theory Rubylog::DefaultBuiltins
     super
   end
   
