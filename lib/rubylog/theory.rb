@@ -18,6 +18,10 @@ module Rubylog
     current_theory
   end
 
+  def self.static_current_theory= theory
+    Thread.current[:rubylog_current_theory] = theory
+  end
+
   # Creates a new theory from a new object or optionally from an existing source
   # object
   # @return the new theory
