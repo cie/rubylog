@@ -130,7 +130,11 @@ module Rubylog::Theory
   def self.with_vars vars
     begin
       old_vars = Thread.current[:rubylog_current_variables]
-      Thread.current[:rubylog_current_variables] = vars
+      if old_vars
+        Thread.current[:rubylog_current_variables] = old_vars + vars
+      else
+        Thread.current[:rubylog_current_variables] = vars
+      end
       yield
     ensure
       Thread.current[:rubylog_current_variables] = old_vars
