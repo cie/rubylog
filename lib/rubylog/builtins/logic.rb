@@ -40,8 +40,9 @@ Rubylog.theory "Rubylog::LogicBuiltinsForCallable", nil do
 
     # ruby iterator predicate allegories
 
-    # For each successful execution of +a+, executes +b+. If any of +b+'s
-    # executions fails, it fails, otherwise it succeeds.
+    # Succeeds if for each successful execution of +a+, there exists a solution of +b+.
+    #
+    # Equivalent with <tt>a.and(b.false).false</tt>
     def all a,b
       a.prove {
         stands = false; 
@@ -51,16 +52,23 @@ Rubylog.theory "Rubylog::LogicBuiltinsForCallable", nil do
       yield
     end
 
-    # Equivalent with +a.all(b).and b.all(a)+
+    # Succeeds if a and b are equivalent statements
+    #
+    # Equivalent with <tt>a.all(b).and b.all(a)</tt>
     def iff a,b
       all(a,b) { all(b,a) { yield } }
     end
 
-    # 
+    # Succeeds if for any solution of +a+, +b+ is solveable.
+    #
+    # Equivalent with <tt>a.and(b).any</tt>
     def any a,b
       a.prove { b.prove { yield; return } }
     end
 
+    # Succeeds if there exists one solution of +a+ where +b+ is true.
+    #
+    # Equivalent with <tt>a.and(b).one</tt>
     def one a,b
       stands = false
       a.prove { 
@@ -72,15 +80,23 @@ Rubylog.theory "Rubylog::LogicBuiltinsForCallable", nil do
       yield if stands
     end
 
+    # Succeeds if there is no solution of both +a+ and +b+
+    #
+    # Equivalent with <tt>a.and(b).false</tt>
     def none a,b
       a.prove { b.prove { return } }
       yield 
     end
 
+    # Succeeds if there is a solution of +a+
+    #
+    # Equivalent with <tt>a.false.false</tt>
     def any a
       a.prove { yield; return }
     end
 
+    # Succeeds if there is exactly one solution of +a+
+    #
     def one a
       stands = false
       a.prove { 

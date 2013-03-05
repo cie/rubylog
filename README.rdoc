@@ -5,6 +5,8 @@ Buck}[http://weblog.jamisbuck.org/2006/10/28/prolog-in-ruby], and the
 implementation is based on {Yield Prolog}[http://yieldprolog.sourceforge.net/],
 with lots of sintactic and semantic additions.
 
+See the {wiki}[https://github.com/cie/rubylog/wiki] for online documentation.
+
 == Getting started
 
 First, install the gem
@@ -45,7 +47,7 @@ Structures are in a different order than they are in prolog:
   functor_for String, :likes
   'John'.likes('beer')
 
-which would be +likes('John','beer')+ in prolog.
+which would be <tt>likes('John','beer')</tt> in prolog.
 
 Lists are just Ruby arrays:
 
@@ -66,7 +68,7 @@ You can assert a rule with the +if+ method:
 
 This would be +drinks(X,Y) :- has(X,Y), likes(X,Y)+ in Prolog.
 
-You can assert facts with +if(:true)+, or, as a shorthand you can use the bang
+You can assert facts with <tt>if(:true)</tt>, or, as a shorthand you can use the bang
 syntax:
 
   'John'.likes! 'milk'                         
@@ -89,21 +91,24 @@ Nullary predicates are symbols, similar to Prolog:
 
 Some built-in predicates and their Prolog equivalents:
 
-  Rubylog  Prolog
-  -------  ------ 
-  :true     true
-  :fail     fail
-  .and      ,
-  .or       ;
-  :false    \+
-  .is       =
-  .is_not   =/=
-  .in       member
-  :cut!     !
+  Prolog     Rubylog  
+  ------     -------  
+   true/0    :true    
+   fail/0    :fail    
+   ','/2     .and()
+   ';'/2     .or()
+   '\+'/1    .false   
+   '='/2     .is()      
+   '=/='/2   .is_not()  
+   member/2  .in()      
+   '!'/0     :cut!    
 
 There are some new ones:
 
-  is_not, not_in, all, any, one, none, iff
+  not_in, all, any, one, none, iff
+
+You can see reference of these in <tt>lib/rubylog/builtins/logic.rb</tt> and <tt>lib/rubylog/builtins/term.rb</tt>
+
 
 === Unification
 
@@ -180,23 +185,24 @@ variables are substituted with their respecitve value (or +nil+ if they are not
 bound).
 
 All built-in rubylog predicates are clean logical programming predicates witout
-a side-effect. If you want some side-effect, you always go into native mode.
+a side-effect. If you want some side-effects, you always go into native mode.
 
 === Rubylog as a test suite
 
 You can write simple tests using the +check+ method:
 
   theory do
-    check :true
+    check :true.or :false
+    check A.is(3).and A.in [1,2,3]
     check { 5+5 == 10 }
   end
 
-You sould put this file in +"./logic/something\_logic.rb"+. Then you can run it
+You sould put this file in <tt>"./logic/something\_logic.rb"</tt>. Then you can run it
 with 
 
   rubylog logic/something_logic.rb
 
-Or you can run all files in +logic/**/*_logic.rb+ with
+Or you can run all files in <tt>logic/**/*\_logic.rb</tt> with
 
   rubylog
 
@@ -240,18 +246,14 @@ You can make some metaprogramming with Rubylog
 == Contributing
 
 === To the language
-* Create an issue on the {issue tracker}[https://github.com/cie/rubylog/issues].
-* We will discuss it.
-* Maybe I'll introduce it.
 
-=== To the implementation
+* Post your own examples to the {wiki}[https://github.com/cie/rubylog/wiki/Examples].
+* Improve others' examples.
+* If you have a suggestion for the language, submit an issue.
+
+=== Reporting bugs or requesting features
+
 * Create an issue on the {issue tracker}[https://github.com/cie/rubylog/issues].
-* We will discuss it.
-* Maybe I'll implement it.
-* If not, fork the project.
-* Implement it.
-* Have fun.
-* Post a pull request.
 
 == Copyright
 
