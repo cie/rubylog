@@ -14,6 +14,9 @@ module Rubylog
   class BuiltinPredicateError < RubylogError
   end
 
+  class NonAssertableError < RubylogError
+  end
+
   class ExistenceError < RubylogError
   end
 

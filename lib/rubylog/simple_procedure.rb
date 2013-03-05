@@ -3,6 +3,9 @@ class Rubylog::SimpleProcedure < Array
 
   alias assertz <<
   alias asserta unshift
+  alias retracta shift
+  alias retractz pop
+
 end
 
 

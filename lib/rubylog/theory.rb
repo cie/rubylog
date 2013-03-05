@@ -147,6 +147,7 @@ module Rubylog::Theory
   end
 
   attr_reader :public_interface, :included_theories, :prefix_functor_modules
+  attr_accessor :last_predicate
 
   def initialize_theory
     clear
@@ -423,6 +424,30 @@ module Rubylog::Theory
     @last_predicate = predicate
   end
 
+  def retract head
+    indicator = head.indicator
+    predicate = @database[indicator]
+    raise Rubylog::ExistenceError, predicate unless predicate
+    check_assertable predicate, head, body
+
+    head = head.rubylog_compile_variables
+
+    index = nil
+    result = nil
+    catch :retract do
+      predicate.each_with_index do |rule, i|
+        rule_head = rule[0]
+        head.rubylog_unify rule_head do
+          index = i
+          result = rule
+          throw :retract
+        end
+      end
+      return nil
+    end
+
+  end
+
 
   def solve goal, &block
     with_current_theory do
@@ -468,6 +493,7 @@ module Rubylog::Theory
 
 
   def check_assertable predicate, head, body
+    raise Rubylog::ExistenceError, head.indicator.inspect, caller[2..-1] unless predicate
     raise Rubylog::NonAssertableError, head.indicator.inspect, caller[2..-1] unless predicate.respond_to? :assertz
     raise Rubylog::DiscontiguousPredicateError, head.indicator.inspect, caller[2..-1] if check_discontiguous? and not predicate.empty? and predicate != @last_predicate and not predicate.discontiguous?
   end
