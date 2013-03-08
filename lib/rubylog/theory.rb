@@ -387,6 +387,7 @@ module Rubylog::Theory
     end
     result
   end
+
     
   # Starts (if +val+ is not given or true) or stops (if +val+ is false) implicit mode.
   #
@@ -417,6 +418,7 @@ module Rubylog::Theory
     predicate = @database[indicator]
     if predicate
       check_assertable predicate, head, body
+      check_not_discontiguous predicate, head, body
     else
       predicate = create_procedure indicator
     end
@@ -427,7 +429,7 @@ module Rubylog::Theory
   def retract head
     indicator = head.indicator
     predicate = @database[indicator]
-    raise Rubylog::ExistenceError, predicate unless predicate
+    check_exists predicate, head
     check_assertable predicate, head, body
 
     head = head.rubylog_compile_variables
@@ -495,11 +497,16 @@ module Rubylog::Theory
 
   protected
 
+  def check_exists predicate, head
+    raise Rubylog::ExistenceError, head.indicator.inspect, caller[3..-1] unless predicate
+  end
+
+  def check_not_discontiguous predicate, head, body
+    raise Rubylog::DiscontiguousPredicateError, head.indicator.inspect, caller[2..-1] if check_discontiguous? and not predicate.empty? and predicate != @last_predicate and not predicate.discontiguous?
+  end
 
   def check_assertable predicate, head, body
-    raise Rubylog::ExistenceError, head.indicator.inspect, caller[2..-1] unless predicate
     raise Rubylog::NonAssertableError, head.indicator.inspect, caller[2..-1] unless predicate.respond_to? :assertz
-    raise Rubylog::DiscontiguousPredicateError, head.indicator.inspect, caller[2..-1] if check_discontiguous? and not predicate.empty? and predicate != @last_predicate and not predicate.discontiguous?
   end
     
   def create_procedure indicator

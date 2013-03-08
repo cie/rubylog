@@ -20,4 +20,7 @@ theory do
   check ANY.perfect.assumed.and 4.perfect
   check ANY.perfect.assumed.and 17.perfect
 
+  check 4.divides(6).rejected.and 6.perfect
+  check 3.divides(6).rejected.and 6.perfect.false
+  check 2.divides(20).rejected.and 20.perfect
 end

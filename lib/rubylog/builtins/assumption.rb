@@ -22,23 +22,24 @@ Rubylog.theory "Rubylog::SuppositionBuiltins", nil do
 
   end
 
-  functor :assumed, :ignored, :together
+  functor :assumed, :rejected, :revoked, :assumed_if
 
-  A.assumed.if proc {
+  A.assumed.if A.assumed_if :true
+  A.rejected.if A.assumed_if :cut!.and :fail
+
+  H.assumed_if(B).if proc {
+    raise Rubylog::InstantiationError, [:assumed_if, H, B] if !H or !B
     theory = ::Rubylog.current_theory
+    predicate = theory[H.indicator]
 
-    original_last_predicate = theory.last_predicate
-    theory.last_predicate = theory[A.indicator]
+    theory.check_exists predicate, H
 
-    theory.assert A 
-
-    theory.last_predicate = original_last_predicate
-
+    predicate.asserta Rubylog::Structure.new(:-, H, B)
+    
     true
   }.ensure {
     theory = ::Rubylog.current_theory
-
-    theory[A.indicator].retractz 
+    theory[H.indicator].retracta
   }
 
 end
