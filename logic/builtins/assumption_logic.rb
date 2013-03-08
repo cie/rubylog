@@ -23,4 +23,29 @@ theory do
   check 4.divides(6).rejected.and 6.perfect
   check 3.divides(6).rejected.and 6.perfect.false
   check 2.divides(20).rejected.and 20.perfect
+
 end
+
+theory do
+  functor_for String, :likes
+
+  'John'.likes! 'milk'
+  'John'.likes! 'beer'
+
+  check { 'John'.likes(A).map{A} == ['milk','beer'] }
+  check { 
+    'John'.likes('milk').revoked.and('John'.likes(A)) \
+    .map{A} == ['beer'] }
+  check { 
+    'John'.likes('beer').revoked.and('John'.likes(A)) \
+    .map{A} == ['milk'] }
+  check { 
+    'John'.likes('water').revoked.false }
+  check { 
+    'John'.likes(X).revoked.map{X} == ['milk','beer'] }
+  check { 'John'.likes(A).map{A} == ['milk','beer'] }
+
+
+end
+
+

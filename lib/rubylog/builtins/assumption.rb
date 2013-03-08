@@ -42,6 +42,32 @@ Rubylog.theory "Rubylog::SuppositionBuiltins", nil do
     theory[H.indicator].retracta
   }
 
+  class << primitives
+    def revoked h
+      h = h.rubylog_dereference
+      raise Rubylog::InstantiationError, [:revoked, h] if h.is_a? Rubylog::Variable
+      raise Rubylog::TypeError, [:revoked, h] unless h.respond_to? :indicator
+
+      predicate = ::Rubylog.current_theory[h.indicator]
+
+      (0...predicate.count).each do |i|
+        r = predicate.delete_at(i)
+        begin
+          rule = r.rubylog_compile_variables
+          head, body = rule[0], rule[1]
+          head.args.rubylog_unify h.args do
+            body.prove do
+              yield
+            end
+          end
+        ensure
+          predicate.insert(i, r)
+        end
+      end
+    end
+  end
+
+
 end
 
 Rubylog::DefaultBuiltins.amend do
