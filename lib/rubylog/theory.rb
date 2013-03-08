@@ -490,7 +490,11 @@ module Rubylog::Theory
     if @trace.respond_to? :call
       @trace.call @trace_levels, *args if not args.empty?
     else
-      puts "  "*@trace_levels + args.map{|a|a.rubylog_deep_dereference.to_s}.join(" ") if not args.empty?
+      if not args.empty?
+        puts "  "*@trace_levels + args.map{|a|a.rubylog_deep_dereference.to_s}.join(" ") 
+      else
+        puts "  "*(@trace_levels-1) + "*"
+      end
     end
     @trace_levels += level
   end
