@@ -13,4 +13,6 @@ theory do
   check { 5.is(A, :-, 4).map{A} == [9] }
 
 
+  check A.is(5).and B.is(3).and C.is(2).and A.is(C, :+, B)
+
 end
