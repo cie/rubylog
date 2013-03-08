@@ -5,6 +5,7 @@ end
 
 require File.dirname(__FILE__)+"/logic"
 require File.dirname(__FILE__)+"/term"
+require File.dirname(__FILE__)+"/arithmetics"
 
 
 
