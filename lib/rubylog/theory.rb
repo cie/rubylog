@@ -452,7 +452,9 @@ module Rubylog::Theory
   def solve goal, &block
     with_current_theory do
       goal = goal.rubylog_compile_variables 
-      goal.prove { block.call_with_rubylog_variables(goal.rubylog_variables) }
+      catch :cut do
+        goal.prove { block.call_with_rubylog_variables(goal.rubylog_variables) }
+      end
     end
   end
 
@@ -464,7 +466,9 @@ module Rubylog::Theory
 
     with_current_theory do
       goal = goal.rubylog_compile_variables
-      goal.prove { return true }
+      catch :cut do
+        goal.prove { return true }
+      end
     end
     false
   end
