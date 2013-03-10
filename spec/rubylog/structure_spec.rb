@@ -1,8 +1,5 @@
 require 'rubylog'
 
-theory "Vars" do
-end
-
 describe "clauses" do
   it "can be created" do
     (:john.is_happy).should be_kind_of Rubylog::Term

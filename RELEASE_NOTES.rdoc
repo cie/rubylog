@@ -2,6 +2,7 @@
 * Backwards incompatibilities
   * <tt>Theory#include</tt> became <tt>Theory#include\_module</tt>
   * Theory became a module
+  * <tt>Theory#eval</tt> is removed
 * Features 
   * Rspec integration
 

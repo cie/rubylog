@@ -14,7 +14,6 @@ module Rubylog::TheoryModules
       end
     end
 
-    alias eval amend
   end
 end
 
