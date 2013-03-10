@@ -3,9 +3,6 @@
 module Rubylog
 end
 
-# rtl
-require 'set'
-
 dir = File.dirname(__FILE__) + "/"
 
 # interfaces
