@@ -24,7 +24,7 @@ class Proc
     vars ||= @rubylog_variables
     raise Rubylog::InvalidStateError, "variables not available" if not vars
 
-    Rubylog::Theory.with_vars vars do
+    Rubylog::TheoryModules::DynamicMode.with_vars vars do
       return call
     end
     # to pass arguments:
