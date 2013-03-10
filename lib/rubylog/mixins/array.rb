@@ -1,32 +1,32 @@
 module Rubylog
   # for the future
-  def self.unify_arrays a, a_start, a_end, b, b_start, b_end
-    case
-    when (a_start > a_end and b_start > b_end)
-      yield
-    when (a_start > a_end or b_start > b_end)
-      return
-    when (a[a_start].is_a? Rubylog::DSL::ArraySplat and b[b_start].is_a? Rubylog::DSL::ArraySplat)
-      raise "not implemented"
-    when (a[a_start].is_a? Rubylog::DSL::ArraySplat)
-      # A=[]
-      a[a_start].var.rubylog_unify [] do
-        unify_arrays(a, a_start+1, a_end, b, b_start, b_end) { yield }
-      end
+  #def self.unify_arrays a, a_start, a_end, b, b_start, b_end
+    #case
+    #when (a_start > a_end and b_start > b_end)
+      #yield
+    #when (a_start > a_end or b_start > b_end)
+      #return
+    #when (a[a_start].is_a? Rubylog::DSL::ArraySplat and b[b_start].is_a? Rubylog::DSL::ArraySplat)
+      #raise Rubylog::NotImplementedError.new Rubylog::Structure.new(:is, a, b)
+    #when (a[a_start].is_a? Rubylog::DSL::ArraySplat)
+      ## A=[]
+      #a[a_start].var.rubylog_unify [] do
+        #unify_arrays(a, a_start+1, a_end, b, b_start, b_end) { yield }
+      #end
 
-      # A=[_X, *_Y]
-      new_arr = [Rubylog::Variable.new, Rubylog::DSL::ArraySplat.new(Rubylog::Variable.new)]
-      a[a_start].var.rubylog_unify new_arr do
-        unify_arrays(a[a_start].var, a_start+1, a_end, b, b_start, b_end) { yield }
-      end
-    when (b[b_start].is_a? Rubylog::DSL::ArraySplat)
-      raise "not implemented"
-    else
-      a[a_start].rubylog_unify b[b_start] do 
-        unify_arrays(a, a_start+1, a_end, b, b_start+1, b_end) { yield }
-      end
-    end
-  end
+      ## A=[_X, *_Y]
+      #new_arr = [Rubylog::Variable.new, Rubylog::DSL::ArraySplat.new(Rubylog::Variable.new)]
+      #a[a_start].var.rubylog_unify new_arr do
+        #unify_arrays(a[a_start].var, a_start+1, a_end, b, b_start, b_end) { yield }
+      #end
+    #when (b[b_start].is_a? Rubylog::DSL::ArraySplat)
+      #raise "not implemented"
+    #else
+      #a[a_start].rubylog_unify b[b_start] do 
+        #unify_arrays(a, a_start+1, a_end, b, b_start+1, b_end) { yield }
+      #end
+    #end
+  #end
 end
 
 class Array

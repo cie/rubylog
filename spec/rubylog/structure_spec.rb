@@ -1,6 +1,9 @@
-require 'rubylog'
+require 'spec_helper'
 
-describe "clauses" do
+describe Rubylog::Structure, :rubylog=>true do
+
+  functor_for Symbol, :is_happy, :likes, :in, :%
+
   it "can be created" do
     (:john.is_happy).should be_kind_of Rubylog::Term
     (:john.likes :beer).should be_kind_of Rubylog::Term
@@ -8,19 +11,23 @@ describe "clauses" do
     (:john.likes Drink).should be_kind_of Rubylog::Term
     (:john.likes :drinking.in :bar).should be_kind_of Rubylog::Term
   end
+
   it "forbids non-declared names" do
     lambda { :john.something_else }.should raise_error(NoMethodError)
   end
+
   it "also work with operators" do
     (:is_happy%1).should be_kind_of Rubylog::Term
     (A%B).should be_kind_of Rubylog::Term
   end
+
   it "can be asked for their functor" do
     (:john.is_happy).functor.should == :is_happy
     (:is_happy%1).functor.should == :%
     (A%1).functor.should == :%
     (:john.likes :drinking.in :bar).functor.should == :likes
   end
+
   it "can be indexed" do
     (:john.is_happy)[0].should == :john
     (:john.likes :beer)[0].should == :john
@@ -29,6 +36,7 @@ describe "clauses" do
     (:john.likes(:cold, :beer))[1..2].should == [:cold,:beer]
     (:john.likes :drinking.in :bar)[1].should == (:drinking.in :bar)
   end
+
   it "can be asked for their args" do
     (:john.is_happy).args.should == [:john]
     (:john.likes :beer).args.should == [:john, :beer]
@@ -69,11 +77,19 @@ describe "clauses" do
     (:john.likes :drinking,:beer).arity.should == 3
     (:john.likes :drinking.in :bar).arity.should == 2
   end
-  it "can tell their descriptor" do
-    (:john.is_happy).desc.should == [:is_happy,1]
-    (:john.likes :beer).desc.should == [:likes,2]
-    (:john.likes :drinking,:beer).desc.should == [:likes,3]
-    (:john.likes :drinking.in :bar).desc.should == [:likes,2]
+
+  it "can tell their indicator" do
+    (:john.is_happy).indicator.should == [:is_happy,1]
+    (:john.likes :beer).indicator.should == [:likes,2]
+    (:john.likes :drinking,:beer).indicator.should == [:likes,3]
+    (:john.likes :drinking.in :bar).indicator.should == [:likes,2]
   end
+
+  it "can humanize the indicator" do
+    Rubylog::Structure.humanize_indicator([:and,2]).should == ".and()"
+    Rubylog::Structure.humanize_indicator([:true,0]).should == ":true"
+    Rubylog::Structure.humanize_indicator([:is,4]).should == ".is(,,)"
+  end
+
 end
 

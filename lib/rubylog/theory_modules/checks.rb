@@ -4,7 +4,7 @@ module Rubylog::TheoryModules
     end
 
     def check_failed goal
-      raise Rubylog::CheckFailed.new, goal, caller[1..-1]
+      raise Rubylog::CheckFailed.new(goal)
     end
 
     def check_raised_exception goal, exception

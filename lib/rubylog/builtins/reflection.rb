@@ -11,7 +11,7 @@ Rubylog.theory "Rubylog::ReflectionBuiltinsForStructure", nil do
         args = args.rubylog_dereference
         # We enable variable functors
         #raise Rubylog::InstantiationError, fct if fct.is_a? Rubylog::Variable
-        raise Rubylog::InstantiationError, args if args.is_a? Rubylog::Variable
+        raise Rubylog::InstantiationError.new :structure, [c, fct, args] if args.is_a? Rubylog::Variable
         c.rubylog_unify(Rubylog::Structure.new(fct, *args)) { yield }
       elsif c.is_a? Rubylog::Structure
         c.functor.rubylog_unify fct do
@@ -38,7 +38,7 @@ Rubylog.theory "Rubylog::ReflectionBuiltinsForStructure", nil do
     # Succeeds if +head+ unifies with a fact.
     def fact head
       head = head.rubylog_dereference
-      raise Rubylog::InstantiationError, head if head.is_a? Rubylog::Variable
+      raise Rubylog::InstantiationError.new :fact, [head] if head.is_a? Rubylog::Variable
       return yield if head == :true
       return unless head.respond_to? :functor
       predicate = Rubylog.current_theory[head.indicator]
@@ -58,7 +58,7 @@ Rubylog.theory "Rubylog::ReflectionBuiltinsForStructure", nil do
     # this rule's body.
     def follows_from head, body
       head = head.rubylog_dereference
-      raise Rubylog::InstantiationError, head if head.is_a? Rubylog::Variable
+      raise Rubylog::InstantiationError.new :follows_from, [head, body] if head.is_a? Rubylog::Variable
       return unless head.respond_to? :functor
       predicate = Rubylog.current_theory[head.indicator]
       if predicate.respond_to? :each

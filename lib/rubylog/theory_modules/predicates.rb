@@ -144,15 +144,15 @@ module Rubylog::TheoryModules
     protected
 
     def check_exists predicate, head
-      raise Rubylog::ExistenceError, head.indicator.inspect, caller[3..-1] unless predicate
+      raise Rubylog::ExistenceError.new(head.indicator) unless predicate
     end
 
     def check_not_discontiguous predicate, head, body
-      raise Rubylog::DiscontiguousPredicateError, head.indicator.inspect, caller[2..-1] if check_discontiguous? and not predicate.empty? and predicate != @last_predicate and not predicate.discontiguous?
+      raise Rubylog::DiscontiguousPredicateError.new(head.indicator) if check_discontiguous? and not predicate.empty? and predicate != @last_predicate and not predicate.discontiguous?
     end
 
     def check_assertable predicate, head, body
-      raise Rubylog::NonAssertableError, head.indicator.inspect, caller[2..-1] unless predicate.respond_to? :assertz
+      raise Rubylog::NonAssertableError.new(head.indicator) unless predicate.respond_to? :assertz
     end
 
     def create_procedure indicator

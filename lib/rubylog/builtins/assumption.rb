@@ -10,7 +10,7 @@ Rubylog.theory "Rubylog::SuppositionBuiltins", nil do
   A.rejected.if A.assumed_if :cut!.and :fail
 
   H.assumed_if(B).if proc {
-    raise Rubylog::InstantiationError, [:assumed_if, H, B] if !H or !B
+    raise Rubylog::InstantiationError.new :assumed_if, [H, B] if !H or !B
     theory = ::Rubylog.current_theory
     predicate = theory[H.indicator]
 
@@ -27,8 +27,8 @@ Rubylog.theory "Rubylog::SuppositionBuiltins", nil do
   class << primitives
     def revoked h
       h = h.rubylog_dereference
-      raise Rubylog::InstantiationError, [:revoked, h] if h.is_a? Rubylog::Variable
-      raise Rubylog::TypeError, [:revoked, h] unless h.respond_to? :indicator
+      raise Rubylog::InstantiationError.new :revoked, [h] if h.is_a? Rubylog::Variable
+      raise Rubylog::TypeError.new :revoked, [h] unless h.respond_to? :indicator
 
       predicate = ::Rubylog.current_theory[h.indicator]
 

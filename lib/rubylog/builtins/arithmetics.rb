@@ -11,7 +11,7 @@ Rubylog.theory "Rubylog::ArithmeticsBuiltins", nil do
       a, b, c, op = [a,b,c,op].map{|f|f.rubylog_resolve_function.rubylog_dereference}
       a_var, b_var, c_var, op_var = [a,b,c,op].map{|f|f.is_a? Rubylog::Variable}
 
-      raise Rubylog::InstantiationError, [:is, c, a, op, b] if op_var
+      raise Rubylog::InstantiationError.new :is, [c, a, op, b] if op_var
 
       case
       when !a_var && !b_var
@@ -31,7 +31,7 @@ Rubylog.theory "Rubylog::ArithmeticsBuiltins", nil do
           yield
         end
       else
-        raise Rubylog::InstantiationError, [c, a, op, b]
+        raise Rubylog::InstantiationError.new :is, [c, a, op, b]
       end
     end
 
