@@ -7,8 +7,8 @@ module Rubylog::RSpecExampleGroup
   end
 
   module ClassMethods
-    def check goal, &block
-      specify do
+    def check goal=nil, &block
+      specify (goal ? goal.inspect : block.inspect) do
         check goal, &block
       end
     end
@@ -17,16 +17,25 @@ end
 
 RSpec.configure do |c|
 
+  # enable use of Rubylog in example groups
   c.include Rubylog::RSpecExampleGroup, :rubylog => true
 
+  # enable use of Rubylog in examples
   c.before do
     if self.class.metadata[:rubylog]
+      # create the theory from the example
       Rubylog.create_theory self
-      m = self.class
+
+      # include the EG class
       include_theory self.class
+
+      # include nesting example groups upwards while they are rubylog example groups
+      m = self.class
       while m = eval(m.name.rpartition("::")[0]) and m.include? Rubylog::RSpecExampleGroup
         include_theory m
       end
+
+      # set the static current theory
       Rubylog.static_current_theory = self
     end
   end
