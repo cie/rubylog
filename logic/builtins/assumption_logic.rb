@@ -1,6 +1,6 @@
-require 'rubylog/builtins/assumption'
+require "spec_helper"
 
-theory do
+describe Rubylog::AssumptionBuiltins do
   c = 0
   check A.in([1,2,3]).all proc { c = A }.ensure { c = 0 }.and { check { (1..3).include? c } }
   check { c == 0 }
@@ -26,7 +26,7 @@ theory do
 
 end
 
-theory do
+describe Rubylog::AssumptionBuiltins do
   functor_for String, :likes
 
   'John'.likes! 'milk'
@@ -44,7 +44,6 @@ theory do
   check { 
     'John'.likes(X).revoked.map{X} == ['milk','beer'] }
   check { 'John'.likes(A).map{A} == ['milk','beer'] }
-
 
 end
 

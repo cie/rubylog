@@ -1,4 +1,5 @@
-load "lib/rubylog/theory.rb"
+require 'spec_helper'
+
 A = theory do
   functor_for Symbol, :good
 
@@ -9,13 +10,13 @@ B = theory do
   :y.good!
 end
 
-theory do
+describe "Multitheory", :rubylog=>true do
   multitheory [:good,1]
 
   check { self[[:good,1]].multitheory? }
 
-  include A
-  include B
+  include_theory A
+  include_theory B
 
   check { self[[:good,1]].multitheory? }
 

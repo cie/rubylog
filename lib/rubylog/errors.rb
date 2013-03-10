@@ -52,6 +52,9 @@ module Rubylog
   end
 
   class CheckFailed < StandardError
+    def initialize goal
+      super "Check failed #{goal.inspect}"
+    end
   end
 
 end

@@ -1,18 +1,14 @@
+require 'spec_helper'
 
-require 'rubylog'
+describe "Recursion", :rubylog=>true do
+  functor_for Integer, :factorial 
+  0.factorial! 1
+  N[thats > 0].factorial(K).if N1.is {N-1} .and N1.factorial(K1).and K.is{ N*K1 }
 
-describe "recursion" do
-  specify "factorial" do
-    theory "Recursion" do
-      functor_for Integer, :factorial
-      0.factorial! 1
-      N.factorial(K).if lambda{|n|n>0}.and N1.is{|n|n-1}.and N1.factorial(K1).and K.is{|n,_,_,k1|k1*n}
-
-      (0.factorial K).to_a.should == [1]
-      (1.factorial K).to_a.should == [1]
-      (2.factorial K).to_a.should == [2]
-      (3.factorial K).to_a.should == [6]
-      (4.factorial K).to_a.should == [24]
-    end
-  end
+  check 0.factorial 1
+  check 1.factorial 1
+  check 2.factorial 2
+  check 3.factorial 6
+  check 4.factorial 24
+  check 7.factorial 5040
 end
