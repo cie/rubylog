@@ -1,5 +1,3 @@
-require "./lib/rubylog/builtins/arithmetics.rb"
-
 theory do
   check 5.is 2, :+, 3
   check 5.is 9, :-, 4
@@ -14,5 +12,9 @@ theory do
 
 
   check A.is(5).and B.is(3).and C.is(2).and A.is(C, :+, B)
+
+  # test functions
+  check A.is(5).and proc{5}.is(proc{2}, proc{'+'}, proc{A-2})
+  check A.is(5).and proc{5}.is(proc{3}, proc{'+'}, proc{A-2}).false
 
 end

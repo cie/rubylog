@@ -1,4 +1,4 @@
-require "./lib/rubylog/builtins/file_system"
+require "rubylog/builtins/file_system"
 
 theory do
   check "lib".dirname_in(".")

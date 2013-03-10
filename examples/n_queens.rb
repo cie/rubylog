@@ -15,6 +15,15 @@ theory do
 
   A.placed.if \
     C.in(1..N).and(B.on(ANY,ANY).none(B.attacks(A,C))).and A.on(A,C).assumed
+
+  # a hack for chaining clauses together with .and()
+  class << primitives
+    def together a, b
+      c = []
+      a.prove { c << b.rubylog_deep_dereference }
+      c.inject{|a,b|a.and b}.solve { yield }
+    end
+  end
   
   :arranged.if A.in(1..N).together{A.placed}
 
