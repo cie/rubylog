@@ -49,10 +49,29 @@ RoodiTask.new do |t|
 end
 
 task :logic do
-  run "ruby"
+  run "rubylog"
 end
 
 task :default => :logic
 
 require 'yard'
 YARD::Rake::YardocTask.new
+
+task :coverage do
+  require "simplecov"
+  SimpleCov.start
+
+  require "rubylog"
+
+  files = Dir['./logic/**/*_logic.rb']
+
+  files.each do |x|
+    puts x
+
+    require x
+
+    puts
+  end
+
+
+end
