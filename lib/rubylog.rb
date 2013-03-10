@@ -27,6 +27,9 @@ require 'rubylog/simple_procedure'
 require 'rubylog/variable'
 require 'rubylog/structure'
 
+# helpers
+require 'rubylog/theory_creation'
+
 # builtins
 require 'rubylog/builtins/default'
 
