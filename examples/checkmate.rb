@@ -36,6 +36,7 @@ theory do
       puts
     end
     puts
+    true
   end
 
   functor_for Rubylog::Structure, :attacks, :can_move_to
@@ -48,16 +49,19 @@ theory do
   [C,bishop  ].on(S).can_move_to(S1).if ANY.bishop_move(S,S1)
   [C,knight  ].on(S).can_move_to(S1).if     knight_move(S,S1)
   [C,rook    ].on(S).can_move_to(S1).if ANY.  rook_move(S,S1)
+
   [white,pawn].on(S).can_move_to(S1).if       pawn_move(S,S1)
   [black,pawn].on(S).can_move_to(S1).if       pawn_move(S1,S)
+  [white,pawn].on([F,2]).can_move_to!([F,4])
+  [black,pawn].on([F,7]).can_move_to!([F,5])
 
   [white,pawn].on(S).attacks(S1).if! pawn_attack(S,S1)
   [black,pawn].on(S).attacks(S1).if! pawn_attack(S1,S)
   X.attacks(S1).if X.can_move_to(S1)
 
 
-  N.squares_forward(A,B).if B.is(A,:+,N)
-  N.squares(A,B).if B.is(A,:+,N).or A.is(B,:+,N)
+  N.squares_forward(A[1..8],B[1..8]).if B.is(A,:+,N)
+  N.squares(A,B).if A.in(1..8).and B.in(1..8).and B.is(A,:+,N).or A.is(B,:+,N)
 
   N.  rook_move([F ,R1],[F ,R2]).if N.squares(R1,R2)
   N.  rook_move([F1,R ],[F2,R ]).if N.squares(F1,F2)
@@ -69,13 +73,11 @@ theory do
   pawn_attack([F1,R1],[F2,R2]).if R2.is(R1,:+,1).and 1.squares(F1,F2)
 
 
-  prove show
+  functor_for Rubylog::Structure, :moved_to
 
+  [C,P].on(S).moved_to(S1).if [C,P].on(S).and [C,P].on(S).can_move_to(S1).and [C,P].on(S).revoked.and [C,P].on(S1).assumed
 
-
-
-
-
+  solve show.and [C,P].on(S).moved_to(S1).and{ puts "#{C} #{P}: #{S} -> #{S1}"; true}.and show
 
 
 
