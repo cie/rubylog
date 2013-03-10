@@ -1,4 +1,4 @@
-load "./lib/rubylog/builtins/assumption.rb" 
+require 'rubylog/builtins/assumption'
 
 theory do
   c = 0
