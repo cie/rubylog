@@ -1,6 +1,6 @@
 require 'rubylog/builtins/ensure'
 
-Rubylog.theory "Rubylog::SuppositionBuiltins", nil do
+Rubylog.theory "Rubylog::AssumptionBuiltins", nil do
   include_theory Rubylog::EnsureBuiltins
   
   subject ::Rubylog::Callable, ::Rubylog::Structure, Symbol, Proc
@@ -53,5 +53,5 @@ Rubylog.theory "Rubylog::SuppositionBuiltins", nil do
 end
 
 Rubylog::DefaultBuiltins.amend do
-  include_theory Rubylog::SuppositionBuiltins
+  include_theory Rubylog::AssumptionBuiltins
 end

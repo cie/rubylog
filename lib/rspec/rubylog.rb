@@ -1,4 +1,5 @@
 require "rspec"
+require "rubylog"
 
 module Rubylog::RSpecExampleGroup
   def self.included example_group
@@ -8,9 +9,10 @@ module Rubylog::RSpecExampleGroup
 
   module ClassMethods
     def check goal=nil, &block
-      specify (goal ? goal.inspect : block.inspect) do
-        check goal, &block
-      end
+      options = build_metadata_hash_from([])
+      desc = (goal ? goal.inspect : block.inspect)
+      examples << RSpec::Core::Example.new(self, desc, options, proc{check goal, &block})
+      examples.last
     end
   end
 end
