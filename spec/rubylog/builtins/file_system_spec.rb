@@ -1,6 +1,7 @@
 require "rubylog/builtins/file_system"
+require "spec_helper"
 
-theory do
+describe "file_system", :rubylog=>true do
   check "lib".dirname_in(".")
   check "lib".filename_in(".").false
   check "README.rdoc".filename_in(".")

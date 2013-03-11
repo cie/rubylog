@@ -24,9 +24,6 @@ describe Rubylog::AssumptionBuiltins do
   check 3.divides(6).rejected.and 6.perfect.false
   check 2.divides(20).rejected.and 20.perfect
 
-end
-
-describe Rubylog::AssumptionBuiltins do
   functor_for String, :likes
 
   'John'.likes! 'milk'
