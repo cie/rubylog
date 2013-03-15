@@ -43,6 +43,18 @@ describe Rubylog::AssumptionBuiltins, :rubylog=>true do
     'John'.likes(X).revoked.map{X} == ['milk','beer'] }
   check { 'John'.likes(A).map{A} == ['milk','beer'] }
 
+  describe "assumed unless" do
+    xspecify
+  end
+  describe "rejected" do
+    xspecify
+  end
+  describe "rejected_if" do
+    xspecify
+  end
+  describe "rejected_unless" do
+    xspecify
+  end
 end
 
 

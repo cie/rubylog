@@ -4,10 +4,13 @@ Rubylog.theory "Rubylog::AssumptionBuiltins", nil do
   include_theory Rubylog::EnsureBuiltins
   
   subject ::Rubylog::Callable, ::Rubylog::Structure, Symbol, Proc
-  functor :assumed, :rejected, :revoked, :assumed_if
+  functor :assumed, :rejected, :revoked, :assumed_if, :assumed_unless, :rejected_if, :rejected_unless
 
   A.assumed.if A.assumed_if :true
   A.rejected.if A.assumed_if :cut!.and :fail
+  H.rejected_if(B).if H.assumed_if(B.and :cut!.and :fail)
+  H.rejected_unless(B).if H.assumed_if(B.false.and :cut!.and :fail)
+  H.assumed_unless(B).if H.assumed_if(B.false)
 
   H.assumed_if(B).if proc {
     raise Rubylog::InstantiationError.new :assumed_if, [H, B] if !H or !B
