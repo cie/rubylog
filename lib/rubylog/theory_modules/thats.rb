@@ -1,3 +1,5 @@
+require 'rubylog/dsl/thats'
+
 module Rubylog::TheoryModules
   module Thats
     def thats

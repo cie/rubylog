@@ -34,6 +34,15 @@ Rubylog.theory "Rubylog::ReflectionBuiltinsForStructure", nil do
         #end
       #end
     #end
+    
+  end
+end
+
+
+Rubylog.theory "Rubylog::ReflectionBuiltinsForAssertable", nil do
+  subject Rubylog::Assertable, ::Rubylog::Structure
+
+  class << primitives
 
     # Succeeds if +head+ unifies with a fact.
     def fact head
@@ -87,6 +96,7 @@ Rubylog.theory "Rubylog::ReflectionBuiltinsForStructure", nil do
 end
 Rubylog.theory "Rubylog::ReflectionBuiltins", nil do
   include_theory Rubylog::ReflectionBuiltinsForStructure
+  include_theory Rubylog::ReflectionBuiltinsForAssertable
 end
 
 Rubylog::DefaultBuiltins.amend do

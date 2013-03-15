@@ -1,4 +1,3 @@
-require "rubylog/builtins/file_system"
 require "spec_helper"
 
 describe Rubylog::FileSystemBuiltins, :rubylog=>true do

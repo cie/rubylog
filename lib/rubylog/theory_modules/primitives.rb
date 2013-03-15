@@ -1,3 +1,5 @@
+require 'rubylog/dsl/primitives'
+
 module Rubylog::TheoryModules
   module Primitives
     def clear

@@ -1,3 +1,5 @@
+require 'rubylog/variable'
+
 module Rubylog::DSL::Variables
   def self.included mod
     def mod.const_missing c

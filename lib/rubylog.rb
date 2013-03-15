@@ -15,23 +15,16 @@ require 'rubylog/interfaces/procedure'
 
 # helpers
 require 'rubylog/dsl'
-require 'rubylog/dsl/variables'
-require 'rubylog/dsl/primitives'
-require 'rubylog/dsl/array_splat'
-require 'rubylog/dsl/thats'
 require 'rubylog/errors'
 
-# classes
+# theory
 require 'rubylog/theory'
-require 'rubylog/simple_procedure'
-require 'rubylog/variable'
+
+# structure
 require 'rubylog/structure'
 
 # helpers
 require 'rubylog/theory_creation'
-
-# builtins
-require 'rubylog/builtins/default'
 
 # mixins
 require 'rubylog/mixins/array'
@@ -44,4 +37,6 @@ require 'rubylog/mixins/proc'
 require 'rubylog/mixins/string'
 require 'rubylog/mixins/symbol'
 
+# builtins
+require 'rubylog/builtins/default'
 

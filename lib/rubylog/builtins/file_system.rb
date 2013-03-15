@@ -1,4 +1,4 @@
-theory "Rubylog::FileSystemBuiltins", nil do
+Rubylog.theory "Rubylog::FileSystemBuiltins", nil do
   subject String
   functor :filename_in, :dirname_in, :file_in, :dir_in
   

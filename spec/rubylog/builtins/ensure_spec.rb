@@ -1,5 +1,4 @@
 require "spec_helper"
-require "rubylog/builtins/ensure"
 
 describe Rubylog::EnsureBuiltins, :rubylog=>true do
   k = 6

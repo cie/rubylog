@@ -18,7 +18,7 @@ Rubylog.theory "Rubylog::NullaryLogicBuiltins", nil do
 end
 
 Rubylog.theory "Rubylog::LogicBuiltinsForCallable", nil do
-  subject ::Rubylog::Callable, ::Rubylog::Structure, Symbol, Proc
+  subject ::Rubylog::Callable, ::Rubylog::Structure
 
   class << primitives
     # Succeeds if both +a+ and +b+ succeeds.

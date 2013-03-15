@@ -1,3 +1,5 @@
+
+require 'rubylog/dsl/variables'
 require 'rubylog/theory_modules/base'
 require 'rubylog/theory_modules/builtins'
 require 'rubylog/theory_modules/checks'

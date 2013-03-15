@@ -1,5 +1,4 @@
 require "spec_helper"
-require "rubylog/builtins/assumption"
 
 describe Rubylog::AssumptionBuiltins, :rubylog=>true do
   c = 0

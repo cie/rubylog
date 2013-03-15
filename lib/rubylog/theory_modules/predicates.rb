@@ -1,3 +1,5 @@
+require 'rubylog/simple_procedure'
+
 module Rubylog::TheoryModules
   module Predicates
 

@@ -1,5 +1,5 @@
 Rubylog.theory "Rubylog::EnsureBuiltins", nil do
-  subject ::Rubylog::Callable, ::Rubylog::Structure, Symbol, Proc
+  subject ::Rubylog::Callable
 
   class << primitives
     def ensure a, b
