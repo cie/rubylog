@@ -107,7 +107,7 @@ module Rubylog
 
     def prove
       v = value
-      raise InstantiationError, self if v.nil?
+      raise Rubylog::InstantiationError.new(self) if v.nil?
       v.prove{yield}
     end
 

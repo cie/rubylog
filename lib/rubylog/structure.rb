@@ -42,6 +42,17 @@ module Rubylog
       [@functor, @arity]
     end
 
+    # Makes human-friendly output from the indicator
+    # For example, .and()
+    def self.humanize_indicator indicator
+      functor, arity = indicator
+      if arity > 1
+        ".#{functor}(#{ ','*(arity-2) })"
+      else
+        ":#{functor}"
+      end
+    end
+
     # Assertable methods
     include Rubylog::Assertable
 
@@ -53,7 +64,7 @@ module Rubylog
       begin
         theory.print_trace 1, self, rubylog_variables_hash
         predicate = theory[indicator]
-        raise Rubylog::ExistenceError, indicator.inspect if not predicate
+        raise Rubylog::ExistenceError.new indicator if not predicate
         count = 0
         predicate.call(*@args) { yield; count+=1 }
         count
