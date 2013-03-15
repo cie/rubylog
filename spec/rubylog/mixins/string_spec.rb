@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe String do
+describe String, :rubylog=>true do
   describe "unification" do
     check "asdf".is "asdf"
     check { "abc#{S}def" =~ /abc.S\[\].def/ }

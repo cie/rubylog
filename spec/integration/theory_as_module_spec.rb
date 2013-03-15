@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 extend Rubylog::Theory
 
 functor_for Integer, :divides

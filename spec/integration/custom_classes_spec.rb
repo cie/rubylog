@@ -3,7 +3,7 @@
       before do
         class User
           rubylog_functor :girl, :boy
-          include Rubylog::DSL::Constants
+          include Rubylog::DSL::Variables
 
           attr_reader :name
           def initialize name

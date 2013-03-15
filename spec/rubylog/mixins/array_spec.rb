@@ -1,6 +1,7 @@
 require 'spec_helper'
 
-describe "Array", :rubylog=>true do
+describe Array, :rubylog=>true do
+
   it "can be unified" do
     result = false
     [A,B].rubylog_unify(12) { result = true }
