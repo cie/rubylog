@@ -3,45 +3,45 @@
 module Rubylog
 end
 
-# rtl
-require 'set'
-
-dir = File.dirname(__FILE__) + "/"
+#dir = File.dirname(__FILE__) + "/"
 
 # interfaces
-require dir+'rubylog/interfaces/term'
-require dir+'rubylog/interfaces/callable'
-require dir+'rubylog/interfaces/assertable'
-require dir+'rubylog/interfaces/composite_term'
-require dir+'rubylog/interfaces/predicate'
-require dir+'rubylog/interfaces/procedure'
+require 'rubylog/interfaces/term'
+require 'rubylog/interfaces/callable'
+require 'rubylog/interfaces/assertable'
+require 'rubylog/interfaces/composite_term'
+require 'rubylog/interfaces/predicate'
+require 'rubylog/interfaces/procedure'
 
 # helpers
-require dir+'rubylog/dsl'
-require dir+'rubylog/dsl/variables'
-require dir+'rubylog/dsl/primitives'
-require dir+'rubylog/dsl/array_splat'
-require dir+'rubylog/dsl/thats'
-require dir+'rubylog/errors'
+require 'rubylog/dsl'
+require 'rubylog/dsl/variables'
+require 'rubylog/dsl/primitives'
+require 'rubylog/dsl/array_splat'
+require 'rubylog/dsl/thats'
+require 'rubylog/errors'
 
 # classes
-require dir+'rubylog/theory'
-require dir+'rubylog/simple_procedure'
-require dir+'rubylog/variable'
-require dir+'rubylog/structure'
+require 'rubylog/theory'
+require 'rubylog/simple_procedure'
+require 'rubylog/variable'
+require 'rubylog/structure'
+
+# helpers
+require 'rubylog/theory_creation'
 
 # builtins
-require dir+'rubylog/builtins/default'
+require 'rubylog/builtins/default'
 
 # mixins
-require dir+'rubylog/mixins/array'
-require dir+'rubylog/mixins/class'
-require dir+'rubylog/mixins/hash'
-require dir+'rubylog/mixins/kernel'
-require dir+'rubylog/mixins/method'
-require dir+'rubylog/mixins/object'
-require dir+'rubylog/mixins/proc'
-require dir+'rubylog/mixins/string'
-require dir+'rubylog/mixins/symbol'
+require 'rubylog/mixins/array'
+require 'rubylog/mixins/class'
+require 'rubylog/mixins/hash'
+require 'rubylog/mixins/kernel'
+require 'rubylog/mixins/method'
+require 'rubylog/mixins/object'
+require 'rubylog/mixins/proc'
+require 'rubylog/mixins/string'
+require 'rubylog/mixins/symbol'
 
 
