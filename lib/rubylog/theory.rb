@@ -15,31 +15,8 @@ require 'rubylog/theory_modules/thats'
 require 'rubylog/theory_modules/tracing'
 
 # The Theory class represents a collection of rules.
+
 module Rubylog::Theory
-
-  # You can use this to access Rubylog in the command line or in the main object.
-  #
-  # For example,
-  # 
-  #   require 'rubylog'
-  #   extend Rubylog::Theory
-  #
-  #   solve A.is(5).and { puts A; true }
-  #
-  def self.extended theory
-    class << theory
-      include Rubylog::DSL::Variables
-    end
-    theory.base_theory = Rubylog::DefaultBuiltins
-    theory.initialize_theory
-    Thread.current[:rubylog_current_theory] = theory
-  end
-
-  # You can include Rubylog::Theory to modules or classes.
-  #
-  def self.included class_or_module
-    class_or_module.send :include, Rubylog::DSL::Variables
-  end
 
 
   # this must be included first

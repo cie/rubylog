@@ -21,7 +21,7 @@ end
 
 Rubylog.theory "DrinkingTheory" do
   functor :drinks
-  include LikingTheory, HavingTheory
+  include_theory LikingTheory, HavingTheory
   subject User
 
   U.drinks(D).if U.likes(D).and U.has(D)

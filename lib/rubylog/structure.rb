@@ -42,17 +42,6 @@ module Rubylog
       [@functor, @arity]
     end
 
-    # Makes human-friendly output from the indicator
-    # For example, .and()
-    def self.humanize_indicator indicator
-      functor, arity = indicator
-      if arity > 1
-        ".#{functor}(#{ ','*(arity-2) })"
-      else
-        ":#{functor}"
-      end
-    end
-
     # Assertable methods
     include Rubylog::Assertable
 

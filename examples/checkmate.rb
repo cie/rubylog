@@ -1,4 +1,5 @@
-require "rubylog/builtins/assumption"
+require "rubylog"
+
 
 theory do
   functor_for Array, :on

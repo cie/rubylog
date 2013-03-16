@@ -107,5 +107,44 @@ module Rubylog
     # return the theory
     theory
   end
+
+  module Theory
+
+    # You can use this to access Rubylog in the command line or in the main object.
+    #
+    # For example,
+    # 
+    #   require 'rubylog'
+    #   extend Rubylog::Theory
+    #
+    #   solve A.is(5).and { puts A; true }
+    #
+    # You can also use this to convert any object to a theory.
+    #
+    def self.extended theory
+      # We include DSL::Variables in its singleton class
+      class << theory
+        include Rubylog::DSL::Variables
+      end
+
+      # if theory is a class or module, we also include DSL::Variables directly
+      # in it, so that they can be accessed from an instance
+      if theory.is_a? Module
+        theory.send :include, Rubylog::DSL::Variables
+      end
+
+      theory.base_theory = Rubylog::DefaultBuiltins
+      theory.initialize_theory
+      Thread.current[:rubylog_current_theory] = theory
+    end
+
+    # You can include Rubylog::Theory to modules or classes.
+    #
+    def self.included class_or_module
+      class_or_module.send :include, Rubylog::DSL::Variables
+    end
+
+  end
+
 end
 

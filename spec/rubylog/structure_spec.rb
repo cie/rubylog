@@ -85,11 +85,6 @@ describe Rubylog::Structure, :rubylog=>true do
     (:john.likes :drinking.in :bar).indicator.should == [:likes,2]
   end
 
-  it "can humanize the indicator" do
-    Rubylog::Structure.humanize_indicator([:and,2]).should == ".and()"
-    Rubylog::Structure.humanize_indicator([:true,0]).should == ":true"
-    Rubylog::Structure.humanize_indicator([:is,4]).should == ".is(,,)"
-  end
 
 end
 

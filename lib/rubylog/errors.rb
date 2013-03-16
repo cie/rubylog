@@ -8,31 +8,31 @@ module Rubylog
 
   class DiscontiguousPredicateError < RubylogError
     def initialize indicator
-      super "Predicate #{Rubylog::Structure.humanize_indicator(indicator)} was not declared as discontiguous"
+      super "Predicate #{Rubylog::DSL::Functors.humanize_indicator(indicator)} was not declared as discontiguous"
     end
   end
 
   class MultitheoryError < RubylogError
     def initialize indicator
-      super "Predicate #{Rubylog::Structure.humanize_indicator(indicator)} was not declared as multi-theory"
+      super "Predicate #{Rubylog::DSL::Functors.humanize_indicator(indicator)} was not declared as multi-theory"
     end
   end
 
   class BuiltinPredicateError < RubylogError
     def initialize indicator
-      super "Predicate #{Rubylog::Structure.humanize_indicator(indicator)} is built-in"
+      super "Predicate #{Rubylog::DSL::Functors.humanize_indicator(indicator)} is built-in"
     end
   end
 
   class NonAssertableError < RubylogError
     def initialize indicator
-      super "Predicate #{Rubylog::Structure.humanize_indicator(indicator)} is not assertable"
+      super "Predicate #{Rubylog::DSL::Functors.humanize_indicator(indicator)} is not assertable"
     end
   end
 
   class ExistenceError < RubylogError
     def initialize indicator
-      super "Predicate #{Rubylog::Structure.humanize_indicator(indicator)} does not exist"
+      super "Predicate #{Rubylog::DSL::Functors.humanize_indicator(indicator)} does not exist"
     end
   end
 

@@ -22,11 +22,11 @@ module Rubylog::TheoryModules
     end
 
     def [] indicator
-      @database[indicator]
+      @database[Rubylog::DSL::Functors.unhumanize_indicator(indicator)]
     end
 
     def []= indicator, predicate
-      @database[indicator] = predicate
+      @database[Rubylog::DSL::Functors.unhumanize_indicator(indicator)] = predicate
     end
 
     def keys
@@ -45,14 +45,14 @@ module Rubylog::TheoryModules
     #
     def predicate *indicators
       indicators.each do |indicator|
-        check_indicator indicator
+        indicator = Rubylog::DSL::Functors.unhumanize_indicator(indicator)
         create_procedure indicator
       end
     end
 
     def discontiguous *indicators
       indicators.each do |indicator|
-        check_indicator indicator
+        indicator = Rubylog::DSL::Functors.unhumanize_indicator(indicator)
         create_procedure(indicator).discontiguous!
       end
     end
@@ -67,7 +67,7 @@ module Rubylog::TheoryModules
 
     def multitheory *indicators
       indicators.each do |indicator|
-        check_indicator indicator
+        indicator = Rubylog::DSL::Functors.unhumanize_indicator(indicator)
         create_procedure(indicator).multitheory!
       end
     end
@@ -164,14 +164,7 @@ module Rubylog::TheoryModules
       @database[indicator] = Rubylog::SimpleProcedure.new
     end
 
-    private
 
-    def check_indicator indicator
-      raise ArgumentError, "#{indicator.inspect} should be a predicate indicator", caller[2..-1] unless indicator.is_a? Array and
-      indicator.length == 2 and
-      indicator[0].is_a? Symbol and
-      indicator[1].is_a? Integer
-    end
   end
 end
 
