@@ -2,9 +2,10 @@
 * Backwards incompatibilities
   * <tt>Theory#include</tt> became <tt>Theory#include\_module</tt>
   * Theory became a module
-  * <tt>Theory#eval</tt> is removed
+  * <tt>Theory#eval</tt> became <tt>Theory#query</tt>
 * Features 
   * Rspec integration
+  * +include+ or +extend+ <tt>Rubylog::Theory</tt> into any class or object
 
 == Version 1.0.0
 == Version 0.0.1
