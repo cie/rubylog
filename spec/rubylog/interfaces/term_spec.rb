@@ -3,7 +3,7 @@ theory "Uni" do
   functor :likes
 end
 
-describe "unification" do
+describe "unification", :rubylog=>true do
   it "works for variables" do
     result = false
     A.rubylog_unify(12) { result = true }
