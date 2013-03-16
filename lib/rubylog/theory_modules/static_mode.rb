@@ -14,6 +14,8 @@ module Rubylog::TheoryModules
       end
     end
 
+    alias query amend
+
   end
 end
 
