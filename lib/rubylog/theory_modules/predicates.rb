@@ -1,5 +1,7 @@
 require 'rubylog/simple_procedure'
 
+require 'rubylog/dsl/functors'
+
 module Rubylog::TheoryModules
   module Predicates
 
@@ -72,9 +74,9 @@ module Rubylog::TheoryModules
 
     def functor *functors
       functors.each do |fct|
-        Rubylog::DSL.add_functors_to @public_interface, fct
+        Rubylog::DSL::Functors.add_functors_to @public_interface, fct
         @subjects.each do |s|
-          Rubylog::DSL.add_functors_to s, fct
+          Rubylog::DSL::Functors.add_functors_to s, fct
         end
       end
     end
@@ -82,7 +84,7 @@ module Rubylog::TheoryModules
     def prefix_functor *functors
       functors.each do |fct|
         m = Module.new
-        Rubylog::DSL.add_prefix_functors_to m, fct
+        Rubylog::DSL::Functors.add_prefix_functors_to m, fct
         @prefix_functor_modules << m
         extend m
       end
@@ -90,7 +92,7 @@ module Rubylog::TheoryModules
 
     def functor_for target, *functors
       functors.each do |fct|
-        Rubylog::DSL.add_functors_to target, fct
+        Rubylog::DSL::Functors.add_functors_to target, fct
       end
     end
 

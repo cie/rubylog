@@ -14,7 +14,6 @@ require 'rubylog/interfaces/predicate'
 require 'rubylog/interfaces/procedure'
 
 # helpers
-require 'rubylog/dsl'
 require 'rubylog/errors'
 
 # theory

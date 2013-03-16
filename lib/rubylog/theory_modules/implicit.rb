@@ -58,7 +58,7 @@ module Rubylog::TheoryModules
       theory = self
       [@public_interface, Rubylog::Variable].each do |m|
         m.send :define_method, :method_missing do |m, *args|
-          fct = Rubylog::DSL.normalize_functor(m) 
+          fct = Rubylog::DSL::Functors.normalize_functor(m) 
           return super if fct.nil?
           raise NameError, "'#{fct}' method already exists" if respond_to? fct
           theory.functor fct
