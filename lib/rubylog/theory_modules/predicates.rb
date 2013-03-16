@@ -50,6 +50,14 @@ module Rubylog::TheoryModules
       end
     end
 
+    def predicate_for subject, *indicators
+      indicators.each do |indicator|
+        indicator = Rubylog::DSL::Functors.unhumanize_indicator(indicator)
+        functor_for subject, indicator.first
+        create_procedure indicator
+      end
+    end
+
     def discontiguous *indicators
       indicators.each do |indicator|
         indicator = Rubylog::DSL::Functors.unhumanize_indicator(indicator)
