@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "findall", :rubylog=>true do
-  functor :likes
+  predicate ".likes()"
   subject Symbol
 
   check S.is{X.is(1).or(X.is(2)).map{X}}.and{S == [1,2]}

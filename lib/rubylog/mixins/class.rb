@@ -9,5 +9,5 @@ class Class
   def rubylog_functor *functors
     Rubylog::DSL::Functors.add_functors_to self, *functors
   end
-  
+
 end

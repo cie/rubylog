@@ -4,7 +4,7 @@ Rubylog.theory "Rubylog::AssumptionBuiltins", nil do
   include_theory Rubylog::EnsureBuiltins
   
   subject ::Rubylog::Assertable
-  functor :assumed, :rejected, :revoked, :assumed_if, :assumed_unless, :rejected_if, :rejected_unless
+  predicate ".assumed", ".rejected", ".revoked", ".assumed_if()", ".assumed_unless()", ".rejected_if()", ".rejected_unless()"
 
   A.assumed.if A.assumed_if :true
   A.rejected.if A.assumed_if :cut!.and :fail

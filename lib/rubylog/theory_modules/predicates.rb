@@ -46,6 +46,7 @@ module Rubylog::TheoryModules
     def predicate *indicators
       indicators.each do |indicator|
         indicator = Rubylog::DSL::Functors.unhumanize_indicator(indicator)
+        functor indicator.first
         create_procedure indicator
       end
     end
@@ -119,12 +120,9 @@ module Rubylog::TheoryModules
     def assert head, body=:true
       indicator = head.indicator
       predicate = @database[indicator]
-      if predicate
-        check_assertable predicate, head, body
-        check_not_discontiguous predicate, head, body
-      else
-        predicate = create_procedure indicator
-      end
+      check_exists predicate, head
+      check_assertable predicate, head, body
+      check_not_discontiguous predicate, head, body
       predicate.assertz Rubylog::Structure.new(:-, head, body)
       @last_predicate = predicate
     end
@@ -168,8 +166,7 @@ module Rubylog::TheoryModules
     end
 
     def create_procedure indicator
-      functor indicator[0]
-      @database[indicator] = Rubylog::SimpleProcedure.new
+      @database[indicator] ||= Rubylog::SimpleProcedure.new
     end
 
 

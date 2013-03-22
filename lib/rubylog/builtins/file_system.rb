@@ -1,6 +1,5 @@
 Rubylog.theory "Rubylog::FileSystemBuiltins", nil do
-  subject String
-  functor :filename_in, :dirname_in, :file_in, :dir_in
+  predicate_for String, ".filename_in()", ".dirname_in()", ".file_in()", ".dir_in()"
   
   X.filename_in(D).if Y.file_in(D).and X.is { File.basename Y }
   X.dirname_in(D).if  Y.dir_in(D).and  X.is { File.basename Y }

@@ -3,7 +3,7 @@ require 'rubylog'
 
 theory do
   subject Symbol
-  functor :likes
+  predicate ".likes()"
 
   :john.likes! :beer
   :john.likes! :milk

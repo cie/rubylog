@@ -3,6 +3,7 @@ require 'rubylog'
 
 Rubylog.theory "Try" do
   subject String
+  predicate ":hello_world"
 
   def primitives.hello
     puts "Hello"
@@ -19,6 +20,6 @@ Rubylog.theory "Try" do
 end
 
 
-p Try.prove :hello
-p Try.prove :hello_world
-p Try.prove{X.is("World").and X.hello}
+p Try.true? :hello
+p Try.true? :hello_world
+p Try.true?{X.is("World").and X.hello}

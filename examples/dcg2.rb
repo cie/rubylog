@@ -5,7 +5,7 @@ $:.unshift File.dirname(__FILE__)+"/../lib"
 require 'rubylog'
 
 theory do
-  functor_for Array, :sentence, :subject, :object, :nominal_phrase, :noun, :verb, :article
+  predicate_for Array, ".sentence()", ".subject()", ".object()", ".nominal_phrase()", ".noun()", ".verb()", ".article()"
 
   # sentence --> subject, verb, object
   Se.sentence(L3).if Se.subject(L1).and L1.verb(L2).and L2.object(L3)

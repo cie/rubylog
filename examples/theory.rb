@@ -10,17 +10,17 @@ class User
 end
 
 Rubylog.theory "LikingTheory" do
-  functor :likes
+  predicate ".likes()"
   U.likes(D).if {U.favorite == D}
 end
 
 Rubylog.theory "HavingTheory" do
-  functor :has
+  predicate ".has()"
   U.has(D).if {U.possessions.include? D}
 end
 
 Rubylog.theory "DrinkingTheory" do
-  functor :drinks
+  predicate ".drinks()"
   include_theory LikingTheory, HavingTheory
   subject User
 

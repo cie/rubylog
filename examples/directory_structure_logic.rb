@@ -2,7 +2,7 @@ require "rubylog/builtins/file_system"
 
 theory do
   subject String
-  functor :dir, :contains
+  predicate ".dir", ".contains()"
   check_discontiguous false
 
   ".git".dir!.contains! "Git repository"

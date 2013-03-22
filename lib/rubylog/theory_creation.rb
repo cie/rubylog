@@ -129,8 +129,11 @@ module Rubylog
 
       # if theory is a class or module, we also include DSL::Variables directly
       # in it, so that they can be accessed from an instance
+      # Also, we set self as a subject, so that +predicate+ automatically attaches
+      # functors to it.
       if theory.is_a? Module
         theory.send :include, Rubylog::DSL::Variables
+        theory.subject theory
       end
 
       theory.base_theory = Rubylog::DefaultBuiltins

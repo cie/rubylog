@@ -2,7 +2,7 @@
 describe "custom classes" do
   before do
     class User
-      rubylog_functor :girl, :boy
+      predicate :girl, :boy
       extend Rubylog::Theory
       include Rubylog::DSL::Variables
 

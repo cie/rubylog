@@ -2,7 +2,7 @@ require "rubylog"
 
 
 theory do
-  functor_for Array, :on
+  predicate_for Array, ".on()"
 
   black, white = 0, 1
   pawn,rook,knight,bishop,queen,king = :pawn, :rook, :knight, :bishop, :queen, :king

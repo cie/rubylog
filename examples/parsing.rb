@@ -1,10 +1,12 @@
+$:.unshift File.dirname(__FILE__)+"/../lib"
+require "rubylog"
 require "readline"
 
 theory do
-  functor_for String, :term, :expr, :atom
+  predicate_for String, ".term()", ".expr()", ".atom()"
 
-  "#{A}+#{B}".expr(K).if A.term(I).and B.expr(J).and K.is{I+J}
-  "#{A}-#{B}".expr(K).if A.term(I).and B.expr(J).and K.is{I-J}
+  "#{A}+#{B}".expr(K).if A.expr(I).and B.term(J).and K.is{I+J}
+  "#{A}-#{B}".expr(K).if A.expr(I).and B.term(J).and K.is{I-J}
   A.expr(K).if A.term(K)
   "#{A}*#{B}".term(K).if A.atom(I).and B.term(J).and K.is{I*J}
   "#{A}/#{B}".term(K).if A.atom(I).and B.term(J).and K.is{I/J}

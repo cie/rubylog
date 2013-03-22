@@ -3,8 +3,6 @@ require "rubylog"
 require "rubylog/builtins/assumption"
 extend Rubylog::Theory
 
-functor_for Integer, :easy, :solved, :seen, :peeked, :has
-
 # Mafia the black cat plays a game. She has N cups with 0 or 1 mouse under each.
 # She peeks under some cups one by one to see if there is a mouse under them.
 # What she wants to find out is whether there are two cups next to each other

@@ -2,8 +2,7 @@ $:.unshift File.dirname(__FILE__)+"/../lib"
 require "rubylog"
 
 theory do
-  functor_for Integer, :move, :hanoi
-  prefix_functor :write_info
+  predicate_for Integer, ".move(,,)", ".hanoi"
 
   0.move(ANY,ANY,ANY).if :cut!
   N.move(A,B,C).if (
