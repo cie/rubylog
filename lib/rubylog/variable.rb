@@ -108,6 +108,12 @@ module Rubylog
     def prove
       v = value
       raise Rubylog::InstantiationError.new(self) if v.nil?
+
+      # compile if not compiled
+      if !v.rubylog_variables
+        v = v.rubylog_compile_variables
+      end
+      
       v.prove{yield}
     end
 

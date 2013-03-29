@@ -9,6 +9,7 @@ module Rubylog
 
     def remove_internal_lines
       internal_dir = File.dirname(__FILE__) or return
+      return unless backtrace
       index = backtrace.index{|l| not l.start_with?(internal_dir) } or return
       set_backtrace backtrace[index..-1]
     end

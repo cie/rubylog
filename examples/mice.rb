@@ -19,7 +19,7 @@ class Cup < Struct.new :i
   extend Rubylog::Theory
 
   def inspect
-    "##{@i}"
+    "##{i}"
   end
 
   # A cup can be peeked: it has mouse or not
@@ -40,8 +40,8 @@ class CupSet
     @cups = (1..n).map {|i| Cup.new i }
   end
 
-  def each
-    cups.each { yield }
+  def each &block
+    @cups.each &block
   end
 
   # A set has neighbors if 
@@ -53,21 +53,25 @@ class CupSet
   T.definitely_solves(CS).if T.any(CS.has_neighbors).and(T.any(CS.has_neighbors.false)).false
 
   # A trial consist of peeking some cups
-  predicate_for Callable, %w(.trial_for())
-  T.trial_for(CS).if C.in(CS).together{C.peeked.or :true}
+  predicate_for Rubylog::Callable, %w(.trial_for())
+  T.trial_for(CS).if T.is{C.in(CS).map{C.peeked.or :true}.inject(:true,&:and)}.and T
 
   # A set is easy if can be definitely solved by a trial that has not seen all
   # cups. A set is had if it cannot.
-  predicate %(.easy .hard)
-  CS.easy(Peeks).if any T.trial_for(CS).and(C.in(CS).all(C.seen).false).definitely_solves(CS).and(Peeks.is{C.in(CS).and(C.peeked).map{C}})
+  predicate %w(.easy() .hard)
+  CS.easy(Peeks).if any T.trial_for(CS).and(C.in(CS).all(C.seen).false).definitely_solves(CS).and(Peeks.is{D.in(CS).and(D.peeked).map{D}})
   CS.hard.if CS.easy.false
 
 end
 
+include_theory Cup, CupSet
 
 N.in(0..4).each do
   puts "#{N}:"
-  CS.is CupSet.new(N) do
+  CS.is{CupSet.new(N)}.each do
+
+    C.in{CS}.each { p C }
+
     easy = false
     CS.easy(Peeks).each do
       puts "easy: #{Peeks.inspect}"
