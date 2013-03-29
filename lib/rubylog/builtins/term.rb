@@ -21,13 +21,7 @@ Rubylog.theory "Rubylog::TermBuiltins", nil do
       a = a.rubylog_resolve_function
       b = b.rubylog_resolve_function.rubylog_dereference
       if b.instance_of? Rubylog::Variable
-        Rubylog::InternalHelpers.non_empty_list {|l|
-          a.rubylog_unify(l[-1]) {
-            b.rubylog_unify(l) {
-              yield
-            }
-          }
-        }
+        raise Rubylog::InstantiationError.new b
       else
         b.each do |e|
           a.rubylog_unify(e) { yield }
