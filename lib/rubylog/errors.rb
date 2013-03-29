@@ -1,6 +1,17 @@
 module Rubylog
 
   class RubylogError < StandardError 
+    def initialize *args
+      super
+
+      remove_internal_lines
+    end
+
+    def remove_internal_lines
+      internal_dir = File.dirname(__FILE__) or return
+      index = backtrace.index{|l| not l.start_with?(internal_dir) } or return
+      set_backtrace backtrace[index..-1]
+    end
   end
   
   class SyntaxError < RubylogError
