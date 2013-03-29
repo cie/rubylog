@@ -44,7 +44,7 @@ module Rubylog::TheoryModules
     # directives
     #
     def predicate *indicators
-      indicators.each do |indicator|
+      indicators.flatten!.each do |indicator|
         indicator = Rubylog::DSL::Functors.unhumanize_indicator(indicator)
         functor indicator.first
         create_procedure indicator
@@ -52,7 +52,7 @@ module Rubylog::TheoryModules
     end
 
     def predicate_for subject, *indicators
-      indicators.each do |indicator|
+      indicators.flatten!.each do |indicator|
         indicator = Rubylog::DSL::Functors.unhumanize_indicator(indicator)
         functor_for subject, indicator.first
         create_procedure indicator
@@ -60,7 +60,7 @@ module Rubylog::TheoryModules
     end
 
     def discontiguous *indicators
-      indicators.each do |indicator|
+      indicators.flatten!.each do |indicator|
         indicator = Rubylog::DSL::Functors.unhumanize_indicator(indicator)
         create_procedure(indicator).discontiguous!
       end
@@ -75,14 +75,14 @@ module Rubylog::TheoryModules
     end
 
     def multitheory *indicators
-      indicators.each do |indicator|
+      indicators.flatten!.each do |indicator|
         indicator = Rubylog::DSL::Functors.unhumanize_indicator(indicator)
         create_procedure(indicator).multitheory!
       end
     end
 
     def functor *functors
-      functors.each do |fct|
+      functors.flatten!.each do |fct|
         Rubylog::DSL::Functors.add_functors_to @public_interface, fct
         @subjects.each do |s|
           Rubylog::DSL::Functors.add_functors_to s, fct
@@ -91,7 +91,7 @@ module Rubylog::TheoryModules
     end
 
     def prefix_functor *functors
-      functors.each do |fct|
+      functors.flatten!.each do |fct|
         m = Module.new
         Rubylog::DSL::Functors.add_prefix_functors_to m, fct
         @prefix_functor_modules << m
@@ -100,16 +100,17 @@ module Rubylog::TheoryModules
     end
 
     def functor_for target, *functors
-      functors.each do |fct|
+      functors.flatten!.each do |fct|
         Rubylog::DSL::Functors.add_functors_to target, fct
       end
     end
 
     def private *indicators
+      raise "not implemented"
     end
 
     def subject *subjects
-      subjects.each do |s|
+      subjects.flatten!.each do |s|
         s.send :include, @public_interface
         @subjects << s
       end
