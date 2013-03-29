@@ -66,6 +66,19 @@ task :logic do
     require x
     puts
   end
-
-
 end
+
+file "doc/models.dot" do |f|
+  sh "yard graph > #{f.name}"
+end
+
+rule ".svg" => ".dot" do |f|
+  sh "fdp #{f.source} -Tsvg > #{f.name}"
+end
+
+task :yardserver do
+  sh "yard server --reload"
+end
+
+
+
