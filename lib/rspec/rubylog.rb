@@ -14,6 +14,11 @@ module Rubylog::RSpecExampleGroup
       examples << RSpec::Core::Example.new(self, desc, options, proc{check goal, &block})
       examples.last
     end
+
+    def inherited subclass
+      super
+      subclass.initialize_theory
+    end
   end
 end
 

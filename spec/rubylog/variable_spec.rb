@@ -65,7 +65,7 @@ describe Rubylog::Variable, :rubylog=>true do
   end
 
   describe "dont-care variables support recursion" do
-    functor_for Integer, :factorial 
+    predicate_for Integer, ".factorial()"
     0.factorial! 1
     N.factorial(K).if proc{N > 0}.and N1.is {N-1} .and N1.factorial(K1).and K.is{ N*K1 }.and K.is(ANY1).and N.is(ANY2)
     check 0.factorial 1
@@ -74,6 +74,19 @@ describe Rubylog::Variable, :rubylog=>true do
     check 3.factorial 6
     check 4.factorial 24
     check 7.factorial 5040
+  end
+
+  describe "calling" do
+    describe "precompiled" do
+      check B.is(4).and A.is(B.is(C).and C.is(4)).and A
+      check((B.is(4).and A.is(B.is(C).and C.is(3)).and A).false)
+    end
+
+    describe "compiled run-time" do
+      check B.is(4).and A.is{B.is(C).and C.is(4)}.and A
+      check((B.is(4).and A.is{B.is(C).and C.is(3)}.and A).false)
+    end
+
   end
 
 end
