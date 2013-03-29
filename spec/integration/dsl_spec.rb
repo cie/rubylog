@@ -3,7 +3,7 @@ require "spec_helper"
 describe "Rubylog dsl", :rubylog=>true do
 
   describe "prefix functors" do
-    prefix_functor :we_have
+    predicate "we_have()"
     we_have! :weapons
     we_have! :sunglasses
     we_have! :rustling_leather_coats

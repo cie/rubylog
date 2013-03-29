@@ -3,20 +3,25 @@ Rubylog.theory "Rubylog::ReflectionBuiltinsForStructure", nil do
 
   class << primitives
 
-    # Succeeds if +c+ is a structure, with functor +fct+ and arguments +args+
-    def structure c, fct, args
+    # Succeeds if +c+ is a structure, with theory +theory+, functor +fct+ and arguments +args+
+    def structure c, theory, fct, args
       c = c.rubylog_dereference
       if c.is_a? Rubylog::Variable
+        theory = theory.rubylog_dereference
         fct = fct.rubylog_dereference
         args = args.rubylog_dereference
+
         # We enable variable functors
         #raise Rubylog::InstantiationError, fct if fct.is_a? Rubylog::Variable
-        raise Rubylog::InstantiationError.new :structure, [c, fct, args] if args.is_a? Rubylog::Variable
-        c.rubylog_unify(Rubylog::Structure.new(fct, *args)) { yield }
+        
+        raise Rubylog::InstantiationError.new Rubylog::ReflectionBuiltinsForStructure, :structure, [c, theory, fct, args] if args.is_a? Rubylog::Variable
+        c.rubylog_unify(Rubylog::Structure.new(theory, fct, *args)) { yield }
       elsif c.is_a? Rubylog::Structure
-        c.functor.rubylog_unify fct do
-          c.args.rubylog_unify args do
-            yield
+        c.theory.rubylog_unify theory do
+          c.functor.rubylog_unify fct do
+            c.args.rubylog_unify args do
+              yield
+            end
           end
         end
       end
@@ -50,7 +55,7 @@ Rubylog.theory "Rubylog::ReflectionBuiltinsForAssertable", nil do
       raise Rubylog::InstantiationError.new :fact, [head] if head.is_a? Rubylog::Variable
       return yield if head == :true
       return unless head.respond_to? :functor
-      predicate = Rubylog.current_theory[head.indicator]
+      predicate = head.theory[head.indicator]
       if predicate.respond_to? :each # if it is a procedure
         predicate.each do |rule|
           if rule.body == :true
@@ -69,7 +74,7 @@ Rubylog.theory "Rubylog::ReflectionBuiltinsForAssertable", nil do
       head = head.rubylog_dereference
       raise Rubylog::InstantiationError.new :follows_from, [head, body] if head.is_a? Rubylog::Variable
       return unless head.respond_to? :functor
-      predicate = Rubylog.current_theory[head.indicator]
+      predicate = head.theory[head.indicator]
       if predicate.respond_to? :each
         predicate.each do |rule|
           unless rule.body==:true # do not succeed for facts

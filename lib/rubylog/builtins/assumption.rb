@@ -14,7 +14,7 @@ Rubylog.theory "Rubylog::AssumptionBuiltins", nil do
 
   H.assumed_if(B).if proc {
     raise Rubylog::InstantiationError.new :assumed_if, [H, B] if !H or !B
-    theory = ::Rubylog.current_theory
+    theory = H.theory
     predicate = theory[H.indicator]
 
     theory.check_exists predicate, H
@@ -23,8 +23,7 @@ Rubylog.theory "Rubylog::AssumptionBuiltins", nil do
     
     true
   }.ensure {
-    theory = ::Rubylog.current_theory
-    theory[H.indicator].retracta
+    H.theory[H.indicator].retracta
   }
 
   class << primitives

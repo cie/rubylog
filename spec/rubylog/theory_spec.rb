@@ -1,28 +1,30 @@
-theory "Th" do
+require "spec_helper"
+
+Rubylog.theory "Th" do
   subject Symbol
-  functor \
-    :likes, :is_happy, :in, :has, :we_have,
-    :brother, :father, :uncle, :neq, :happy, :%, :-
+  predicate %w".is_happy .likes()"
+  functor :in
 end
 
 
 describe "facts", :rubylog=>true do
   it "can be asserted with assert" do
     Th.assert(:john.is_happy)
-    Th[[:is_happy,1]].should include(Rubylog::Structure.new :-, :john.is_happy, :true)
+    Th[[:is_happy,1]].should include(Rubylog::Rule.new :john.is_happy, :true)
     Th.assert(:john.likes :beer)
-    Th[[:likes,2]].should include(Rubylog::Structure.new :-, :john.likes(:beer), :true)
+    Th[[:likes,2]].should include(Rubylog::Rule.new :john.likes(:beer), :true)
     Th.assert(:john.likes :drinking.in :bar)
-    Th[[:likes,2]].should include(Rubylog::Structure.new :-, :john.likes(:drinking.in :bar), :true)
+    Th[[:likes,2]].should include(Rubylog::Rule.new :john.likes(:drinking.in :bar), :true)
   end
 
-  it "can be asserted with a bang, and it returns the zeroth arg" do
+  it "can be asserted with a bang, and it returns the zeroth arg", :rubylog=>true do
+    predicate_for Symbol, ".is_happy .likes()"
     :john.is_happy!.should == :john
-    Th[[:is_happy,1]].should include(Rubylog::Structure.new(:-, :john.is_happy, :true))
+    self[[:is_happy,1]].should include(Rubylog::Rule.new(:john.is_happy, :true))
     :john.likes!(:beer).should == :john
-    Th[[:likes,2]].should include(Rubylog::Structure.new(:-, :john.likes(:beer), :true))
+    self[[:likes,2]].should include(Rubylog::Rule.new(:john.likes(:beer), :true))
     :john.likes!(:drinking.in :bar).should == :john
-    Th[[:likes,2]].should include(Rubylog::Structure.new(:-, :john.likes(:drinking.in :bar), :true))
+    self[[:likes,2]].should include(Rubylog::Rule.new(:john.likes(:drinking.in :bar), :true))
   end
 
 

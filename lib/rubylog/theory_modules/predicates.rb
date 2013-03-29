@@ -2,8 +2,6 @@ require 'rubylog/simple_procedure'
 require 'rubylog/rule'
 
 
-require 'rubylog/dsl/functors'
-
 module Rubylog::TheoryModules
   module Predicates
 
@@ -24,11 +22,11 @@ module Rubylog::TheoryModules
     end
 
     def [] indicator
-      @database[Rubylog::DSL::Functors.unhumanize_indicator(indicator)]
+      @database[unhumanize_indicator(indicator)]
     end
 
     def []= indicator, predicate
-      @database[Rubylog::DSL::Functors.unhumanize_indicator(indicator)] = predicate
+      @database[unhumanize_indicator(indicator)] = predicate
     end
 
     def keys
@@ -57,7 +55,7 @@ module Rubylog::TheoryModules
     def predicate_for subject, *indicators
       check_module subject
       each_indicator(indicators) do |indicator|
-        indicator = Rubylog::DSL::Functors.unhumanize_indicator(indicator)
+        indicator = unhumanize_indicator(indicator)
         functor_for subject, indicator.first
         create_procedure indicator
       end
@@ -65,7 +63,7 @@ module Rubylog::TheoryModules
 
     def discontiguous *indicators
       each_indicator(indicators) do |indicator|
-        indicator = Rubylog::DSL::Functors.unhumanize_indicator(indicator)
+        indicator = unhumanize_indicator(indicator)
         create_procedure(indicator).discontiguous!
       end
     end
@@ -80,16 +78,16 @@ module Rubylog::TheoryModules
 
     def multitheory *indicators
       each_indicator(indicators) do |indicator|
-        indicator = Rubylog::DSL::Functors.unhumanize_indicator(indicator)
+        indicator = unhumanize_indicator(indicator)
         create_procedure(indicator).multitheory!
       end
     end
 
     def functor *functors
       functors.flatten.each do |fct|
-        Rubylog::DSL::Functors.add_functors_to @public_interface, fct
+        add_functors_to @public_interface, fct
         @subjects.each do |s|
-          Rubylog::DSL::Functors.add_functors_to s, fct
+          add_functors_to s, fct
         end
       end
     end
@@ -97,7 +95,7 @@ module Rubylog::TheoryModules
     def prefix_functor *functors
       functors.flatten.each do |fct|
         m = Module.new
-        Rubylog::DSL::Functors.add_prefix_functors_to m, fct
+        add_prefix_functors_to m, fct
         @prefix_functor_modules << m
         extend m
       end
@@ -106,7 +104,7 @@ module Rubylog::TheoryModules
     def functor_for subject, *functors
       check_module subject
       functors.flatten.each do |fct|
-        Rubylog::DSL::Functors.add_functors_to subject, fct
+        add_functors_to subject, fct
       end
     end
 
@@ -159,15 +157,15 @@ module Rubylog::TheoryModules
     protected
 
     def check_exists predicate, head
-      raise Rubylog::ExistenceError.new(head.indicator) unless predicate
+      raise Rubylog::ExistenceError.new(self, head.indicator) unless predicate
     end
 
     def check_not_discontiguous predicate, head, body
-      raise Rubylog::DiscontiguousPredicateError.new(head.indicator) if check_discontiguous? and not predicate.empty? and predicate != @last_predicate and not predicate.discontiguous?
+      raise Rubylog::DiscontiguousPredicateError.new(self, head.indicator) if check_discontiguous? and not predicate.empty? and predicate != @last_predicate and not predicate.discontiguous?
     end
 
     def check_assertable predicate, head, body
-      raise Rubylog::NonAssertableError.new(head.indicator) unless predicate.respond_to? :assertz
+      raise Rubylog::NonAssertableError.new(self, head.indicator) unless predicate.respond_to? :assertz
     end
 
     def create_procedure indicator
@@ -183,7 +181,7 @@ module Rubylog::TheoryModules
         flatten.
         map{|str|str.split(" ")}.
         flatten.
-        map{|i| Rubylog::DSL::Functors.unhumanize_indicator(i)}.
+        map{|i| unhumanize_indicator(i)}.
         each {|i| yield i }
     end
 

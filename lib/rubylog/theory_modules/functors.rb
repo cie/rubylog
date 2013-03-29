@@ -18,7 +18,6 @@ module Rubylog::TheoryModules
 
     def add_functor_to class_or_module, f
       theory = self
-
       class_or_module.class_eval do
         define_method f do |*args, &block|
           args << block if block
@@ -35,7 +34,7 @@ module Rubylog::TheoryModules
         f_qmark = :"#{f}?"
         define_method f_qmark do |*args, &block|
           args << block if block
-          theory.true? Rubylog::Structure.new(theory, f, self, *args)
+          Rubylog::Structure.new(theory, f, self, *args).true?
         end
       end
 
@@ -54,13 +53,13 @@ module Rubylog::TheoryModules
           define_method f_bang do |*args, &block|
             args << block if block
             assert Rubylog::Structure.new(self, f, *args), :true
-            nil
+            self
           end
 
           f_qmark = :"#{f}?"
           define_method f_qmark do |*args, &block|
             args << block if block
-            true? Rubylog::Structure.new(self, f, *args)
+            Rubylog::Structure.new(self, f, *args).true?
           end
         end
       end

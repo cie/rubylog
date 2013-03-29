@@ -27,7 +27,6 @@ require 'rubylog/theory_creation'
 
 # mixins
 require 'rubylog/mixins/array'
-require 'rubylog/mixins/class'
 require 'rubylog/mixins/hash'
 require 'rubylog/mixins/kernel'
 require 'rubylog/mixins/method'

@@ -17,6 +17,10 @@ class Symbol
     []
   end
 
+  def theory
+    Rubylog::DefaultBuiltins
+  end
+
   # Assertable methods
   include Rubylog::Assertable
 
@@ -32,7 +36,7 @@ class Symbol
       theory.print_trace 1, self, rubylog_variables_hash
 
       predicate = theory[[self,0]]
-      raise Rubylog::ExistenceError.new indicator if not predicate
+      raise Rubylog::ExistenceError.new theory, indicator if not predicate
 
       predicate.call(*args) { yield }
 

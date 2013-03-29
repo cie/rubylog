@@ -3,6 +3,8 @@
   * <tt>Theory#include</tt> became <tt>Theory#include\_module</tt>
   * Theory became a module
   * <tt>Theory#eval</tt> became <tt>Theory#query</tt>
+  * Changed arguments of <tt>Theory#predicate</tt>, added <tt>#predicate\_for</tt>. 
+    Predicates must be declared with either of these.
 * Features 
   * Rspec integration
   * +include+ or +extend+ <tt>Rubylog::Theory</tt> into any class or object

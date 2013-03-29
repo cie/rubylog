@@ -5,6 +5,7 @@ require 'rubylog/theory_modules/builtins'
 require 'rubylog/theory_modules/checks'
 require 'rubylog/theory_modules/demonstration'
 require 'rubylog/theory_modules/dynamic_mode'
+require 'rubylog/theory_modules/functors'
 require 'rubylog/theory_modules/implicit'
 require 'rubylog/theory_modules/inclusion'
 require 'rubylog/theory_modules/predicates'
@@ -26,6 +27,7 @@ module Rubylog::Theory
   include Rubylog::TheoryModules::Checks
   include Rubylog::TheoryModules::Demonstration
   include Rubylog::TheoryModules::DynamicMode
+  include Rubylog::TheoryModules::Functors
   include Rubylog::TheoryModules::Implicit
   include Rubylog::TheoryModules::Inclusion
   include Rubylog::TheoryModules::Predicates

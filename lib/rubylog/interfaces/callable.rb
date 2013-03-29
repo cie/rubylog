@@ -6,14 +6,14 @@ module Rubylog::Callable
   end
 
   def true?
-    Rubylog.static_current_theory.true? self
+    solve { return true }
+    false
   end
 
-  def solve
-    if block_given?
-      Rubylog.static_current_theory.solve(self) {|*a| yield *a}
-    else
-      Rubylog.static_current_theory.solve(self) {|*a|}
+  def solve &block
+    goal = rubylog_compile_variables 
+    catch :cut do
+      goal.prove { block.call_with_rubylog_variables(goal.rubylog_variables) if block }
     end
   end
 end
