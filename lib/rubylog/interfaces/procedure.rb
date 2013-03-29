@@ -7,12 +7,11 @@ module Rubylog::Procedure
       each do |rule|
         begin
           rule = rule.rubylog_compile_variables
-          head, body = rule[0], rule[1]
-          Rubylog.current_theory.print_trace 1, head.args, "=", args
-          head.args.rubylog_unify(args) { 
+          Rubylog.current_theory.print_trace 1, rule.head.args, "=", args
+          rule.head.args.rubylog_unify(args) { 
             begin
-              Rubylog.current_theory.print_trace 1, head, head.rubylog_variables_hash
-              body.prove { 
+              Rubylog.current_theory.print_trace 1, rule.head, rule.head.rubylog_variables_hash
+              rule.body.prove { 
                 yield 
               }
             ensure

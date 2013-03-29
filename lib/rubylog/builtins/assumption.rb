@@ -19,7 +19,7 @@ Rubylog.theory "Rubylog::AssumptionBuiltins", nil do
 
     theory.check_exists predicate, H
 
-    predicate.asserta Rubylog::Structure.new(:-, H, B)
+    predicate.asserta Rubylog::Rule.new(H, B)
     
     true
   }.ensure {
@@ -39,9 +39,8 @@ Rubylog.theory "Rubylog::AssumptionBuiltins", nil do
         r = predicate.delete_at(i)
         begin
           rule = r.rubylog_compile_variables
-          head, body = rule[0], rule[1]
-          head.args.rubylog_unify h.args do
-            body.prove do
+          rule.head.args.rubylog_unify h.args do
+            rule.body.prove do
               yield
             end
           end

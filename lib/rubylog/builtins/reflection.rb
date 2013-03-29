@@ -53,9 +53,9 @@ Rubylog.theory "Rubylog::ReflectionBuiltinsForAssertable", nil do
       predicate = Rubylog.current_theory[head.indicator]
       if predicate.respond_to? :each # if it is a procedure
         predicate.each do |rule|
-          if rule[1] == :true
+          if rule.body == :true
             rule = rule.rubylog_compile_variables
-            rule[0].args.rubylog_unify head.args do
+            rule.head.args.rubylog_unify head.args do
               yield
             end
           end
@@ -72,10 +72,10 @@ Rubylog.theory "Rubylog::ReflectionBuiltinsForAssertable", nil do
       predicate = Rubylog.current_theory[head.indicator]
       if predicate.respond_to? :each
         predicate.each do |rule|
-          unless rule[1]==:true # do not succeed for facts
+          unless rule.body==:true # do not succeed for facts
             rule = rule.rubylog_compile_variables
-            rule[0].args.rubylog_unify head.args do
-              rule[1].rubylog_unify body do
+            rule.head.args.rubylog_unify head.args do
+              rule.body.rubylog_unify body do
                 yield
               end
             end

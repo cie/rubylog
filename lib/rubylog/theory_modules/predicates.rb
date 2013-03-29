@@ -1,4 +1,6 @@
 require 'rubylog/simple_procedure'
+require 'rubylog/rule'
+
 
 require 'rubylog/dsl/functors'
 
@@ -41,11 +43,12 @@ module Rubylog::TheoryModules
       end
     end
 
+    
+
     # directives
     #
     def predicate *indicators
-      indicators.flatten.each do |indicator|
-        indicator = Rubylog::DSL::Functors.unhumanize_indicator(indicator)
+      each_indicator(indicators) do |indicator|
         functor indicator.first
         create_procedure indicator
       end
@@ -53,7 +56,7 @@ module Rubylog::TheoryModules
 
     def predicate_for subject, *indicators
       check_module subject
-      indicators.flatten.each do |indicator|
+      each_indicator(indicators) do |indicator|
         indicator = Rubylog::DSL::Functors.unhumanize_indicator(indicator)
         functor_for subject, indicator.first
         create_procedure indicator
@@ -61,7 +64,7 @@ module Rubylog::TheoryModules
     end
 
     def discontiguous *indicators
-      indicators.flatten.each do |indicator|
+      each_indicator(indicators) do |indicator|
         indicator = Rubylog::DSL::Functors.unhumanize_indicator(indicator)
         create_procedure(indicator).discontiguous!
       end
@@ -76,7 +79,7 @@ module Rubylog::TheoryModules
     end
 
     def multitheory *indicators
-      indicators.flatten.each do |indicator|
+      each_indicator(indicators) do |indicator|
         indicator = Rubylog::DSL::Functors.unhumanize_indicator(indicator)
         create_procedure(indicator).multitheory!
       end
@@ -126,7 +129,7 @@ module Rubylog::TheoryModules
       check_exists predicate, head
       check_assertable predicate, head, body
       check_not_discontiguous predicate, head, body
-      predicate.assertz Rubylog::Structure.new(:-, head, body)
+      predicate.assertz Rubylog::Rule.new(head, body)
       @last_predicate = predicate
     end
 
@@ -142,8 +145,7 @@ module Rubylog::TheoryModules
       result = nil
       catch :retract do
         predicate.each_with_index do |rule, i|
-          rule_head = rule[0]
-          head.rubylog_unify rule_head do
+          head.rubylog_unify rule.head do
             index = i
             result = rule
             throw :retract
@@ -174,6 +176,15 @@ module Rubylog::TheoryModules
 
     def check_module m
       raise ArgumentError, "#{m.inspect} is not a class or module",  caller[1..-1] unless m.is_a? Module
+    end
+
+    def each_indicator indicators
+      indicators.
+        flatten.
+        map{|str|str.split(" ")}.
+        flatten.
+        map{|i| Rubylog::DSL::Functors.unhumanize_indicator(i)}.
+        each {|i| yield i }
     end
 
   end
