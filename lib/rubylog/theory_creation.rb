@@ -127,6 +127,9 @@ module Rubylog
         include Rubylog::DSL::Variables
       end
 
+      theory.base_theory = Rubylog::DefaultBuiltins
+      theory.initialize_theory
+
       # if theory is a class or module, we also include DSL::Variables directly
       # in it, so that they can be accessed from an instance
       # Also, we set self as a subject, so that +predicate+ automatically attaches
@@ -136,8 +139,6 @@ module Rubylog
         theory.subject theory
       end
 
-      theory.base_theory = Rubylog::DefaultBuiltins
-      theory.initialize_theory
       Thread.current[:rubylog_current_theory] = theory
     end
 

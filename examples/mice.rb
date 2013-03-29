@@ -1,8 +1,7 @@
 #!/usr/bin/env ruby
-require "rubylog"
-require "rubylog/builtins/assumption"
-extend Rubylog::Theory
-
+$:.unshift File.dirname(__FILE__)+"/../lib"
+# This is a solution for a math problem.
+#
 # Mafia the black cat plays a game. She has N cups with 0 or 1 mouse under each.
 # She peeks under some cups one by one to see if there is a mouse under them.
 # What she wants to find out is whether there are two cups next to each other
@@ -11,47 +10,73 @@ extend Rubylog::Theory
 # In this case she considers the task hard. For which N's does she consider it
 # hard (N<=2013)?
 
-
-# There are 0 or 1 mice under each cup.
-predicate_for Integer, *%w(.cup() .under())
-K.cup.if 0.under(K).or 1.under(K)
-
-# She peeks under a cup to see if there is a mouse under it
-predicate_for Integer, ".peeked", ".seen_under()"
-K.peeked.if M.in(0..1).and M.seen_under(K).assumed
-
-# She guesses unseen cups
-M.thought_under(K).if M.seen_under(K).and :cut!
-K.unknown.if ANYTHING.seen_under(K).false
-
-# Two adjacent cups that both have a mouse
-[K,L].neighbors.if L.is(K,:+,1).and 1.thought_under(K).and 1.thought_under(L)
-
-# It is solved if two 
+require "rubylog"
+require "rubylog/builtins/assumption"
+extend Rubylog::Theory
 
 
+class Cup < Struct.new :i
+  extend Rubylog::Theory
 
-N.easy.if(N.solved.and K.in{1..N}.all(K.seen).false)
+  def inspect
+    "##{@i}"
+  end
 
-N.peeked(true).if N.has(true).assumed.and N.seen.assumed
-N.peeked(false).if N.has(false).assumed.and N.seen.assumed
+  # A cup can be peeked: it has mouse or not
+  predicate %w(.peeked .has_mouse .seen )
+  C.peeked.if C.has_mouse.assumed.or(:true).and C.seen.assumed
 
-0.solved(false)!
-1.solved(false)!
-2.solved(false).if 2.peeked(false)
-2.solved(true).if 2.peeked(true).and 1.peeked(true)
+  # A cup can be guessed: it has mouse or not
+  predicate %w(.guessed)
+  C.guessed.if C.has_mouse.assumed.or(:true)
+
+end
+
+
+class CupSet
+  extend Rubylog::Theory
+
+  def initialize n
+    @cups = (1..n).map {|i| Cup.new i }
+  end
+
+  def each
+    cups.each { yield }
+  end
+
+  # A set has neighbors if 
+  predicate %w(.has_neighbors)
+  CS.has_neighbors.if [C,D].in{CS[0..-2].zip CS[1..-1]}.and C.has_mouse.and D.has_mouse
+
+  # A predicate definitely solves a set if there is no ambiguity
+  predicate_for Rubylog::Callable, %w(.definitely_solves())
+  T.definitely_solves(CS).if T.any(CS.has_neighbors).and(T.any(CS.has_neighbors.false)).false
+
+  # A trial consist of peeking some cups
+  predicate_for Callable, %w(.trial_for())
+  T.trial_for(CS).if C.in(CS).together{C.peeked.or :true}
+
+  # A set is easy if can be definitely solved by a trial that has not seen all
+  # cups. A set is had if it cannot.
+  predicate %(.easy .hard)
+  CS.easy(Peeks).if any T.trial_for(CS).and(C.in(CS).all(C.seen).false).definitely_solves(CS).and(Peeks.is{C.in(CS).and(C.peeked).map{C}})
+  CS.hard.if CS.easy.false
+
+end
+
 
 N.in(0..4).each do
   puts "#{N}:"
-  N.solved.each do
-    puts "solved."
-    puts "seen: #{K.seen.map{K}}"
-    puts "easy" if K.in{1..N}.all(K.seen).false?
+  CS.is CupSet.new(N) do
+    easy = false
+    CS.easy(Peeks).each do
+      puts "easy: #{Peeks.inspect}"
+      easy = true
+    end
+    puts "hard" if not easy
   end
   puts
 end
-p 0.solved?
-p 0.easy?
 
 
 

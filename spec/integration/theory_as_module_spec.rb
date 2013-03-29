@@ -2,7 +2,7 @@ require 'spec_helper'
 
 extend Rubylog::Theory
 
-functor_for Integer, :divides
+predicate_for Integer, %w(.divides())
 
 (A[thats > 0].divides B[thats > 0]).if { B%A == 0 }
 
