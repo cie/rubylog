@@ -1,27 +1,5 @@
 module Rubylog
 
-  # Returns the current theory.
-  #
-  # It is an internal method used
-  # * FileSystemBuiltins#follows_from and #fact during a demonstration
-  # * Rubylog::Procedure#call only for tracing during a demonstration
-  # * Object#rubylog_matches for tracing during a demonstration
-  # the theory
-  # * Rubylog::Variable#bind_to for tracing during a demonstration
-  #
-  # @return [Rubylog::Theory] the current theory
-  def self.current_theory
-    Thread.current[:rubylog_current_theory]
-  end
-
-  def self.static_current_theory
-    current_theory
-  end
-
-  def self.static_current_theory= theory
-    Thread.current[:rubylog_current_theory] = theory
-  end
-
   # Creates a new theory from a new object or optionally from an existing source
   # object
   # @return the new theory
@@ -138,8 +116,6 @@ module Rubylog
         theory.send :include, Rubylog::DSL::Variables
         theory.subject theory
       end
-
-      Thread.current[:rubylog_current_theory] = theory
     end
 
     # You can include Rubylog::Theory to modules or classes.

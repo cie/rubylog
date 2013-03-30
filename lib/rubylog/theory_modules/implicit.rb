@@ -24,19 +24,6 @@ module Rubylog::TheoryModules
       end
     end
 
-    def with_current_theory
-      begin
-        # save current theory
-        old_theory = Thread.current[:rubylog_current_theory]
-        Thread.current[:rubylog_current_theory] = self
-
-        # call the block
-        yield
-      ensure 
-        # restore current theory
-        Thread.current[:rubylog_current_theory] = old_theory
-      end
-    end
 
     # Starts (if +val+ is not given or true) or stops (if +val+ is false) implicit mode.
     #

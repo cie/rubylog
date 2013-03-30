@@ -32,7 +32,7 @@ class Symbol
 
   def prove
     begin
-      theory.print_trace 1, self, rubylog_variables_hash
+      Rubylog.print_trace 1, self, rubylog_variables_hash
 
       predicate = theory[[self,0]]
       raise Rubylog::ExistenceError.new theory, indicator if not predicate
@@ -40,7 +40,7 @@ class Symbol
       predicate.call(*args) { yield }
 
     ensure
-      theory.print_trace -1
+      Rubylog.print_trace -1
     end
   end
 

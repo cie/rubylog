@@ -41,9 +41,6 @@ RSpec.configure do |c|
       while m = eval(m.name.rpartition("::")[0]) and m.include? Rubylog::RSpecExampleGroup
         include_theory m
       end
-
-      # set the static current theory
-      Rubylog.static_current_theory = self
     end
   end
 end

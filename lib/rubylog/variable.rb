@@ -151,13 +151,13 @@ module Rubylog
     def bind_to other
       begin
         @bound = true; @value = other
-        Rubylog.current_theory.print_trace 1, "#{inspect}=#{@value.inspect}"
+        Rubylog.print_trace 1, "#{inspect}=#{@value.inspect}"
 
         yield
 
       ensure
         @bound = false
-        Rubylog.current_theory.print_trace -1
+        Rubylog.print_trace -1
       end
     end
 

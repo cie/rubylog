@@ -15,6 +15,7 @@ require 'rubylog/interfaces/procedure'
 
 # helpers
 require 'rubylog/errors'
+require 'rubylog/tracing'
 
 # theory
 require 'rubylog/theory'
