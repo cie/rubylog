@@ -51,7 +51,6 @@ module Rubylog
     include Rubylog::Callable
 
     def prove
-      theory = Rubylog.static_current_theory
       begin
         theory.print_trace 1, self, rubylog_variables_hash
         predicate = theory[indicator]

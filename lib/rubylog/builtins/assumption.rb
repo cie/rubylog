@@ -32,7 +32,7 @@ Rubylog.theory "Rubylog::AssumptionBuiltins", nil do
       raise Rubylog::InstantiationError.new :revoked, [h] if h.is_a? Rubylog::Variable
       raise Rubylog::TypeError.new :revoked, [h] unless h.respond_to? :indicator
 
-      predicate = ::Rubylog.current_theory[h.indicator]
+      predicate = h.theory[h.indicator]
 
       (0...predicate.count).each do |i|
         r = predicate.delete_at(i)
