@@ -2,14 +2,15 @@ require 'rubylog/dsl/primitives'
 
 module Rubylog::TheoryModules
   module Primitives
-    def clear
-      @primitives = Rubylog::DSL::Primitives.new self
-      super
-    end
+    private
 
     def primitives
-      @primitives
+      Rubylog::DSL::Primitives.new self
     end
-    private :primitives
+
+    def primitives_for subject
+      Rubylog::DSL::Primitives.new self, subject
+    end
+
   end
 end

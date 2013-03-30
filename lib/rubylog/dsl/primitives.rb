@@ -1,12 +1,22 @@
 class Rubylog::DSL::Primitives
-  def initialize theory
+  def initialize theory, subject=nil
     @theory = theory
+    @subject = subject
   end
 
   def singleton_method_added name
     unless name == :singleton_method_added
       m = method(name)
-      @theory.functor name unless m.arity.zero?
+
+      # add functor
+      unless m.arity.zero?
+        if @subject
+          @theory.functor_for @subject, name
+        else
+          @theory.functor name
+        end
+      end
+
       @theory[[name, m.arity]] = m
     end
   end
