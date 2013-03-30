@@ -18,6 +18,7 @@ module Rubylog::TheoryModules
 
     def add_functor_to class_or_module, f
       theory = self
+
       class_or_module.class_eval do
         define_method f do |*args, &block|
           args << block if block
@@ -53,7 +54,7 @@ module Rubylog::TheoryModules
           define_method f_bang do |*args, &block|
             args << block if block
             assert Rubylog::Structure.new(self, f, *args), :true
-            self
+            nil
           end
 
           f_qmark = :"#{f}?"
@@ -70,13 +71,21 @@ module Rubylog::TheoryModules
     # For example, .and()
     def humanize_indicator indicator
       return indicator if String === indicator
-      functor, arity = indicator
-      if arity > 1
-        ".#{functor}(#{ ','*(arity-2) })"
-      elsif arity == 1
-        ".#{functor}"
+      functor, arity, prefix = indicator
+      if prefix
+        if arity > 0
+          "#{functor}(#{ ','*(arity-1) })"
+        else
+          "#{functor}"
+        end
       else
-        ":#{functor}"
+        if arity > 1
+          ".#{functor}(#{ ','*(arity-2) })"
+        elsif arity == 1
+          ".#{functor}"
+        else
+          ":#{functor}"
+        end
       end
     end
 
@@ -93,6 +102,10 @@ module Rubylog::TheoryModules
         [:"#{$1}",1]
       when /\A\.(\w+)\((,*)\)\z/
         [:"#{$1}",$2.length+2]
+      when /\A(\w+)\z/
+        [:"#{$1}",0,true]
+      when /\A(\w+)\((,*)\)\z/
+        [:"#{$1}",$2.length+1,true]
       else
         raise ArgumentError, "invalid indicator: #{indicator.inspect}"
       end

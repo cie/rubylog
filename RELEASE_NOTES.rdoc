@@ -4,7 +4,10 @@
   * Theory became a module
   * <tt>Theory#eval</tt> became <tt>Theory#query</tt>
   * Changed arguments of <tt>Theory#predicate</tt>, added <tt>#predicate\_for</tt>. 
-    Predicates must be declared with either of these.
+    Predicates must be declared with either of these using the format
+    <tt>".and() .false"</tt>
+  * <tt>Structure</tt> is bound to its theory. <tt>Theory#current\_theory</tt>
+    is removed.
 * Features 
   * Rspec integration
   * +include+ or +extend+ <tt>Rubylog::Theory</tt> into any class or object
