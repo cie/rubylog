@@ -2,7 +2,7 @@ require "spec_helper"
 require "rubylog/builtins/reflection"
 
 describe Rubylog::ReflectionBuiltins, :rubylog => true do
-  functor_for String, :likes, :drinks
+  predicate_for String, ".likes() .drinks()"
 
   describe "fact" do
     "John".likes! "beer"

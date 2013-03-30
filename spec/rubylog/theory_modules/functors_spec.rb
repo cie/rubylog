@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe "Rubylog::TheoryModules::Functors", :rubylog=>true do
+describe Rubylog::TheoryModules::Functors, :rubylog=>true do
 
   describe "#humanize_indicator" do
     specify { humanize_indicator([:fail,0]).should == ":fail" }

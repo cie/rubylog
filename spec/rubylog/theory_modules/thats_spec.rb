@@ -2,8 +2,6 @@ require "spec_helper"
 require "rubylog/builtins/file_system"
 
 describe "thats", :rubylog=>true do
-  functor_for Integer, :factorial
-
   describe "one level" do
     check 4.is(ANY[Integer,thats < 10])
     check 4.is(ANY[Integer,thats < 5])
@@ -38,12 +36,13 @@ describe "thats", :rubylog=>true do
   end
 
   describe "factorial" do
+    predicate_for Integer, ".factorial()"
     0.factorial! 1
     K[thats > 0].factorial(N).if K0.is{K-1}.and K0.factorial(N0).and N.is{N0*K}
   end
 
   describe "palindrome" do
-    functor_for String, :palindrome 
+    predicate_for String, ".palindrome"
     S[String, thats.length <= 1].palindrome!
     "#{A[thats.length == 1]}#{B}#{A}".palindrome.if B.palindrome
 
