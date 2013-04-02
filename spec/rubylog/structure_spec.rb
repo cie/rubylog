@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Rubylog::Structure, :rubylog=>true do
 
-  functor_for Symbol, :is_happy, :likes, :in, :%
+  predicate_for Symbol, ".is_happy .likes()"
 
   it "can be created" do
     (:john.is_happy).should be_kind_of Rubylog::Term
@@ -16,15 +16,8 @@ describe Rubylog::Structure, :rubylog=>true do
     lambda { :john.something_else }.should raise_error(NoMethodError)
   end
 
-  it "also work with operators" do
-    (:is_happy%1).should be_kind_of Rubylog::Term
-    (A%B).should be_kind_of Rubylog::Term
-  end
-
   it "can be asked for their functor" do
     (:john.is_happy).functor.should == :is_happy
-    (:is_happy%1).functor.should == :%
-    (A%1).functor.should == :%
     (:john.likes :drinking.in :bar).functor.should == :likes
   end
 

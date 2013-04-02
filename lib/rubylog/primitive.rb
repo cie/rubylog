@@ -1,7 +1,8 @@
 module Rubylog
   class Primitive < Predicate
 
-    def initialize callable
+    def initialize functor, callable
+      super functor, callable.arity
       @callable = callable
     end
 

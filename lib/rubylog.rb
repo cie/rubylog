@@ -10,14 +10,15 @@ require 'rubylog/term'
 require 'rubylog/callable'
 require 'rubylog/assertable'
 require 'rubylog/composite_term'
-require 'rubylog/predicate'
-require 'rubylog/procedure'
 
 # helpers
 require 'rubylog/errors'
 require 'rubylog/tracing'
 
-# context
+# objects
+require 'rubylog/predicate'
+require 'rubylog/procedure'
+require 'rubylog/primitive'
 require 'rubylog/context'
 
 # structure

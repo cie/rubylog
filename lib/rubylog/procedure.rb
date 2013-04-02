@@ -35,28 +35,14 @@ module Rubylog
       end
     end
 
-    # Asserts a rule with a given head and body.
-    def assert head, body=:true
-      indicator = head.indicator
-      predicate = @database[indicator]
-      check_exists predicate, head
-      check_assertable predicate, head, body
-      check_not_discontiguous predicate, head, body
-      predicate.assertz Rubylog::Rule.new(head, body)
-      @last_predicate = predicate
-    end
-
-    def discontiguous!
-      @discontiguous = true
-    end
-
-    def discontiguous?
-      @discontiguous
-    end
-
-
     def each
       raise "abstract method called"
     end
+
+    # Asserts a rule with a given head and body.
+    def assert head, body=:true
+      push Rubylog::Rule.new(head, body)
+    end
+
   end
 end

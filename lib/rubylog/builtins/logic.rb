@@ -88,9 +88,8 @@ Rubylog::DefaultBuiltins.amend do
     
     alias none false
 
+    prefix :all, :any, :one, :none, :iff
   end
-
-  prefix_functor :all, :any, :one, :none, :iff
 
 end
 
