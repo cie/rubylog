@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Rubylog::LogicBuiltins, :rubylog => true do
+describe "logic builtins", :rubylog => true do
   functor_for Symbol, :likes, :happy
 
   specify "true" do

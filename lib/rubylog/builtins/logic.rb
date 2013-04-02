@@ -1,4 +1,4 @@
-Rubylog.theory "Rubylog::NullaryLogicBuiltins", nil do
+Rubylog::DefaultBuiltins.amend do
   class << primitives
     # true
     def true
@@ -15,12 +15,8 @@ Rubylog.theory "Rubylog::NullaryLogicBuiltins", nil do
       throw :cut
     end
   end
-end
 
-Rubylog.theory "Rubylog::LogicBuiltinsForCallable", nil do
-  subject ::Rubylog::Callable, ::Rubylog::Structure
-
-  class << primitives
+  class << primitives_for [::Rubylog::Callable, ::Rubylog::Structure]
     # Succeeds if both +a+ and +b+ succeeds.
     def and a, b
       a.prove { b.prove { yield } }
@@ -96,14 +92,5 @@ Rubylog.theory "Rubylog::LogicBuiltinsForCallable", nil do
 
   prefix_functor :all, :any, :one, :none, :iff
 
-end
-
-Rubylog.theory "Rubylog::LogicBuiltins", nil do
-  include_theory Rubylog::NullaryLogicBuiltins
-  include_theory Rubylog::LogicBuiltinsForCallable
-end
-
-Rubylog::DefaultBuiltins.amend do
-  include_theory Rubylog::LogicBuiltins
 end
 

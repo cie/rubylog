@@ -1,6 +1,6 @@
 require "spec_helper"
 
-Rubylog.theory "Th" do
+Th = Rubylog.theory do
   subject Symbol
   predicate %w".is_happy .likes()"
   functor :in

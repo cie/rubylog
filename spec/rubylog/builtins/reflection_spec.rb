@@ -1,7 +1,7 @@
 require "spec_helper"
 require "rubylog/builtins/reflection"
 
-describe Rubylog::ReflectionBuiltins, :rubylog => true do
+describe "reflection builtins", :rubylog => true do
   predicate_for String, ".likes() .drinks()"
 
   describe "fact" do

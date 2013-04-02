@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Rubylog::TermBuiltins, :rubylog => true do
+describe "Term builtins", :rubylog => true do
   functor_for Symbol, :likes
 
   describe "in" do

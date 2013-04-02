@@ -52,11 +52,10 @@ module Rubylog::TheoryModules
       end
     end
 
-    def predicate_for subject, *indicators
-      check_module subject
+    def predicate_for subjects, *indicators
       each_indicator(indicators) do |indicator|
         indicator = unhumanize_indicator(indicator)
-        functor_for subject, indicator.first
+        functor_for subjects, indicator.first
         create_procedure indicator
       end
     end
@@ -101,10 +100,13 @@ module Rubylog::TheoryModules
       end
     end
 
-    def functor_for subject, *functors
-      check_module subject
+    def functor_for subjects, *functors
+      subjects = [subjects].flatten
+      check_modules subjects
       functors.flatten.each do |fct|
-        add_functors_to subject, fct
+        subjects.each do |subject|
+          add_functors_to subject, fct
+        end
       end
     end
 
@@ -172,11 +174,14 @@ module Rubylog::TheoryModules
       @database[indicator] ||= Rubylog::SimpleProcedure.new
     end
 
-    def check_module m
-      raise ArgumentError, "#{m.inspect} is not a class or module",  caller[1..-1] unless m.is_a? Module
+    def check_modules modules
+      modules.each do |m|
+        raise ArgumentError, "#{m.inspect} is not a class or module",  caller[1..-1] unless m.is_a? Module
+      end
     end
 
     def each_indicator indicators
+      # TODO check if not empty
       indicators.
         flatten.
         map{|str|str.split(" ")}.

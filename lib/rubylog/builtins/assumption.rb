@@ -1,10 +1,7 @@
 require 'rubylog/builtins/ensure'
 
-Rubylog.theory "Rubylog::AssumptionBuiltins", nil do
-  include_theory Rubylog::EnsureBuiltins
-  
-  subject ::Rubylog::Assertable
-  predicate ".assumed", ".rejected", ".revoked", ".assumed_if()", ".assumed_unless()", ".rejected_if()", ".rejected_unless()"
+Rubylog::DefaultBuiltins.amend do
+  predicate_for ::Rubylog::Assertable, ".assumed", ".rejected", ".revoked", ".assumed_if()", ".assumed_unless()", ".rejected_if()", ".rejected_unless()"
 
   A.assumed.if A.assumed_if :true
   A.rejected.if A.assumed_if :cut!.and :fail
@@ -26,7 +23,7 @@ Rubylog.theory "Rubylog::AssumptionBuiltins", nil do
     H.theory[H.indicator].retracta
   }
 
-  class << primitives
+  class << primitives_for ::Rubylog::Assertable
     def revoked h
       h = h.rubylog_dereference
       raise Rubylog::InstantiationError.new :revoked, [h] if h.is_a? Rubylog::Variable
@@ -53,6 +50,3 @@ Rubylog.theory "Rubylog::AssumptionBuiltins", nil do
 
 end
 
-Rubylog::DefaultBuiltins.amend do
-  include_theory Rubylog::AssumptionBuiltins
-end

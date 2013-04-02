@@ -1,7 +1,6 @@
-Rubylog.theory "Rubylog::ReflectionBuiltinsForStructure", nil do
-  subject Rubylog::Structure
+Rubylog::DefaultBuiltins.amend do
 
-  class << primitives
+  class << primitives_for Rubylog::Structure
 
     # Succeeds if +c+ is a structure, with theory +theory+, functor +fct+ and arguments +args+
     def structure c, theory, fct, args
@@ -41,13 +40,8 @@ Rubylog.theory "Rubylog::ReflectionBuiltinsForStructure", nil do
     #end
     
   end
-end
 
-
-Rubylog.theory "Rubylog::ReflectionBuiltinsForAssertable", nil do
-  subject Rubylog::Assertable, ::Rubylog::Structure
-
-  class << primitives
+  class << primitives_for [Rubylog::Assertable, ::Rubylog::Structure]
 
     # Succeeds if +head+ unifies with a fact.
     def fact head
@@ -97,13 +91,7 @@ Rubylog.theory "Rubylog::ReflectionBuiltinsForAssertable", nil do
       #raise Rubylog::InvalidStateError, "variables not available" if not vars
       #vars.find
     #end
-  end
-end
-Rubylog.theory "Rubylog::ReflectionBuiltins", nil do
-  include_theory Rubylog::ReflectionBuiltinsForStructure
-  include_theory Rubylog::ReflectionBuiltinsForAssertable
-end
 
-Rubylog::DefaultBuiltins.amend do
-  include_theory Rubylog::ReflectionBuiltins
+  end
+    
 end

@@ -11,73 +11,21 @@ module Rubylog
     source_object
   end
 
-  # Create a new Rubylog theory or modify an existing one.
+  # Create a new Rubylog theory.
   #
-  # You can create theories with the theory method, which is available from
-  # anywhere:
-  #     theory "MyTheory" do
+  # You can create theories with the theory method
+  #     MyTheory = Rubylog.theory do
   #       # ...
   #     end
   #      
-  #     # or
-  #       
-  #     MyTheory = theory do
-  #       # ...
-  #     end
-  #
   # Later you can modify the theory:
-  #     theory "MyTheory" do 
-  #     # or
-  #     theory MyTheory do
-  #     # or
   #     MyTheory.amend do
-  #     # or
-  #     MyTheory.eval do
   #       # ...
   #     end
   #
-  # You can specify which theory to use as a base:
-  #
-  #     theory "MyTheory", MyOtherTheory do 
-  #     end
-  #
-  # The default base is Rubylog::DefaultBuiltins. To use no default base,
-  # specify +nil+. Then you will not have builtins like +and+.
-  #
-  #     theory "MyTheory", nil do 
-  #     end
-  #
-  def self.theory full_name=nil, base=false, &block
-    # use name or original theory
-    case full_name
-    when nil
-      theory = create_theory
-    when Rubylog::Theory
-      theory=full_name
-    else
-      names = full_name.to_s.split("::")
-      parent_names, name = names[0...-1], names[-1]
-      parent = parent_names.inject(block.binding.eval("Module.nesting[0]") || Object)  {|a,b| a.const_get b}
-
-      if not parent.const_defined?(name)
-        theory = create_theory
-        parent.const_set name, theory
-      else
-        theory = parent.const_get name
-        raise TypeError, "#{name} is not a theory" unless theory.is_a? Rubylog::Theory
-      end
-    end
-
-    # include the base
-    case base
-    when false
-      theory.base_theory = Rubylog::DefaultBuiltins
-      theory.include_theory Rubylog::DefaultBuiltins
-    when Rubylog::Theory
-      theory.base_theory = base
-      theory.include_theory base
-    when nil
-    end
+  def self.theory &block
+    # create the theory
+    theory = create_theory
 
     # execute the block
     theory.amend &block
@@ -105,7 +53,6 @@ module Rubylog
         include Rubylog::DSL::Variables
       end
 
-      theory.base_theory = Rubylog::DefaultBuiltins
       theory.initialize_theory
 
       # if theory is a class or module, we also include DSL::Variables directly

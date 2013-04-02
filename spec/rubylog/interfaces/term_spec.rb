@@ -1,4 +1,4 @@
-theory "Uni" do
+Uni = Rubylog.theory do
   subject Symbol
   functor :likes
 end

@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-A = theory do
+A = Rubylog.theory do
   functor_for Symbol, :good
 
   :x.good!
 end
 
-B = theory do
+B = Rubylog.theory do
   :y.good!
 end
 

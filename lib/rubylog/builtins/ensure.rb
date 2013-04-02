@@ -1,7 +1,6 @@
-Rubylog.theory "Rubylog::EnsureBuiltins", nil do
-  subject ::Rubylog::Callable
-
-  class << primitives
+Rubylog::DefaultBuiltins.amend do
+  
+  class << primitives_for ::Rubylog::Callable
     def ensure a, b
       begin
         a.prove { yield }

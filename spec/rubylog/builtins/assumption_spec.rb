@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Rubylog::AssumptionBuiltins, :rubylog=>true do
+describe "Assumption builtins", :rubylog=>true do
   c = 0
   check A.in([1,2,3]).all proc { c = A }.ensure { c = 0 }.and { check { (1..3).include? c } }
   check { c == 0 }

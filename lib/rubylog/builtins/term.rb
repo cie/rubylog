@@ -1,7 +1,6 @@
-Rubylog.theory "Rubylog::TermBuiltins", nil do
-  subject ::Rubylog::Term
+Rubylog::DefaultBuiltins.amend do
 
-  class << primitives
+  class << primitives_for Rubylog::Term
     # = is
     def is a,b
       a = a.rubylog_resolve_function
@@ -34,8 +33,4 @@ Rubylog.theory "Rubylog::TermBuiltins", nil do
       yield
     end
   end
-end
-
-Rubylog::DefaultBuiltins.amend do
-  include_theory Rubylog::TermBuiltins
 end

@@ -1,4 +1,4 @@
-Rubylog.theory "Rubylog::ArithmeticsBuiltins", nil do
+Rubylog::DefaultBuiltins.amend do
 
   Rubylog::OperatorInverses = {
     :+ => [lambda{|c,b|c-b}, lambda{|c,a|c-a}],
@@ -6,7 +6,7 @@ Rubylog.theory "Rubylog::ArithmeticsBuiltins", nil do
   }
 
 
-  class << primitives
+  class << primitives_for Rubylog::Term
     def is c, a, op, b
       a, b, c, op = [a,b,c,op].map{|f|f.rubylog_resolve_function.rubylog_dereference}
       a_var, b_var, c_var, op_var = [a,b,c,op].map{|f|f.is_a? Rubylog::Variable}
@@ -44,7 +44,3 @@ Rubylog.theory "Rubylog::ArithmeticsBuiltins", nil do
   end
 end
 
-
-Rubylog::DefaultBuiltins.amend do
-  include_theory Rubylog::ArithmeticsBuiltins
-end
