@@ -1,4 +1,4 @@
-module Rubylog::TheoryModules
+module Rubylog::ContextModules
   module Checks
     def check_passed goal
     end

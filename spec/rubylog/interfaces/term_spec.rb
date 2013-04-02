@@ -1,6 +1,5 @@
-Uni = Rubylog.theory do
-  subject Symbol
-  functor :likes
+Rubylog do
+  functor_for Symbol, :likes
 end
 
 describe "unification", :rubylog=>true do

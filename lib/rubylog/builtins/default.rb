@@ -1,7 +1,6 @@
 # Includes every builtin library required. +logic+ and +term+ builtins are
 # included by default.
-Rubylog::DefaultBuiltins = Rubylog.theory do
-end
+Rubylog::DefaultBuiltins = Rubylog.create_context
 
 require 'rubylog/builtins/logic'
 require 'rubylog/builtins/term'

@@ -2,7 +2,7 @@ require 'rubylog/simple_procedure'
 require 'rubylog/rule'
 
 
-module Rubylog::TheoryModules
+module Rubylog::ContextModules
   module Predicates
 
     attr_reader :public_interface
@@ -53,13 +53,6 @@ module Rubylog::TheoryModules
       @check_discontiguous
     end
 
-    def multitheory *indicators
-      each_indicator(indicators) do |indicator|
-        indicator = unhumanize_indicator(indicator)
-        create_procedure(indicator).multitheory!
-      end
-    end
-
     def functor *functors
       functors.flatten.each do |fct|
         add_functors_to @public_interface, fct
@@ -93,10 +86,7 @@ module Rubylog::TheoryModules
     end
 
     def subject *subjects
-      subjects.flatten.each do |s|
-        s.send :include, @public_interface
-        @subjects << s
-      end
+      @subjects = subjects.flatten
     end
 
     # predicates
@@ -151,6 +141,7 @@ module Rubylog::TheoryModules
 
     def each_indicator indicators
       # TODO check if not empty
+      #
       indicators.
         flatten.
         map{|str|str.split(" ")}.

@@ -3,7 +3,7 @@ require "rubylog"
 
 module Rubylog::RSpecExampleGroup
   def self.included example_group
-    example_group.extend Rubylog::Theory
+    example_group.extend Rubylog::Context
     example_group.extend Rubylog::RSpecExampleGroup::ClassMethods
   end
 
@@ -17,7 +17,7 @@ module Rubylog::RSpecExampleGroup
 
     def inherited subclass
       super
-      subclass.initialize_theory
+      subclass.initialize_context
     end
   end
 end
@@ -30,16 +30,16 @@ RSpec.configure do |c|
   # enable use of Rubylog in examples
   c.before do
     if self.class.metadata[:rubylog]
-      # create the theory from the example
-      Rubylog.create_theory self
+      # create the context from the example
+      Rubylog.create_context self
 
       # include the EG class
-      include_theory self.class
+      include_context self.class
 
       # include nesting example groups upwards while they are rubylog example groups
       m = self.class
       while m = eval(m.name.rpartition("::")[0]) and m.include? Rubylog::RSpecExampleGroup
-        include_theory m
+        include_context m
       end
     end
   end

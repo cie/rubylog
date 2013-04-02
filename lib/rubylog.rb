@@ -17,14 +17,14 @@ require 'rubylog/procedure'
 require 'rubylog/errors'
 require 'rubylog/tracing'
 
-# theory
-require 'rubylog/theory'
+# context
+require 'rubylog/context'
 
 # structure
 require 'rubylog/structure'
 
 # helpers
-require 'rubylog/theory_creation'
+require 'rubylog/context_creation'
 
 # mixins
 require 'rubylog/mixins/array'

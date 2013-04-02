@@ -1,4 +1,4 @@
-module Rubylog::TheoryModules
+module Rubylog::ContextModules
   module DynamicMode
     # Call the given block with variables automatically resolved
     def self.with_vars vars

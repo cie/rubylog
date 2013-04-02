@@ -2,9 +2,8 @@
 describe "custom classes" do
   before do
     class User
+      extend Rubylog::Context
       predicate :girl, :boy
-      extend Rubylog::Theory
-      include Rubylog::DSL::Variables
 
       attr_reader :name
       def initialize name

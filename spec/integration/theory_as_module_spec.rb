@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-extend Rubylog::Theory
+extend Rubylog::Context
 
 predicate_for Integer, %w(.divides())
 

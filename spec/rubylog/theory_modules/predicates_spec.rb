@@ -1,6 +1,6 @@
 require "spec_helper" 
 
-describe Rubylog::TheoryModules::Predicates, :rubylog=>true do
+describe Rubylog::ContextModules::Predicates, :rubylog=>true do
   describe "#predicate_for" do
 
     specify "can accept humanized predicate" do

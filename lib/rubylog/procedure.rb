@@ -54,13 +54,6 @@ module Rubylog
       @discontiguous
     end
 
-    def multitheory!
-      @multitheory = true
-    end
-
-    def multitheory?
-      @multitheory
-    end
 
     def each
       raise "abstract method called"

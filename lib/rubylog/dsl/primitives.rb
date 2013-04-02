@@ -1,6 +1,6 @@
 class Rubylog::DSL::Primitives
-  def initialize theory, subject=nil
-    @theory = theory
+  def initialize context, subject=nil
+    @context = context
     @subject = subject
   end
 
@@ -11,13 +11,11 @@ class Rubylog::DSL::Primitives
       # add functor
       unless m.arity.zero?
         if @subject
-          @theory.predicate_for @subject, name
+          Rubylog::Predicate.new(name, m.arity).functor_for(@subject)
         else
-          @theory.predicate name
+          @context.predicate name
         end
       end
-
-      @theory[[name, m.arity]] = m
     end
   end
 
