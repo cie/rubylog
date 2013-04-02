@@ -25,6 +25,7 @@ module Rubylog
           if @subject
             @context.create_procedure([name, m.arity]).functor_for(@subject) # :indicator:
           else
+            # use the default subject
             @context.predicate name
           end
         end

@@ -3,7 +3,7 @@ require "spec_helper"
 
 describe "facts", :rubylog=>true do
   it "can be asserted with assert" do
-    subject Symbol
+    self.default_subject = Symbol
     predicate ".is_happy .likes()"
     functor :in
     assert(:john.is_happy)

@@ -14,7 +14,7 @@ module Rubylog
 
       def clear
         @public_interface = Module.new
-        @subjects = []
+        @default_subject = []
         @check_discontiguous = true
         @prefix_functor_modules = []
         @last_predicate = nil
@@ -29,7 +29,7 @@ module Rubylog
       #
       def predicate *indicators
         each_indicator(indicators) do |indicator|
-          create_procedure(indicator).functor_for [subject, Variable]
+          create_procedure(indicator).functor_for [@default_subject, Variable]
         end
       end
 
@@ -42,7 +42,7 @@ module Rubylog
       def functor *functors
         functors.flatten.each do |fct|
           add_functors_to @public_interface, fct
-          @subjects.each do |s|
+          [@default_subject].flatten.each do |s|
             add_functors_to s, fct
           end
         end
@@ -80,9 +80,7 @@ module Rubylog
         raise "not implemented"
       end
 
-      def subject *subjects
-        @subjects = subjects.flatten
-      end
+      attr_accessor :default_subject
 
       # predicates
 

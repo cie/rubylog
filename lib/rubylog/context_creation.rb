@@ -31,7 +31,7 @@ module Rubylog
   #   predicate ".good"
   # end
   #
-  # This automatically uses the class as subject.
+  # This automatically uses the class as default subject.
   #
   # Finally, you can include it to a class.
   #
@@ -60,7 +60,7 @@ module Rubylog
       # functors to it.
       if context.is_a? Module
         context.send :include, Rubylog::DSL::Variables
-        context.subject context
+        context.default_subject = context
       end
     end
 

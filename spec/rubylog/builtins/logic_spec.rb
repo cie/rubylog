@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "logic builtins", :rubylog => true do
-  functor_for Symbol, :likes, :happy
+  predicate_for Symbol, ".likes() .happy"
 
   specify "true" do
     :john.happy.if :true

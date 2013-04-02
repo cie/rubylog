@@ -1,8 +1,7 @@
-Rubylog do
-  functor_for Symbol, :likes
-end
 
 describe "unification", :rubylog=>true do
+  predicate_for Symbol, ".likes"
+
   it "works for variables" do
     result = false
     A.rubylog_unify(12) { result = true }
