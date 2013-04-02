@@ -123,15 +123,6 @@ module Rubylog::TheoryModules
 
     # predicates
 
-    def assert head, body=:true
-      indicator = head.indicator
-      predicate = @database[indicator]
-      check_exists predicate, head
-      check_assertable predicate, head, body
-      check_not_discontiguous predicate, head, body
-      predicate.assertz Rubylog::Rule.new(head, body)
-      @last_predicate = predicate
-    end
 
     def retract head
       indicator = head.indicator

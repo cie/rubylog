@@ -1,9 +1,9 @@
-module Rubylog::TheoryModules
-  module Functors
+module Rubylog
+  module Predicate::Functors
     def add_functors_to class_or_module, *functors
       functors.each do |f|
         add_functor_to class_or_module, f
-        add_functor_to Rubylog::Variable, f
+        add_functor_to Variable, f
       end
     end
 
@@ -17,25 +17,25 @@ module Rubylog::TheoryModules
     end
 
     def add_functor_to class_or_module, f
-      theory = self
+      predicate = self
 
       class_or_module.class_eval do
         define_method f do |*args, &block|
           args << block if block
-          Rubylog::Structure.new theory, f, self, *args 
+          Rubylog::Structure.new predicate, f, self, *args 
         end
 
         f_bang =  :"#{f}!"
         define_method f_bang do |*args, &block|
           args << block if block
-          theory.assert Rubylog::Structure.new(theory, f, self, *args), :true
+          theory.assert Rubylog::Structure.new(predicate, f, self, *args), :true
           self
         end
 
         f_qmark = :"#{f}?"
         define_method f_qmark do |*args, &block|
           args << block if block
-          Rubylog::Structure.new(theory, f, self, *args).true?
+          Rubylog::Structure.new(predicate, f, self, *args).true?
         end
       end
 
@@ -112,6 +112,10 @@ module Rubylog::TheoryModules
 
     end
 
+  end
+
+  class Predicate
+    include Predicate::Functors
   end
 
 end

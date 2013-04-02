@@ -1,11 +1,30 @@
-class Rubylog::SimpleProcedure < Array
-  include Rubylog::Procedure
+module Rubylog
+  class SimpleProcedure < Procedure
+    def initialize
+      @rules = []
+    end
 
-  alias assertz <<
-  alias asserta unshift
-  alias retracta shift
-  alias retractz pop
+    def push rule
+      rules.push rule
+    end
+
+    def pop
+      rules.pop
+    end
+
+    def shift
+      rules.shift
+    end
+
+    def unshift rule
+      rules.unshift rule
+    end
+
+    def each
+      rules.each {|r| yield r}
+    end
+
+  end
 
 end
-
 

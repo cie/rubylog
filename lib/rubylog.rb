@@ -6,12 +6,12 @@ end
 #dir = File.dirname(__FILE__) + "/"
 
 # interfaces
-require 'rubylog/interfaces/term'
-require 'rubylog/interfaces/callable'
-require 'rubylog/interfaces/assertable'
-require 'rubylog/interfaces/composite_term'
-require 'rubylog/interfaces/predicate'
-require 'rubylog/interfaces/procedure'
+require 'rubylog/term'
+require 'rubylog/callable'
+require 'rubylog/assertable'
+require 'rubylog/composite_term'
+require 'rubylog/predicate'
+require 'rubylog/procedure'
 
 # helpers
 require 'rubylog/errors'
