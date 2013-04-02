@@ -12,7 +12,6 @@ module Rubylog::TheoryModules
 
 
     def clear
-      @database = {}
       @public_interface = Module.new
       @subjects = []
       @check_discontiguous = true
@@ -21,25 +20,7 @@ module Rubylog::TheoryModules
       super 
     end
 
-    def [] indicator
-      @database[unhumanize_indicator(indicator)]
-    end
 
-    def []= indicator, predicate
-      @database[unhumanize_indicator(indicator)] = predicate
-    end
-
-    def keys
-      @database.keys
-    end
-
-    def each_pair
-      if block_given?
-        @database.each_pair {|*a| yield *a }
-      else
-        @database.each_pair
-      end
-    end
 
     
 
@@ -47,16 +28,13 @@ module Rubylog::TheoryModules
     #
     def predicate *indicators
       each_indicator(indicators) do |indicator|
-        functor indicator.first
-        create_procedure indicator
+        create_procedure(indicator).create_functor
       end
     end
 
     def predicate_for subjects, *indicators
       each_indicator(indicators) do |indicator|
-        indicator = unhumanize_indicator(indicator)
-        functor_for subjects, indicator.first
-        create_procedure indicator
+        create_procedure(indicator).create_functor_for subjects
       end
     end
 
@@ -162,7 +140,7 @@ module Rubylog::TheoryModules
     end
 
     def create_procedure indicator
-      @database[indicator] ||= Rubylog::SimpleProcedure.new
+      Rubylog::SimpleProcedure.new
     end
 
     def check_modules modules

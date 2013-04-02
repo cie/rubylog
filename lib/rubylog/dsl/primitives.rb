@@ -11,9 +11,9 @@ class Rubylog::DSL::Primitives
       # add functor
       unless m.arity.zero?
         if @subject
-          @theory.functor_for @subject, name
+          @theory.predicate_for @subject, name
         else
-          @theory.functor name
+          @theory.predicate name
         end
       end
 
