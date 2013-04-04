@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Rubylog::DSL::Primitives do
+describe Rubylog::DSL::Primitives, :rubylog=>true do
   describe "with default subject" do
     self.default_subject = Integer
 

@@ -10,3 +10,5 @@ multicontext
 prefix functors
 subject
 public_interface
+arity
+indicator

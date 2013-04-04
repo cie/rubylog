@@ -55,29 +55,25 @@ module Rubylog
         m.class_eval do
           define_method f do |*args, &block|
           args << block if block
-          Rubylog::Structure.new self, f, *args 
+          Rubylog::Structure.new predicate, f, *args 
           end
 
           f_bang =  :"#{f}!"
           define_method f_bang do |*args, &block|
           args << block if block
-          assert Rubylog::Structure.new(self, f, *args), :true
+          assert Rubylog::Structure.new(predicate, f, *args), :true
           nil
           end
 
           f_qmark = :"#{f}?"
           define_method f_qmark do |*args, &block|
           args << block if block
-          Rubylog::Structure.new(self, f, *args).true?
+          Rubylog::Structure.new(predicate, f, *args).true?
           end
         end
 
         @prefix_functor_modules << m
         extend m
-      end
-
-      def private *indicators
-        raise "not implemented"
       end
 
       attr_accessor :default_subject

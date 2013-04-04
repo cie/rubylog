@@ -17,7 +17,7 @@ module Rubylog::ContextModules
       goal ||= block
       result = nil
       begin 
-        result = true?(goal)
+        result = goal.true?
       rescue
         check_raised_exception goal, $!
       else
