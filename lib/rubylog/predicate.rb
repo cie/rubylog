@@ -16,6 +16,7 @@ module Rubylog
       predicate = self
 
       [subjects].flatten.each do |subject|
+        raise ArgumentError, "#{subject.inspect} is not a class or module" unless subject.is_a? Module
         subject.class_eval do
           f = predicate.functor
           define_method f do |*args, &block|
