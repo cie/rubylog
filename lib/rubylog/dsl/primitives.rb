@@ -9,7 +9,9 @@ module Rubylog
 
       singleton_class.define_singleton_method :prefix do |*functors|
         functors.flatten.each do |fct|
-          context.prefix_functor(Primitive.new(fct, primitives.method(fct)))
+          Context.send :define_method, fct do |_,*args|
+            primitives.send(fct, *args) { yield }
+          end
         end
       end
 

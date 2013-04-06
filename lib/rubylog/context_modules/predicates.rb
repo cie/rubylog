@@ -48,34 +48,6 @@ module Rubylog
         end
       end
 
-      def prefix_functor predicate
-        m = Module.new
-        f = predicate.functor
-
-        m.class_eval do
-          define_method f do |*args, &block|
-          args << block if block
-          Rubylog::Structure.new predicate, f, *args 
-          end
-
-          f_bang =  :"#{f}!"
-          define_method f_bang do |*args, &block|
-          args << block if block
-          assert Rubylog::Structure.new(predicate, f, *args), :true
-          nil
-          end
-
-          f_qmark = :"#{f}?"
-          define_method f_qmark do |*args, &block|
-          args << block if block
-          Rubylog::Structure.new(predicate, f, *args).true?
-          end
-        end
-
-        @prefix_functor_modules << m
-        extend m
-      end
-
       attr_accessor :default_subject
 
       # predicates
