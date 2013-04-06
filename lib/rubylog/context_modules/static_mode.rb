@@ -1,4 +1,4 @@
-module Rubylog::TheoryModules
+module Rubylog::ContextModules
   module StaticMode
     def amend &block
       with_implicit do

@@ -1,4 +1,4 @@
-module Rubylog::TheoryModules
+module Rubylog::ContextModules
   module PrivatePredicates
     #def private *args
     #if args.empty?

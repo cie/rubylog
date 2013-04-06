@@ -11,16 +11,14 @@ Rubylog::DefaultBuiltins.amend do
 
   H.assumed_if(B).if proc {
     raise Rubylog::InstantiationError.new :assumed_if, [H, B] if !H or !B
-    theory = H.theory
-    predicate = theory[H.indicator]
 
-    theory.check_exists predicate, H
-
-    predicate.asserta Rubylog::Rule.new(H, B)
+    # assert
+    H.predicate.asserta Rubylog::Rule.new(H, B)
     
     true
   }.ensure {
-    H.theory[H.indicator].retracta
+    # retract
+    H.predicate.retracta
   }
 
   class << primitives_for ::Rubylog::Assertable
@@ -29,7 +27,7 @@ Rubylog::DefaultBuiltins.amend do
       raise Rubylog::InstantiationError.new :revoked, [h] if h.is_a? Rubylog::Variable
       raise Rubylog::TypeError.new :revoked, [h] unless h.respond_to? :indicator
 
-      predicate = h.theory[h.indicator]
+      predicate = h.predicate
 
       (0...predicate.count).each do |i|
         r = predicate.delete_at(i)

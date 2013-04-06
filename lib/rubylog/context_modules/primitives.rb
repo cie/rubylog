@@ -1,6 +1,6 @@
 require 'rubylog/dsl/primitives'
 
-module Rubylog::TheoryModules
+module Rubylog::ContextModules
   module Primitives
     private
 

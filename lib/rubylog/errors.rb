@@ -19,32 +19,26 @@ module Rubylog
   end
 
   class DiscontiguousPredicateError < RubylogError
-    def initialize theory, indicator
-      super "Predicate #{theory.humanize_indicator(indicator)} was not declared as discontiguous"
-    end
-  end
-
-  class MultitheoryError < RubylogError
-    def initialize theory, indicator
-      super "Predicate #{theory.humanize_indicator(indicator)} was not declared as multi-theory"
+    def initialize predicate
+      super "Predicate #{predicate.inspect} was not declared as discontiguous"
     end
   end
 
   class BuiltinPredicateError < RubylogError
-    def initialize theory, indicator
-      super "Predicate #{theory.humanize_indicator(indicator)} is built-in"
+    def initialize predicate
+      super "Predicate #{predicate.inspect} is built-in"
     end
   end
 
   class NonAssertableError < RubylogError
-    def initialize theory, indicator
-      super "Predicate #{theory.humanize_indicator(indicator)} is not assertable"
+    def initialize predicate
+      super "Predicate #{predicate.inspect} is not assertable"
     end
   end
 
   class ExistenceError < RubylogError
-    def initialize theory, indicator
-      super "Predicate #{theory.humanize_indicator(indicator)} does not exist"
+    def initialize predicate
+      super "Predicate #{predicate.inspect} does not exist"
     end
   end
 
@@ -52,8 +46,8 @@ module Rubylog
   end
 
   class InstantiationError < RubylogError
-    def initialize theory, functor, args
-      super "Instantiation error in #{Rubylog::Structure.new(theory, functor, *args).inspect}"
+    def initialize predicate
+      super "Instantiation error in #{predicate.inspect}"
     end
   end
 

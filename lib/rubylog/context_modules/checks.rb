@@ -1,4 +1,4 @@
-module Rubylog::TheoryModules
+module Rubylog::ContextModules
   module Checks
     def check_passed goal
     end
@@ -17,7 +17,7 @@ module Rubylog::TheoryModules
       goal ||= block
       result = nil
       begin 
-        result = true?(goal)
+        result = goal.true?
       rescue
         check_raised_exception goal, $!
       else

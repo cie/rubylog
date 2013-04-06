@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe "Rubylog", :rubylog => true do
 
-  functor_for Integer, :even
+  predicate_for Integer, ".even"
 
   N.even.if { N%2 == 0 }
 
@@ -13,7 +13,7 @@ describe "Rubylog", :rubylog => true do
   it "raises an exception for false statements" do
     proc{check :fail}.should raise_exception(Rubylog::CheckFailed)
 
-    subject Integer
+    self.default_subject = Integer
     proc{check 4.is 5}.should raise_exception(Rubylog::CheckFailed)
   end
 

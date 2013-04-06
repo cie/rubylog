@@ -1,4 +1,5 @@
 require "spec_helper"
+__END__
 
 describe Rubylog::TheoryModules::Functors, :rubylog=>true do
 

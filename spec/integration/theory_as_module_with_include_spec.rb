@@ -1,7 +1,7 @@
 require "spec_helper"
 
 class MyClass
-  include Rubylog::Theory
+  include Rubylog::Context
 end
 
 a=MyClass.new

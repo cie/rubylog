@@ -1,4 +1,4 @@
-module Rubylog::TheoryModules
+module Rubylog::ContextModules
   module Implicit
 
     def clear
@@ -41,20 +41,30 @@ module Rubylog::TheoryModules
         end
       end
     end
+
     def start_implicit
-      theory = self
+      context = self
       [@public_interface, Rubylog::Variable].each do |m|
         m.send :define_method, :method_missing do |m, *args|
-          fct = theory.normalize_functor(m) 
+          fct = context.normalize_functor(m) 
           return super if fct.nil?
           raise NameError, "'#{fct}' method already exists" if respond_to? fct
-          theory.functor fct
+          context.functor fct
           self.class.send :include, Rubylog::DSL.functor_module(fct)
           send m, *args
         end
       end
       @implicit_started = true
     end
+
+    def normalize_functor fct
+      case s = fct.to_s
+      when /[?!]\z/ then :"#{s[0...-1]}" 
+      when /=\z/ then nil
+      else fct
+      end
+    end
+
 
     def stop_implicit
       [@public_interface, Rubylog::Variable].each do |m|

@@ -3,12 +3,20 @@ require "spec_helper"
 describe "Rubylog dsl", :rubylog=>true do
 
   describe "prefix functors" do
-    predicate "we_have()"
-    we_have! :weapons
-    we_have! :sunglasses
-    we_have! :rustling_leather_coats
-    check we_have :sunglasses
-    check { we_have? :rustling_leather_coats }
+    before do
+      predicate_for singleton_class, ".we_have()"
+      we_have! :weapons
+      we_have! :sunglasses
+      we_have! :rustling_leather_coats
+    end
+
+    it "works" do
+      check we_have :sunglasses
+    end
+    
+    it "works with qmarks" do
+      check { we_have? :rustling_leather_coats }
+    end
   end
 
 

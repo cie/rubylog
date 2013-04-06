@@ -2,14 +2,18 @@ module Rubylog
   class Structure
 
     # data structure
-    attr_reader :theory, :functor, :args
-    def initialize theory, functor, *args
+    attr_reader :functor, :args
+
+    def initialize predicate, functor, *args
       #raise Rubylog::TypeError, "functor cannot be #{functor}" unless functor.is_a? Symbol
-      raise ArgumentError, "#{theory.inspect} is not a Theory" unless theory.is_a? Rubylog::Theory
-      @theory = theory
+      @predicate = predicate
       @functor = functor
       @args = args.freeze
       @arity = args.count
+    end
+
+    def predicate
+      @predicate 
     end
 
     def [] i
@@ -53,8 +57,6 @@ module Rubylog
     def prove
       begin
         Rubylog.print_trace 1, self, rubylog_variables_hash
-        predicate = theory[indicator]
-        raise Rubylog::ExistenceError.new theory, indicator if not predicate
         count = 0
         predicate.call(*@args) { yield; count+=1 }
         count
@@ -82,11 +84,11 @@ module Rubylog
     # CompositeTerm methods
     include Rubylog::CompositeTerm
     def rubylog_clone &block
-      block.call Structure.new @theory, @functor.rubylog_clone(&block),
+      block.call Structure.new @predicate, @functor.rubylog_clone(&block),
         *@args.map{|a| a.rubylog_clone &block}
     end
     def rubylog_deep_dereference
-      Structure.new @theory, @functor.rubylog_deep_dereference,
+      Structure.new @predicate, @functor.rubylog_deep_dereference,
         *@args.rubylog_deep_dereference
     end
 

@@ -33,6 +33,7 @@ Rubylog::DefaultBuiltins.amend do
       a.prove { return }
       yield
     end
+    prefix :false
 
     # ruby iterator predicate allegories
 
@@ -46,16 +47,19 @@ Rubylog::DefaultBuiltins.amend do
       }
       yield
     end
+    prefix :all
 
     # Equivalent with +a.all(b).and b.all(a)+
     def iff a,b
       all(a,b) { all(b,a) { yield } }
     end
+    prefix :iff
 
     # 
     def any a,b
       a.prove { b.prove { yield; return } }
     end
+    prefix :any
 
     def one a,b
       stands = false
@@ -67,15 +71,18 @@ Rubylog::DefaultBuiltins.amend do
       }
       yield if stands
     end
+    prefix :one
 
     def none a,b
       a.prove { b.prove { return } }
       yield 
     end
+    prefix :none
 
     def any a
       a.prove { yield; return }
     end
+    prefix :any
 
     def one a
       stands = false
@@ -85,12 +92,11 @@ Rubylog::DefaultBuiltins.amend do
       }
       yield if stands
     end
+    prefix :one
     
     alias none false
-
+    prefix :none
   end
-
-  prefix_functor :all, :any, :one, :none, :iff
 
 end
 

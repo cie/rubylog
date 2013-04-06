@@ -25,7 +25,7 @@ describe Rubylog::Variable, :rubylog=>true do
   end
 
   describe "dereferencing" do
-    functor_for Integer, :divides
+    predicate_for Integer, ".divides()"
 
     check { A.is_a? Rubylog::Variable }
     check { A.rubylog_deep_dereference == A }

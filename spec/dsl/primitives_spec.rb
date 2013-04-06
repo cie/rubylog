@@ -1,8 +1,9 @@
 require 'spec_helper'
 
-describe Rubylog::DSL::Primitives do
+describe Rubylog::DSL::Primitives, :rubylog=>true do
   describe "with default subject" do
-    subject Integer
+    self.default_subject = Integer
+
     class << primitives
       def even
         yield if self%2 == 0

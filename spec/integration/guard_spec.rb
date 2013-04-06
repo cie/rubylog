@@ -3,7 +3,7 @@ require "spec_helper"
 describe "guards", :rubylog=>true do
   
   describe "class guard" do
-    functor_for Numeric, :divides
+    predicate_for Numeric, ".divides()"
     A[Integer].divides(B[Integer]).if { B % A == 0 }
     A[Float].divides!(B[Float])
     check 2.divides(10)
@@ -19,7 +19,7 @@ describe "guards", :rubylog=>true do
   end
 
   describe "union of guards at compile" do
-    functor_for Numeric, :small
+    predicate_for Numeric, ".small"
     A[0...100].small.if ANY.is A[Integer]
     check 0.small
     check 10.small
@@ -33,7 +33,7 @@ describe "guards", :rubylog=>true do
   end
 
   describe "union of guards at compile (dont-care)" do
-    functor_for Numeric, :small
+    predicate_for Numeric, ".small"
     A[0...100].small.if A.is ANY[Integer]
     check 0.small
     check 10.small
@@ -47,7 +47,7 @@ describe "guards", :rubylog=>true do
   end
 
   describe "union of guards at unification" do
-    functor_for Numeric, :small
+    predicate_for Numeric, ".small"
     A[0...100].small.if A.is B[Integer]
     check 0.small
     check 10.small
@@ -61,7 +61,7 @@ describe "guards", :rubylog=>true do
   end
 
   describe "union of guards at unification (reversed)" do
-    functor_for Numeric, :small
+    predicate_for Numeric, ".small"
     A[0...100].small.if B[Integer].is A
     check 0.small
     check 10.small
@@ -76,7 +76,7 @@ describe "guards", :rubylog=>true do
 
 
   describe "proc guards" do
-    functor_for Numeric, :big
+    predicate_for Numeric, ".big"
     A[proc{|a|a > 20}].big!
     check -100.big.false
     check 0.big.false
@@ -87,7 +87,7 @@ describe "guards", :rubylog=>true do
   end
 
   describe "hash guards" do
-    functor_for String, :char
+    predicate_for String, ".char"
     S[length: 1].char!
     check "a".char
     check " ".char
@@ -97,7 +97,7 @@ describe "guards", :rubylog=>true do
   end
 
   describe "list hash guards" do
-    functor_for String, :capitalized
+    predicate_for String, ".capitalized"
     S[[:[],0] => /[A-Z]/].capitalized!
     check "a".capitalized.false
     check " ".capitalized.false
@@ -109,7 +109,7 @@ describe "guards", :rubylog=>true do
 
 
   describe "chained hash guards" do
-    functor_for String, :funny
+    predicate_for String, ".funny"
     S[upcase: {[:[],1..-2] => "ELL"}].funny!
     check "hello".funny
     check "Bell!".funny

@@ -1,6 +1,6 @@
 require 'rubylog/dsl/thats'
 
-module Rubylog::TheoryModules
+module Rubylog::ContextModules
   module Thats
     def thats
       Rubylog::DSL::Thats.new

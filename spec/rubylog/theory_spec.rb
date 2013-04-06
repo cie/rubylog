@@ -1,20 +1,17 @@
 require "spec_helper"
 
-Th = Rubylog.theory do
-  subject Symbol
-  predicate %w".is_happy .likes()"
-  functor :in
-end
-
 
 describe "facts", :rubylog=>true do
   it "can be asserted with assert" do
-    Th.assert(:john.is_happy)
-    Th[[:is_happy,1]].should include(Rubylog::Rule.new :john.is_happy, :true)
-    Th.assert(:john.likes :beer)
-    Th[[:likes,2]].should include(Rubylog::Rule.new :john.likes(:beer), :true)
-    Th.assert(:john.likes :drinking.in :bar)
-    Th[[:likes,2]].should include(Rubylog::Rule.new :john.likes(:drinking.in :bar), :true)
+    self.default_subject = Symbol
+    predicate ".is_happy .likes()"
+    functor :in
+    assert(:john.is_happy)
+    self[[:is_happy,1]].should include(Rubylog::Rule.new :john.is_happy, :true)
+    assert(:john.likes :beer)
+    self[[:likes,2]].should include(Rubylog::Rule.new :john.likes(:beer), :true)
+    assert(:john.likes :drinking.in :bar)
+    self[[:likes,2]].should include(Rubylog::Rule.new :john.likes(:drinking.in :bar), :true)
   end
 
   it "can be asserted with a bang, and it returns the zeroth arg", :rubylog=>true do

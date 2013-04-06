@@ -1,0 +1,3 @@
+module Rubylog
+  NullaryPredicates = {}
+end

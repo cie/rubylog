@@ -2,9 +2,8 @@
 describe "custom classes" do
   before do
     class User
-      predicate :girl, :boy
-      extend Rubylog::Theory
-      include Rubylog::DSL::Variables
+      extend Rubylog::Context
+      predicate ".girl .boy"
 
       attr_reader :name
       def initialize name
@@ -39,7 +38,6 @@ describe "custom classes" do
     pete.boy!
     pete.boy?.should be_true
 
-    User[[:girl,1]].discontiguous!
     janet = User.new "Janet"
     janet.girl?.should be_false
     janet.girl!

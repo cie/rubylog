@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "Recursion", :rubylog=>true do
-  functor_for Integer, :factorial 
+  predicate_for Integer, ".factorial()"
   0.factorial! 1
   N[thats > 0].factorial(K).if N1.is {N-1} .and N1.factorial(K1).and K.is{ N*K1 }
 

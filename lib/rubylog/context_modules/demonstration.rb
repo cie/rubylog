@@ -1,4 +1,4 @@
-module Rubylog::TheoryModules
+module Rubylog::ContextModules
   module Demonstration
     def solve goal, &block
       goal ||= block
