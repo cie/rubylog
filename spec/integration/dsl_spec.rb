@@ -4,7 +4,7 @@ describe "Rubylog dsl", :rubylog=>true do
 
   describe "prefix functors" do
     before do
-      predicate_for Rubylog::Context, ".we_have()"
+      predicate_for singleton_class, ".we_have()"
       we_have! :weapons
       we_have! :sunglasses
       we_have! :rustling_leather_coats

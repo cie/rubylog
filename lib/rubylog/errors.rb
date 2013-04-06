@@ -20,25 +20,25 @@ module Rubylog
 
   class DiscontiguousPredicateError < RubylogError
     def initialize predicate
-      super "Predicate #{predicate} was not declared as discontiguous"
+      super "Predicate #{predicate.inspect} was not declared as discontiguous"
     end
   end
 
   class BuiltinPredicateError < RubylogError
     def initialize predicate
-      super "Predicate #{predicate} is built-in"
+      super "Predicate #{predicate.inspect} is built-in"
     end
   end
 
   class NonAssertableError < RubylogError
     def initialize predicate
-      super "Predicate #{predicate} is not assertable"
+      super "Predicate #{predicate.inspect} is not assertable"
     end
   end
 
   class ExistenceError < RubylogError
     def initialize predicate
-      super "Predicate #{predicate} does not exist"
+      super "Predicate #{predicate.inspect} does not exist"
     end
   end
 
@@ -47,7 +47,7 @@ module Rubylog
 
   class InstantiationError < RubylogError
     def initialize predicate
-      super "Instantiation error in #{predicate}"
+      super "Instantiation error in #{predicate.inspect}"
     end
   end
 

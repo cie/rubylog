@@ -1,24 +1,7 @@
 class Symbol
 
-  # a proxy for Structure
-  def functor
-    self
-  end
-
-  def arity
-    0
-  end
-
-  def indicator
-    [self, 0]
-  end
-
-  def args
-    []
-  end
-
   def predicate
-    Rubylog::DefaultBuiltins[indicator] or raise Rubylog::ExistenceError.new(indicator)
+    Rubylog::NullaryPredicates[self] or raise Rubylog::ExistenceError.new(self)
   end
 
   # Assertable methods
@@ -33,7 +16,7 @@ class Symbol
   def prove
     begin
       Rubylog.print_trace 1, self, rubylog_variables_hash
-      predicate.call(*args) { yield }
+      predicate.call { yield }
     ensure
       Rubylog.print_trace -1
     end

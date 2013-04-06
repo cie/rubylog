@@ -20,13 +20,17 @@ module Rubylog
       unless name == :singleton_method_added
         m = method(name)
 
-        # add functor
-        unless m.arity.zero?
+        predicate = Rubylog::Primitive.new(name, m)
+
+        # nullary predicate
+        if m.arity.zero?
+          Rubylog::NullaryPredicates[name] = predicate
+        else
           if @subject
-            @context.create_procedure([name, m.arity]).functor_for(@subject) # :indicator:
+            predicate.functor_for(@subject)
           else
             # use the default subject
-            @context.predicate name
+            predicate.functor_for(@context.default_subject)
           end
         end
       end

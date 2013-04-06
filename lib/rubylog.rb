@@ -14,6 +14,7 @@ require 'rubylog/composite_term'
 # helpers
 require 'rubylog/errors'
 require 'rubylog/tracing'
+require 'rubylog/nullary_predicates'
 
 # objects
 require 'rubylog/predicate'
