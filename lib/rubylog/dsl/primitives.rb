@@ -3,18 +3,6 @@ module Rubylog
     def initialize context, subject=nil
       @context = context
       @subject = subject
-
-      singleton_class = class << self; self; end
-      primitives = self
-
-      singleton_class.define_singleton_method :prefix do |*functors|
-        functors.flatten.each do |fct|
-          Context.send :define_method, fct do |_,*args|
-            primitives.send(fct, *args) { yield }
-          end
-        end
-      end
-
     end
 
 
@@ -39,7 +27,11 @@ module Rubylog
     end
 
     def inspect
-      "primitives"
+      if @subject
+        "#{@context}.primitives_for(#{@subject})"
+      else
+        "#{@context}.primitives"
+      end
     end
   end
 end

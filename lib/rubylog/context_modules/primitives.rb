@@ -2,8 +2,6 @@ require 'rubylog/dsl/primitives'
 
 module Rubylog::ContextModules
   module Primitives
-    private
-
     def primitives
       Rubylog::DSL::Primitives.new self
     end

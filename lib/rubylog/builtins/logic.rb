@@ -16,9 +16,10 @@ Rubylog::DefaultBuiltins.amend do
     end
   end
 
-  logic_primitives = primitives_for [::Rubylog::Callable, ::Rubylog::Structure]
 
-  class << logic_primitives
+  primitives_for_callable = primitives_for [::Rubylog::Callable, ::Rubylog::Structure]
+
+  class << primitives_for_callable
     # Succeeds if both +a+ and +b+ succeeds.
     def and a, b
       a.prove { b.prove { yield } }
@@ -55,11 +56,11 @@ Rubylog::DefaultBuiltins.amend do
     end
 
     # 
-    def any a,b
+    def any a,b=:true
       a.prove { b.prove { yield; return } }
     end
 
-    def one a,b
+    def one a,b=:true
       stands = false
       a.prove { 
         b.prove {
@@ -70,27 +71,29 @@ Rubylog::DefaultBuiltins.amend do
       yield if stands
     end
 
-    def none a,b
-      a.prove { b.prove { return } }
-      yield 
-    end
-
-    def any a
-      a.prove { yield; return }
-    end
-
-    def one a
-      stands = false
-      a.prove { 
-        return if stands
-        stands = true
+    # For each successful solutions of +a+, tries to solve +b+. If any of +b+'s
+    # solutions succeeds, it fails, otherwise it succeeds
+    #
+    # Equivalent to <tt>a.all(b.false)</tt>
+    # @param a
+    # @param b defaults to :true
+    def none a,b=:true
+      a.prove {
+        b.prove { return } 
       }
-      yield if stands
+      yield
     end
-    
-    alias none false
 
-    prefix %w(false all iff any one none)
+  end
+
+  # We also implement some of these methods in a prefix style
+  primitives_for_context = primitives_for(Rubylog::Context)
+  %w(false all iff any one none).each do |fct|
+    # we discard the first argument, which is the context,
+    # because they are the same in  any context
+    primitives_for_context.define_singleton_method fct do |_,*args,&block|
+      primitives_for_callable.send(fct, *args, &block)
+    end
   end
 
 end
