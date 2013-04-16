@@ -12,4 +12,6 @@ subject
 public_interface
 arity
 indicator
-symbol
+retracta
+functor
+demonstration_spec
