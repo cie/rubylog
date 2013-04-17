@@ -5,5 +5,9 @@ module Rubylog::ContextModules
     def thats
       Rubylog::DSL::Thats.new
     end
+
+    def thats_not
+      Rubylog::DSL::Thats::Not.new
+    end
   end
 end

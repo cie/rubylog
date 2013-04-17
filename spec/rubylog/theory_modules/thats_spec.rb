@@ -31,7 +31,7 @@ describe "thats", :rubylog=>true do
 
   describe "files" do
     check {     "#{S[String, thats.start_with?(".")]}".filename_in(".").map{S}.include? ".gitignore" }
-    check { not "#{S[String, thats.start_with?(".")]}".filename_in(".").map{S}.include? "lib" }
+    check { not "#{S[String, thats.start_with?(".")]}". dirname_in(".").map{S}.include? "lib" }
     check { "#{S[/\A(.*)\.rb/]}".filename_in("lib").map{S} == ["rubylog.rb"] }
   end
 
@@ -54,6 +54,41 @@ describe "thats", :rubylog=>true do
     check "ab".palindrome.false
     check "abb".palindrome.false
     check "abab".palindrome.false
+  end
+
+end
+
+describe "thats_not", :rubylog=>true do
+  describe "one level" do
+    check 4.is(ANY[Integer,thats_not < 10]).false
+    check 4.is(ANY[Integer,thats_not < 5]).false
+    check 4.is(ANY[Integer,thats_not < 4])
+    check 4.is(ANY[Integer,thats_not < 2])
+  end
+
+  describe "question mark" do
+    check "".is(ANY[thats_not.empty?]).false
+    check "a".is(ANY[thats_not.empty?])
+  end
+
+  describe "two levels" do
+    check "hello".is(ANYTHING[thats_not.reverse == "olleh"]).false
+    check "hello".is(ANYTHING[thats_not.reverse == "olle"])
+  end
+
+  describe "four levels" do
+    check "hello".is(ANY[thats_not.upcase.partition("E")[0] == "H"]).false
+    check "hello".is(ANY[thats_not.upcase.partition("E")[1] == "E"]).false
+    check "hello".is(ANY[thats_not.upcase.partition("E")[2] == "LLO"]).false
+    check "hello".is(ANY[thats_not.upcase.partition("E")[1] == "H"])
+    check "hello".is(ANY[thats_not.upcase.partition("E")[0] == "h"])
+    check "hello".is(ANY[thats_not.upcase.partition("L")[0] == "H"])
+    check "hello".is(ANY[thats_not.upcase.partition("e")[0] == "H"])
+  end
+
+  describe "files" do
+    check { not "#{S[String, thats_not.start_with?(".")]}".filename_in(".").map{S}.include? ".gitignore" }
+    check {     "#{S[String, thats_not.start_with?(".")]}". dirname_in(".").map{S}.include? "lib" }
   end
 
 end
