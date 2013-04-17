@@ -12,11 +12,11 @@ $:.unshift File.dirname(__FILE__)+"/../lib"
 
 require "rubylog"
 require "rubylog/builtins/assumption"
-extend Rubylog::Theory
+extend Rubylog::Context
 
 
 class Cup < Struct.new :i
-  extend Rubylog::Theory
+  extend Rubylog::Context
 
   def inspect
     "##{i}"
@@ -34,7 +34,7 @@ end
 
 
 class CupSet
-  extend Rubylog::Theory
+  extend Rubylog::Context
 
   def initialize n
     @cups = (1..n).map {|i| Cup.new i }
@@ -44,9 +44,13 @@ class CupSet
     @cups.each &block
   end
 
+  def [] index
+    @cups[index]
+  end
+
   # A set has neighbors if 
   predicate %w(.has_neighbors)
-  CS.has_neighbors.if [C,D].in{CS[0..-2].zip CS[1..-1]}.and C.has_mouse.and D.has_mouse
+  CS.has_neighbors.if [C,D].in{CS[0..-2].zip(CS[1..-1] || [])}.and C.has_mouse.and D.has_mouse
 
   # A predicate definitely solves a set if there is no ambiguity
   predicate_for Rubylog::Callable, %w(.definitely_solves())
@@ -64,13 +68,13 @@ class CupSet
 
 end
 
-include_theory Cup, CupSet
 
 N.in(0..4).each do
   puts "#{N}:"
   CS.is{CupSet.new(N)}.each do
 
     C.in{CS}.each { p C }
+    T.trial_for(CS).each { p T }
 
     easy = false
     CS.easy(Peeks).each do

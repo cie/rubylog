@@ -4,11 +4,11 @@ extend Rubylog::Context
 predicate_for String, "FILE.found_in(DIR)"
 
 FILE.found_in(DIR).if FILE.file_in(DIR)
-FILE.found_in(DIR).if DIR2[thats_not.start_with(".")].dir_in(DIR).and FILE.found_in(DIR2)
+FILE.found_in(DIR).if DIR2[thats_not =~ /\/\./].dir_in(DIR).and FILE.found_in(DIR2)
 
-FILE.found_in(".").each do
-  puts FILE
+"lib/#{X}.rb".found_in("lib").and "lib/#{X}"
+"#{X}/spec/#{S}_spec.rb".found_in("spec").each do
+  puts S
 end
-
 
 

@@ -12,6 +12,8 @@
 * Features 
   * Rspec integration
   * +include+ or +extend+ <tt>Rubylog::Theory</tt> into any class or object
+  * thats\_not
+  * Comments in indicators
 
 == Version 1.0.0
 == Version 0.0.1

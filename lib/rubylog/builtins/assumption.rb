@@ -13,12 +13,12 @@ Rubylog::DefaultBuiltins.amend do
     raise Rubylog::InstantiationError.new :assumed_if, [H, B] if !H or !B
 
     # assert
-    H.predicate.asserta Rubylog::Rule.new(H, B)
+    H.predicate.unshift Rubylog::Rule.new(H, B)
     
     true
   }.ensure {
     # retract
-    H.predicate.retracta
+    H.predicate.shift
   }
 
   class << primitives_for ::Rubylog::Assertable
