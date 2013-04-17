@@ -117,21 +117,13 @@ module Rubylog
       # For example, .and()
       def humanize_indicator indicator
         return indicator if String === indicator
-        functor, arity, prefix = indicator
-        if prefix
-          if arity > 0
-            "#{functor}(#{ ','*(arity-1) })"
-          else
-            "#{functor}"
-          end
+        functor, arity = indicator
+        if arity > 1
+          ".#{functor}(#{ ','*(arity-2) })"
+        elsif arity == 1
+          ".#{functor}"
         else
-          if arity > 1
-            ".#{functor}(#{ ','*(arity-2) })"
-          elsif arity == 1
-            ".#{functor}"
-          else
-            ":#{functor}"
-          end
+          ":#{functor}"
         end
       end
 
@@ -144,14 +136,10 @@ module Rubylog
           indicator
         when /\A:(\w+)\z/
           [:"#{$1}",0]
-        when /\A\.(\w+)\z/
+        when /\A\w*\.(\w+)\z/
           [:"#{$1}",1]
-        when /\A\.(\w+)\((,*)\)\z/
-          [:"#{$1}",$2.length+2]
-        when /\A(\w+)\z/
-          [:"#{$1}",0,true]
-        when /\A(\w+)\((,*)\)\z/
-          [:"#{$1}",$2.length+1,true]
+        when /\A\w*\.(\w+)\(\w*((,\w*)*)\)\z/
+          [:"#{$1}",$2.count(",")+2]
         else
           raise ArgumentError, "invalid indicator: #{indicator.inspect}"
         end
