@@ -1,16 +1,17 @@
 module Rubylog
   module Tracing
-    def clear
-      @trace = false
-      super
-    end
-
     # debugging
     #
     #
-    def trace val=true, &block
-      @trace=block || val
+    def trace 
+      old_trace = @trace
+      @trace = true
       @trace_levels = 0
+      begin
+        return yield
+      ensure
+        @trace = old_trace
+      end
     end
 
     def print_trace level, *args
