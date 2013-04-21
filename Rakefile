@@ -17,8 +17,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "rubylog"
   gem.homepage = "https://github.com/cie/rubylog"
   gem.license = "MIT"
-  gem.summary = %Q{An embedded Prolog interpreter}
-  gem.description = %Q{Rubylog is an embedded Prolog language and interpreter for Ruby.}
+  gem.summary = %Q{A Prolog-like DSL}
+  gem.description = %Q{Rubylog is a Prolog-like DSL for Ruby.}
   gem.email = "kallo.bernat@gmail.com"
   gem.authors = ["Bernát Kalló"]
   gem.executables = Dir["bin/*"].map{|x|File.basename x}

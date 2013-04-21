@@ -1,6 +1,8 @@
 == Version 2.0.0 (to be released)
 * Backwards incompatibilities
   * <tt>Rubylog.theory</tt> is removed. Use <tt>Kernel#Rubylog</tt>.
+  * <tt>file\_in</tt> includes directories and yields relative paths.
+    <tt>dir\_in</tt> also yields relative paths.
   * <tt>trace</tt> has became <tt>Rubylog.trace</tt>. If you use
     <tt>Kernel#Rubylog</tt>, it does not matter.
   * <tt>Theory</tt> has changed to <tt>Context</tt> and it became a module. No

@@ -1,23 +1,40 @@
 require "spec_helper"
 
 describe "file system builtins", :rubylog=>true do
-  check "lib".dirname_in(".")
-  check "lib".filename_in(".").false
-  check "README.rdoc".filename_in(".")
-  check "README.rdoc".dirname_in(".").false
-  check (Dir.pwd+"/lib").dir_in(".")
-  check (Dir.pwd+"/lib").file_in(".").false
-  check (Dir.pwd+"/README.rdoc").file_in(".")
-  check (Dir.pwd+"/README.rdoc").dir_in(".").false
-  check (Dir.pwd+"/lib/rubylog.rb").file_in("lib")
-  check (Dir.pwd+"/lib/rubylog").dir_in("lib")
-  check "rubylog.rb".filename_in("lib")
-  check "rubylog".dirname_in("lib")
+  specify "directories are files" do
+    check "./lib".file_in(".")
+  end
 
+  specify ": regular files are files" do
+    check "./README.rdoc".file_in(".")
+  end
 
-  # this is removed in favor of string unification
-  #check "rubylog.rb".filename("rubylog", "rb")
-  #check A.filename("rubylog", "rb").and A.is "rubylog.rb"
-  #check "rubylog.rb".filename(F, "rb").and F.is "rubylog"
-  #check "rubylog.rb".filename("rubylog", E).and E.is "rb"
+  specify ": regular files are not directories" do
+    check "./README.rdoc".dir_in(".").false
+  end
+
+  specify "#filename_in" do
+    check "rubylog.rb".filename_in("lib")
+  end
+
+  specify "#dirname_in" do
+    check "rubylog".dirname_in("lib")
+  end
+
+  specify ": works with variable filename" do
+    A.dir_in(".").map{A}.should include "./lib"
+  end
+
+  specify ": works with variable dir" do
+    "./lib/rubylog.rb".file_in(D).map{D}.should == ["./lib"]
+  end
+
+  specify ": works with function dir" do
+    FN.file_in{"./lib"}.map{FN}.should include "./lib/rubylog.rb"
+  end
+
+  specify ": works with partial strings" do
+    "./lib/#{A}.rb".file_in("./lib").map{A}.should == ["rubylog"]
+  end
+
 end
