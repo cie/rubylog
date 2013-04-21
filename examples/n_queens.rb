@@ -1,10 +1,9 @@
-load "./lib/rubylog/builtins/assumption.rb" 
+$:.unshift File.dirname(__FILE__)+"/../lib"
+require "rubylog"
 
-theory do
-  subject Integer
-  functor :on, :attacks, :placed
-
-  predicate [:on,3]
+Rubylog do
+  predicate_for Integer, ".on(,)", ".attacks(,)", ".placed"
+  predicate ":arranged"
 
   N=4
 
@@ -16,16 +15,7 @@ theory do
   A.placed.if \
     C.in(1..N).and(B.on(ANY,ANY).none(B.attacks(A,C))).and A.on(A,C).assumed
 
-  # a hack for chaining clauses together with .and()
-  class << primitives
-    def together a, b
-      c = []
-      a.prove { c << b.rubylog_deep_dereference }
-      c.inject{|a,b|a.and b}.solve { yield }
-    end
-  end
-  
-  :arranged.if A.in(1..N).together{A.placed}
+  :arranged.if every A.in(1..N), A.placed
 
   :arranged.solve do
     L.in(1..N).each do

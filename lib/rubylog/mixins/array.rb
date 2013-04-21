@@ -1,3 +1,5 @@
+require 'rubylog/dsl/array_splat'
+
 module Rubylog
   # for the future
   #def self.unify_arrays a, a_start, a_end, b, b_start, b_end

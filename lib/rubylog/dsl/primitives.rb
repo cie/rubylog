@@ -1,17 +1,37 @@
-class Rubylog::DSL::Primitives
-  def initialize theory
-    @theory = theory
-  end
-
-  def singleton_method_added name
-    unless name == :singleton_method_added
-      m = method(name)
-      @theory.functor name unless m.arity.zero?
-      @theory[[name, m.arity]] = m
+module Rubylog
+  class DSL::Primitives
+    def initialize context, subject=nil
+      @context = context
+      @subject = subject
     end
-  end
 
-  def inspect
-    "primitives"
+
+    def singleton_method_added name
+      unless name == :singleton_method_added
+        m = method(name)
+
+        predicate = Rubylog::Primitive.new(name, m)
+
+        # nullary predicate
+        if m.arity.zero?
+          Rubylog::NullaryPredicates[name] = predicate
+        else
+          if @subject
+            predicate.functor_for([@subject, Variable])
+          else
+            # use the default subject
+            predicate.functor_for([@context.default_subject, Variable])
+          end
+        end
+      end
+    end
+
+    def inspect
+      if @subject
+        "#{@context}.primitives_for(#{@subject})"
+      else
+        "#{@context}.primitives"
+      end
+    end
   end
 end

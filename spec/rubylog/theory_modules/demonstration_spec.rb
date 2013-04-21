@@ -1,150 +1,113 @@
 
-    describe "queries" do
-      it "can be run with true?" do
-        lambda {Rubylog.theory.true?(:john.likes :beer)}.should raise_error(Rubylog::ExistenceError)
-        :john.likes! :beer
-        Rubylog.theory.true?(:john.likes :beer).should be_true
-        Rubylog.theory.true?(:john.likes :milk).should be_false
-      end
+describe "queries", :rubylog=>true do
+  it "can be run with true?" do
+    lambda {true?(:john.likes :beer)}.should raise_error(Rubylog::ExistenceError)
+    :john.likes! :beer
+    true?(:john.likes :beer).should be_true
+    true?(:john.likes :milk).should be_false
+  end
 
-      it "can be run with question mark" do
-        lambda {Rubylog.theory.true?(:john.likes :beer)}.should raise_error(Rubylog::ExistenceError)
-        :john.likes! :beer
-        :john.likes?(:beer).should be_true
-      end
+  it "can be run with question mark" do
+    lambda {true?(:john.likes :beer)}.should raise_error(Rubylog::ExistenceError)
+    :john.likes! :beer
+    :john.likes?(:beer).should be_true
+  end
 
-      it "can be run with true?" do
-        lambda {Rubylog.theory.true?(:john.likes :beer)}.should raise_error(Rubylog::ExistenceError)
-        :john.likes! :beer
-        (:john.likes(:beer)).true?.should be_true
-      end
-      
-      it "work with variables" do
-        lambda {Rubylog.theory.true?(:john.likes X)}.should raise_error(Rubylog::ExistenceError)
-        :john.likes! :water
-        :john.likes?(X).should be_true
-      end
+  it "can be run with true?" do
+    lambda {true?(:john.likes :beer)}.should raise_error(Rubylog::ExistenceError)
+    :john.likes! :beer
+    (:john.likes(:beer)).true?.should be_true
+  end
 
-      it "yield all solutions" do
-        :john.likes! :beer
-        :john.likes! :milk
+  it "work with variables" do
+    lambda {true?(:john.likes X)}.should raise_error(Rubylog::ExistenceError)
+    :john.likes! :water
+    :john.likes?(X).should be_true
+  end
 
-        k=[]
-        (:john.likes X).each{|x|k << x}
-        k.should == [:beer, :milk]
-      end
+  it "yield all solutions" do
+    :john.likes! :beer
+    :john.likes! :milk
 
-      it "yield all solutions with solve" do
-        :john.likes! :beer
-        :john.likes! :milk
+    k=[]
+    (:john.likes X).each{k << X}
+    k.should == [:beer, :milk]
+  end
 
-        k=[]
-        (:john.likes X).solve{|x|k << x}
-        k.should == [:beer, :milk]
-      end
+  it "yield all solutions with solve" do
+    :john.likes! :beer
+    :john.likes! :milk
 
-      it "yield all solutions with solve and multiple vars and multiple block parameters" do
-        :john.likes! :beer
-        :jane.likes! :milk
-        :jane.likes! :water
+    k=[]
+    (:john.likes X).solve{k << X}
+    k.should == [:beer, :milk]
+  end
 
-        k=[]
-        (X.likes Y).solve{|a,b|k << [a,b]}
-        k.should == [[:john, :beer], [:jane, :milk], [:jane, :water]]
-      end
+  it "yield all solutions with solve and multiple vars and multiple block parameters" do
+    :john.likes! :beer
+    :jane.likes! :milk
+    :jane.likes! :water
 
-      it "ignore don't-care variables" do
-        :john.likes! :beer
+    k=[]
+    (X.likes Y).solve{k << [X,Y]}
+    k.should == [[:john, :beer], [:jane, :milk], [:jane, :water]]
+  end
 
-        k=[]
-        ANYONE.likes(X).each{|x|k << x}
-        k.should == [:beer]
+  it "ignore don't-care variables" do
+    :john.likes! :beer
 
-        k=[]
-        X.likes(ANYTHING).each{|x|k << x}
-        k.should == [:john]
-      end
+    k=[]
+    ANYONE.likes(X).each{k << [ANYONE,X]}
+    k.should == [[ANYONE, :beer]]
 
-      it "makes sure all variables are instantiated" do
-        res = []
-        A.likes(B).if {|a,b| res << a << b }
-        A.likes? :beer
-        res.should == [nil,:beer]
-      end
+    k=[]
+    X.likes(ANYTHING).each{k << [X,ANYTHING]}
+    k.should == [[:john, ANYTHING]]
+  end
 
-      it "substitutes deeper variables" do
-        res = []
-        A.likes(B).if {|a,b| res << a << b }
-        (A.is(:john).and B.is(:swimming.in C).and 
-         C.is(:sea).and A.likes B).to_a.should == [[:john,:swimming.in(:sea),:sea]]
-        res.should == [:john, :swimming.in(:sea)]
-      end
+  it "makes sure all variables are instantiated" do
+    res = []
+    A.likes(B).if {res << A << B }
+    A.likes? :beer
+    res.should == [nil,:beer]
+  end
+
+  it "substitutes deeper variables" do
+    res = []
+    A.likes(B).if {res << A << B; true}
+    (A.is(:john).and B.is(:swimming.in C).and \
+     C.is(:sea).and A.likes B).map{[A,B,C]}.should == [[:john,:swimming.in(:sea),:sea]]
+     res.should == [:john, :swimming.in(:sea)]
+  end
 
 
-      describe "support Enumerable" do
-        before do
-          :john.likes! :beer
-          :john.likes! :milk
-        end
-
-        it "#all?, #any? and #none?" do
-          (:john.likes A).all?{|a| Symbol===a}.should be_true
-          (:john.likes A).all?{|a| a == :beer}.should be_false
-          (:john.likes A).all?{|a| a == :beer or a == :milk}.should be_true
-          (:john.likes A).any?{|a| a == :beer}.should be_true
-          (:john.likes A).any?{|a| a == :milk}.should be_true
-          (:john.likes A).any?{|a| a == :water}.should be_false
-          (:john.likes A).none?{|a| a == :water}.should be_true
-          (:john.likes A).none?{|a| a == :beer}.should be_false
-        end
-
-        it "#to_a" do
-          (:john.likes A).to_a.should == [:beer, :milk]
-          (X.likes A).to_a.should == [[:john, :beer], [:john, :milk]]
-          (ANYONE.likes A).to_a.should == [:beer, :milk]
-        end
-
-        it "#first" do
-          (:john.likes A).first.should == :beer
-        end
-
-        it "#map" do
-          (:john.likes A).map{|a|a.to_s}.should == ['beer', 'milk']
-        end
-
-        it "#include? and #member?" do
-          (:john.likes B).member?(:beer).should be_true
-          (:john.likes B).include?(:beer).should be_true
-          (:john.likes B).member?(:milk).should be_true
-          (:john.likes B).include?(:milk).should be_true
-          (:john.likes B).member?(:water).should be_false
-          (:john.likes B).include?(:water).should be_false
-        end
-        
-      end
-
-      it "can yield solutions with vars substituted" do
-        :john.likes! :beer
-        :john.likes! :milk
-        :jane.likes! :milk
-
-        (A.likes B).solutions.should == [
-          :john.likes(:beer),
-          :john.likes(:milk),
-          :jane.likes(:milk)
-        ]
-        (A.likes(B).and A.is :john).solutions.should == [
-          :john.likes(:beer).and(:john.is :john),
-          :john.likes(:milk).and(:john.is :john)
-        ]
-        (:john.likes(B)).solutions.should == [
-          :john.likes(:beer),
-          :john.likes(:milk)
-        ]
-        (A.likes(:milk)).solutions.should == [
-          :john.likes(:milk),
-          :jane.likes(:milk)
-        ]
-      end
-
+  describe "support Enumerable" do
+    before do
+      :john.likes! :beer
+      :john.likes! :milk
     end
+
+    it "#all?, #any? and #none?" do
+      (:john.likes A).all?{Symbol===A}.should be_true
+      (:john.likes A).all?{A == :beer}.should be_false
+      (:john.likes A).all?{A == :beer or A == :milk}.should be_true
+      (:john.likes A).any?{A == :beer}.should be_true
+      (:john.likes A).any?{A == :milk}.should be_true
+      (:john.likes A).any?{A == :water}.should be_false
+      (:john.likes A).none?{A == :water}.should be_true
+      (:john.likes A).none?{A == :beer}.should be_false
+    end
+
+    it "#to_a" do
+      (:john.likes A).to_a.should == [nil, nil]
+      (X.likes A).to_a.should == [nil, nil]
+      (ANYONE.likes A).to_a.should == [nil, nil]
+    end
+
+    it "#map" do
+      (:john.likes A).map{A.to_s}.should == ['beer', 'milk']
+    end
+
+  end
+
+end

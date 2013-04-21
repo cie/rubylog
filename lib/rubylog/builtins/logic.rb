@@ -1,4 +1,4 @@
-Rubylog.theory "Rubylog::NullaryLogicBuiltins", nil do
+Rubylog do
   class << primitives
     # true
     def true
@@ -15,12 +15,11 @@ Rubylog.theory "Rubylog::NullaryLogicBuiltins", nil do
       throw :cut
     end
   end
-end
 
-Rubylog.theory "Rubylog::LogicBuiltinsForCallable", nil do
-  subject ::Rubylog::Callable, ::Rubylog::Structure, Symbol, Proc
 
-  class << primitives
+  primitives_for_callable = primitives_for [::Rubylog::Callable, ::Rubylog::Structure]
+
+  class << primitives_for_callable
     # Succeeds if both +a+ and +b+ succeeds.
     def and a, b
       a.prove { b.prove { yield } }
@@ -57,11 +56,11 @@ Rubylog.theory "Rubylog::LogicBuiltinsForCallable", nil do
     end
 
     # 
-    def any a,b
+    def any a,b=:true
       a.prove { b.prove { yield; return } }
     end
 
-    def one a,b
+    def one a,b=:true
       stands = false
       a.prove { 
         b.prove {
@@ -72,38 +71,41 @@ Rubylog.theory "Rubylog::LogicBuiltinsForCallable", nil do
       yield if stands
     end
 
-    def none a,b
-      a.prove { b.prove { return } }
-      yield 
-    end
-
-    def any a
-      a.prove { yield; return }
-    end
-
-    def one a
-      stands = false
-      a.prove { 
-        return if stands
-        stands = true
+    # For each successful solutions of +a+, tries to solve +b+. If any of +b+'s
+    # solutions succeeds, it fails, otherwise it succeeds
+    #
+    # Equivalent to <tt>a.all(b.false)</tt>
+    # @param a
+    # @param b defaults to :true
+    def none a,b=:true
+      a.prove {
+        b.prove { return } 
       }
-      yield if stands
+      yield
     end
-    
-    alias none false
 
   end
 
-  prefix_functor :all, :any, :one, :none, :iff
+  # We also implement some of these methods in a prefix style
+  primitives_for_context = primitives_for(Rubylog::Context)
+  %w(false all iff any one none).each do |fct|
+    # we discard the first argument, which is the context,
+    # because they are the same in  any context
+    primitives_for_context.define_singleton_method fct do |_,*args,&block|
+      primitives_for_callable.send(fct, *args, &block)
+    end
+  end
 
-end
+  class << primitives_for_context
+    # finds every solution of a and for every solution dereferences all
+    # variables in b if possible and collects the results. Then joins all b's
+    # with .and() and solves it.
+    def every _, a, b
+      c = []
+      a.prove { c << b.rubylog_deep_dereference }
+      c.inject{|a,b|a.and b}.solve { yield }
+    end
+  end
 
-Rubylog.theory "Rubylog::LogicBuiltins", nil do
-  include_theory Rubylog::NullaryLogicBuiltins
-  include_theory Rubylog::LogicBuiltinsForCallable
-end
-
-Rubylog::DefaultBuiltins.amend do
-  include_theory Rubylog::LogicBuiltins
 end
 

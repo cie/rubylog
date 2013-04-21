@@ -1,16 +1,7 @@
 class Symbol
 
-  # a proxy for Structure
-  def functor
-    self
-  end
-
-  def arity
-    0
-  end
-
-  def indicator
-    [self, 0]
+  def predicate
+    Rubylog::NullaryPredicates[self] or raise Rubylog::ExistenceError.new(self)
   end
 
   def args
@@ -27,19 +18,10 @@ class Symbol
   include Rubylog::Callable
 
   def prove
-    theory = Rubylog.static_current_theory
-    begin
-      theory.print_trace 1, self, rubylog_variables_hash
-
-      predicate = theory[[self,0]]
-      raise Rubylog::ExistenceError.new indicator if not predicate
-
-      predicate.call(*args) { yield }
-
-    ensure
-      theory.print_trace -1
-    end
+    predicate.call { yield }
   end
+
+  rubylog_traceable :prove
 
 
 end

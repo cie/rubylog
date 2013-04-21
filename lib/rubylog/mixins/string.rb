@@ -6,11 +6,9 @@ class String
   RubylogStringVariableGuards = [[]]
 
   def self.rubylog_unify_strings a, a_segments, a_vars, b
-    #p a, a_segments, a_vars, b
     if a_segments.count == 1
       segment = a_segments[0]
       if b.end_with?(segment)
-        #p b[0...b.length-segment.length]
         a_vars[0].rubylog_unify b[0...b.length-segment.length] do
           yield
         end
@@ -72,11 +70,6 @@ class String
 
     scan RUBYLOG_VAR_REGEXP do
       match = Regexp.last_match
-      #p match
-      #p match.begin(0)
-      #p match.end(0)
-      #p match[0]
-      #p match[1]
       segments.last << match.begin(0)
       segments << [match.end(0)]
       vars << rubylog_get_string_variable(match[1])
@@ -84,9 +77,7 @@ class String
     
 
     segments.last << length
-    #p segments, vars
     segments = segments.map{|s|self[s[0]...s[1]]}
-    #p [self, segments, vars]
     return segments, vars
   end
 

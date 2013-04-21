@@ -1,9 +1,8 @@
 $:.unshift File.dirname(__FILE__)+"/../lib"
 require 'rubylog'
 
-FactorialTheory = theory do
-  subject Integer
-  functor :factorial
+Rubylog do
+  predicate_for Integer, ".factorial()"
 
   0.factorial! 1
   N[thats > 0].factorial(K).if \

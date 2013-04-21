@@ -1,10 +1,7 @@
 require 'rubylog/builtins/ensure'
 
-Rubylog.theory "Rubylog::AssumptionBuiltins", nil do
-  include_theory Rubylog::EnsureBuiltins
-  
-  subject ::Rubylog::Callable, ::Rubylog::Structure, Symbol, Proc
-  functor :assumed, :rejected, :revoked, :assumed_if, :assumed_unless, :rejected_if, :rejected_unless
+Rubylog do
+  predicate_for ::Rubylog::Assertable, ".assumed", ".rejected", ".revoked", ".assumed_if()", ".assumed_unless()", ".rejected_if()", ".rejected_unless()"
 
   A.assumed.if A.assumed_if :true
   A.rejected.if A.assumed_if :cut!.and :fail
@@ -14,34 +11,30 @@ Rubylog.theory "Rubylog::AssumptionBuiltins", nil do
 
   H.assumed_if(B).if proc {
     raise Rubylog::InstantiationError.new :assumed_if, [H, B] if !H or !B
-    theory = ::Rubylog.current_theory
-    predicate = theory[H.indicator]
 
-    theory.check_exists predicate, H
-
-    predicate.asserta Rubylog::Structure.new(:-, H, B)
+    # assert
+    H.predicate.unshift Rubylog::Rule.new(H, B)
     
     true
   }.ensure {
-    theory = ::Rubylog.current_theory
-    theory[H.indicator].retracta
+    # retract
+    H.predicate.shift
   }
 
-  class << primitives
+  class << primitives_for ::Rubylog::Assertable
     def revoked h
       h = h.rubylog_dereference
       raise Rubylog::InstantiationError.new :revoked, [h] if h.is_a? Rubylog::Variable
       raise Rubylog::TypeError.new :revoked, [h] unless h.respond_to? :indicator
 
-      predicate = ::Rubylog.current_theory[h.indicator]
+      predicate = h.predicate
 
       (0...predicate.count).each do |i|
         r = predicate.delete_at(i)
         begin
           rule = r.rubylog_compile_variables
-          head, body = rule[0], rule[1]
-          head.args.rubylog_unify h.args do
-            body.prove do
+          rule.head.args.rubylog_unify h.args do
+            rule.body.prove do
               yield
             end
           end
@@ -55,6 +48,3 @@ Rubylog.theory "Rubylog::AssumptionBuiltins", nil do
 
 end
 
-Rubylog::DefaultBuiltins.amend do
-  include_theory Rubylog::AssumptionBuiltins
-end

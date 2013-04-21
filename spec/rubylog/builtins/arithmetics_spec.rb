@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Rubylog::ArithmeticsBuiltins, :rubylog=>true do
+describe "Arithmetics builtins", :rubylog=>true do
   check 5.is 2, :+, 3
   check 5.is 9, :-, 4
 

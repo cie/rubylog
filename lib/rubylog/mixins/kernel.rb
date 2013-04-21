@@ -1,5 +1,9 @@
 module Kernel
-  def theory *args, &block
-    Rubylog.theory *args, &block
+  def Rubylog &block
+    if block
+      ::Rubylog.amend &block
+    else
+      ::Rubylog
+    end
   end
 end

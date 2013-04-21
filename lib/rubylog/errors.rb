@@ -1,38 +1,44 @@
 module Rubylog
 
   class RubylogError < StandardError 
+    def initialize *args
+      super
+
+      remove_internal_lines
+    end
+
+    def remove_internal_lines
+      internal_dir = File.dirname(__FILE__) or return
+      return unless backtrace
+      index = backtrace.index{|l| not l.start_with?(internal_dir) } or return
+      set_backtrace backtrace[index..-1]
+    end
   end
   
   class SyntaxError < RubylogError
   end
 
   class DiscontiguousPredicateError < RubylogError
-    def initialize indicator
-      super "Predicate #{Rubylog::Structure.humanize_indicator(indicator)} was not declared as discontiguous"
-    end
-  end
-
-  class MultitheoryError < RubylogError
-    def initialize indicator
-      super "Predicate #{Rubylog::Structure.humanize_indicator(indicator)} was not declared as multi-theory"
+    def initialize predicate
+      super "Predicate #{predicate.inspect} was not declared as discontiguous"
     end
   end
 
   class BuiltinPredicateError < RubylogError
-    def initialize indicator
-      super "Predicate #{Rubylog::Structure.humanize_indicator(indicator)} is built-in"
+    def initialize predicate
+      super "Predicate #{predicate.inspect} is built-in"
     end
   end
 
   class NonAssertableError < RubylogError
-    def initialize indicator
-      super "Predicate #{Rubylog::Structure.humanize_indicator(indicator)} is not assertable"
+    def initialize predicate
+      super "Predicate #{predicate.inspect} is not assertable"
     end
   end
 
   class ExistenceError < RubylogError
-    def initialize indicator
-      super "Predicate #{Rubylog::Structure.humanize_indicator(indicator)} does not exist"
+    def initialize predicate
+      super "Predicate #{predicate.inspect} does not exist"
     end
   end
 
@@ -40,8 +46,8 @@ module Rubylog
   end
 
   class InstantiationError < RubylogError
-    def initialize functor, args
-      super "Instantiation error in #{Rubylog::Structure.new(functor, *args).inspect}"
+    def initialize predicate
+      super "Instantiation error in #{predicate.inspect}"
     end
   end
 

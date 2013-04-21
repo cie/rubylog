@@ -3,11 +3,17 @@ module Rubylog
 
     # data structure
     attr_reader :functor, :args
-    def initialize functor, *args
+
+    def initialize predicate, functor, *args
       #raise Rubylog::TypeError, "functor cannot be #{functor}" unless functor.is_a? Symbol
+      @predicate = predicate
       @functor = functor
       @args = args.freeze
       @arity = args.count
+    end
+
+    def predicate
+      @predicate 
     end
 
     def [] i
@@ -42,17 +48,6 @@ module Rubylog
       [@functor, @arity]
     end
 
-    # Makes human-friendly output from the indicator
-    # For example, .and()
-    def self.humanize_indicator indicator
-      functor, arity = indicator
-      if arity > 1
-        ".#{functor}(#{ ','*(arity-2) })"
-      else
-        ":#{functor}"
-      end
-    end
-
     # Assertable methods
     include Rubylog::Assertable
 
@@ -60,18 +55,11 @@ module Rubylog
     include Rubylog::Callable
 
     def prove
-      theory = Rubylog.static_current_theory
-      begin
-        theory.print_trace 1, self, rubylog_variables_hash
-        predicate = theory[indicator]
-        raise Rubylog::ExistenceError.new indicator if not predicate
-        count = 0
-        predicate.call(*@args) { yield; count+=1 }
-        count
-      ensure
-        theory.print_trace -1
-      end
+      count = 0
+      predicate.call(*@args) { yield; count+=1 }
+      count
     end
+    rubylog_traceable :prove
     
 
     # enumerable methods
@@ -92,11 +80,11 @@ module Rubylog
     # CompositeTerm methods
     include Rubylog::CompositeTerm
     def rubylog_clone &block
-      block.call Structure.new @functor,
+      block.call Structure.new @predicate, @functor.rubylog_clone(&block),
         *@args.map{|a| a.rubylog_clone &block}
     end
     def rubylog_deep_dereference
-      Structure.new @functor.rubylog_deep_dereference,
+      Structure.new @predicate, @functor.rubylog_deep_dereference,
         *@args.rubylog_deep_dereference
     end
 

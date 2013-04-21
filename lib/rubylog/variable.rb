@@ -108,6 +108,12 @@ module Rubylog
     def prove
       v = value
       raise Rubylog::InstantiationError.new(self) if v.nil?
+
+      # compile if not compiled
+      if !v.rubylog_variables
+        v = v.rubylog_compile_variables
+      end
+      
       v.prove{yield}
     end
 
@@ -145,15 +151,13 @@ module Rubylog
     def bind_to other
       begin
         @bound = true; @value = other
-        Rubylog.current_theory.print_trace 1, "#{inspect}=#{@value.inspect}"
 
         yield
-
       ensure
         @bound = false
-        Rubylog.current_theory.print_trace -1
       end
     end
+    rubylog_traceable :bind_to
 
     # yields with self.guards = self.guards + other_guards, then restores guards
     def append_guards other_guards

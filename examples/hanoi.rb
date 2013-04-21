@@ -1,9 +1,8 @@
 $:.unshift File.dirname(__FILE__)+"/../lib"
 require "rubylog"
 
-theory do
-  functor_for Integer, :move, :hanoi
-  prefix_functor :write_info
+Rubylog do
+  predicate_for Integer, ".move(,,)", ".hanoi"
 
   0.move(ANY,ANY,ANY).if :cut!
   N.move(A,B,C).if (
@@ -15,10 +14,10 @@ theory do
   N.hanoi.if N.move('left', 'right', 'center')
 
   puts "\nWhat's the solution for a single disc?"
-  prove 1.hanoi
+  solve 1.hanoi
 
   puts "\n\nWhat's the solution for 5 discs?"
-  prove 5.hanoi
+  solve 5.hanoi
 
 
 end

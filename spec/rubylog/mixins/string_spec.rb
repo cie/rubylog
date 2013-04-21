@@ -25,7 +25,7 @@ describe String, :rubylog=>true do
 
 
   describe "palindromes" do
-    functor_for String, :palindrome
+    predicate_for String, ".palindrome"
 
     S[empty?: true].palindrome!
     S[length: 1].palindrome!

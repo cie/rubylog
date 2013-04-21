@@ -1,0 +1,17 @@
+assertz
+Theory#assert
+trace
+amend
+initialize_theory
+DefaultBuiltins
+clear
+include_context
+multicontext
+prefix functors
+subject
+public_interface
+arity
+indicator
+retracta
+functor
+demonstration_spec

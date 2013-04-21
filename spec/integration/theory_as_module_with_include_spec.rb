@@ -1,11 +1,13 @@
+require "spec_helper"
+
 class MyClass
-  include Rubylog::Theory
+  include Rubylog::Context
 end
 
 a=MyClass.new
 
 a.amend do
-  functor_for Integer, :divides
+  predicate_for Integer, %w(.divides())
   (N.divides M).if { M%N == 0 }
 
   check 23.divides 230
