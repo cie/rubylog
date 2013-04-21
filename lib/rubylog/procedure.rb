@@ -9,31 +9,20 @@ module Rubylog
 
         # for each rule
         each do |rule|
-          begin
+          # compile
+          rule = rule.rubylog_compile_variables
 
-            # compile
-            rule = rule.rubylog_compile_variables
-            Rubylog.print_trace 1, rule.head.args, "=", args
-
-            # unify the head with the arguments
-            rule.head.args.rubylog_unify(args) do
-              begin
-                Rubylog.print_trace 1, rule.head, rule.head.rubylog_variables_hash
-
-                # call the body
-                rule.body.prove do
-                  yield 
-                end
-              ensure
-                Rubylog.print_trace -1
-              end
+          # unify the head with the arguments
+          rule.head.args.rubylog_unify(args) do
+            # call the body
+            rule.body.prove do
+              yield 
             end
-          ensure
-            Rubylog.print_trace -1
           end
         end
       end
     end
+    rubylog_traceable :call
 
     def each
       raise "abstract method called"

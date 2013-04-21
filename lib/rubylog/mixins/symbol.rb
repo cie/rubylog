@@ -14,13 +14,10 @@ class Symbol
   include Rubylog::Callable
 
   def prove
-    begin
-      Rubylog.print_trace 1, self, rubylog_variables_hash
-      predicate.call { yield }
-    ensure
-      Rubylog.print_trace -1
-    end
+    predicate.call { yield }
   end
+
+  rubylog_traceable :prove
 
 
 end

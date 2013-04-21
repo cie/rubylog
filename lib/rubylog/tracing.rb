@@ -1,34 +1,66 @@
+class Class
+  def rubylog_traceable name
+    Rubylog.traceable instance_method(name)
+  end
+end
+
 module Rubylog
   module Tracing
+    attr_reader :traceable_methods
+    attr_accessor :trace_levels
+
     # debugging
     #
     #
-    def trace 
-      old_trace = @trace
-      @trace = true
+    def trace! value=true
+      @trace = value
       @trace_levels = 0
+      setup_trace
+    end
+
+    def trace
       begin
+        trace!
         return yield
       ensure
-        @trace = old_trace
+        trace! false
       end
     end
 
-    def print_trace level, *args
-      return unless @trace
-      if @trace.respond_to? :call
-        @trace.call @trace_levels, *args if not args.empty?
+    def traceable method
+      @traceable_methods ||= []
+      @traceable_methods << method
+    end
+
+    def setup_trace
+      if @trace
+        traceable_methods.each do |m|
+          m.owner.send :define_method, m.name do |*args,&block|
+            begin
+              print " "*Rubylog.trace_levels
+              Rubylog.trace_levels += 1
+              print "#{inspect}.#{m.name}(#{args.map{|k|k.inspect}.join(", ")})?"
+              gets
+
+              return m.bind(self).call *args, &block
+            ensure
+              Rubylog.trace_levels -= 1
+              print " "*Rubylog.trace_levels
+              print "*"
+              puts
+            end
+          end
+        end
       else
-        if not args.empty?
-          puts "  "*@trace_levels + args.map{|a|a.rubylog_deep_dereference.to_s}.join(" ") 
-        else
-          puts "  "*(@trace_levels-1) + "*"
+        traceable_methods.each do |m|
+          m.owner.send :define_method, m.name do |*args, &block|
+            m.bind(self).call(*args, &block)
+          end
         end
       end
-      @trace_levels += level
+
     end
   end
-
   extend Tracing
 end
 

@@ -5,6 +5,9 @@ end
 
 #dir = File.dirname(__FILE__) + "/"
 
+# tracing
+require 'rubylog/tracing'
+
 # interfaces
 require 'rubylog/term'
 require 'rubylog/callable'

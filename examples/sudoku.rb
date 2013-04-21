@@ -25,13 +25,14 @@ class Sudoku
 
   predicate ".solved .good .shown .given(s)"
   S.solved.if every L.in{S.rows}.and(F.in(L)), F.in(1..9)
-  S.good.if S.shown.and all(T.in{[S.rows, S.columns, S.blocks]}.and(L.in{T}), L.unique)
+  S.good.if all(T.in{[S.rows, S.columns, S.blocks]}.and(L.in{T}), L.unique)
 
   S.shown.if do
     L.in{S.rows}.each do
       p L
     end
     puts 
+    true
   end
 
   _=ANY

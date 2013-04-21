@@ -55,15 +55,11 @@ module Rubylog
     include Rubylog::Callable
 
     def prove
-      begin
-        Rubylog.print_trace 1, self, rubylog_variables_hash
-        count = 0
-        predicate.call(*@args) { yield; count+=1 }
-        count
-      ensure
-        Rubylog.print_trace -1
-      end
+      count = 0
+      predicate.call(*@args) { yield; count+=1 }
+      count
     end
+    rubylog_traceable :prove
     
 
     # enumerable methods
