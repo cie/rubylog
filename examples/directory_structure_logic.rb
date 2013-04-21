@@ -1,9 +1,7 @@
-require "rubylog/builtins/file_system"
+require "rubylog"
 
-theory do
-  subject String
-  predicate ".dir", ".contains()"
-  check_discontiguous false
+Rubylog do
+  predicate_for String, ".dir", ".contains()"
 
   ".git".dir!.contains! "Git repository"
   "bin".dir!.contains! "executables"

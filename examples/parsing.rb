@@ -2,7 +2,7 @@ $:.unshift File.dirname(__FILE__)+"/../lib"
 require "rubylog"
 require "readline"
 
-theory do
+Rubylog do
   predicate_for String, ".term()", ".expr()", ".atom()"
 
   "#{A}+#{B}".expr(K).if A.expr(I).and B.term(J).and K.is{I+J}

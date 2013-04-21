@@ -11,6 +11,6 @@ module Rubylog::Assertable
 
   def unless body=nil, &block
     raise Rubylog::SyntaxError, "No body given", caller unless body || block
-    predicate.assert self, Rubylog::DefaultBuiltins.false(body || block)
+    predicate.assert self, Rubylog.false(body || block)
   end
 end

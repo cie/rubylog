@@ -1,7 +1,7 @@
 $:.unshift File.dirname(__FILE__)+"/../lib"
 require 'rubylog'
 
-Rubylog.theory "Try" do
+Try = Rubylog.create_context do
   subject String
   predicate ":hello_world"
 

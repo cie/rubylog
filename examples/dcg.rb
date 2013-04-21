@@ -1,7 +1,8 @@
+require "rubylog"
 # This is a quick and dirty solution to replace Prolog's DCG syntax.
 # It is slow for long inputs. See examples/dcg2.rb for a more efficient algorithm (the same as Prolog's DCG).
 
-theory do
+Rubylog do
   predicate_for Array, ".sentence", ".subject", ".object", ".nominal_phrase", ".noun", ".verb", ".article"
 
   [*S,*V,*O].sentence.if S.subject.and V.verb.and O.object

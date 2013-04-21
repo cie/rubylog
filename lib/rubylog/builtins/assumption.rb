@@ -1,6 +1,6 @@
 require 'rubylog/builtins/ensure'
 
-Rubylog::DefaultBuiltins.amend do
+Rubylog do
   predicate_for ::Rubylog::Assertable, ".assumed", ".rejected", ".revoked", ".assumed_if()", ".assumed_unless()", ".rejected_if()", ".rejected_unless()"
 
   A.assumed.if A.assumed_if :true

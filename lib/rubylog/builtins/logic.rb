@@ -1,4 +1,4 @@
-Rubylog::DefaultBuiltins.amend do
+Rubylog do
   class << primitives
     # true
     def true

@@ -1,4 +1,4 @@
-Rubylog::DefaultBuiltins.amend do
+Rubylog do
   predicate_for String, ".filename_in()", ".dirname_in()", ".file_in()", ".dir_in()"
   
   X.filename_in(D).if Y.file_in(D).and X.is { File.basename Y }

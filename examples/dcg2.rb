@@ -4,7 +4,7 @@
 $:.unshift File.dirname(__FILE__)+"/../lib"
 require 'rubylog'
 
-theory do
+Rubylog do
   predicate_for Array, ".sentence()", ".subject()", ".object()", ".nominal_phrase()", ".noun()", ".verb()", ".article()"
 
   # sentence --> subject, verb, object

@@ -1,7 +1,7 @@
 require "rubylog"
 
 
-theory do
+Rubylog do
   predicate_for Array, ".on()"
 
   black, white = 0, 1
@@ -27,9 +27,7 @@ theory do
   [white,pawn]  .on! [7,7]
   [white,pawn]  .on! [8,4]
 
-  prefix_functor :show
-
-  show.if do
+  :show.if do
     (R_.in(1..8).and(R.is{9-R_})).each do
       F.in(1..8).each do
         print '.' unless prove [C,P].on([F,R]).and :cut!.and { print C==white ? signs[P].upcase : signs[P]; true }
@@ -78,7 +76,7 @@ theory do
 
   [C,P].on(S).moved_to(S1).if [C,P].on(S).and [C,P].on(S).can_move_to(S1).and [C,P].on(S).revoked.and [C,P].on(S1).assumed
 
-  solve show.and [C,P].on(S).moved_to(S1).and{ puts "#{C} #{P}: #{S} -> #{S1}"; true}.and show
+  solve :show.and [C,P].on(S).moved_to(S1).and{ puts "#{C} #{P}: #{S} -> #{S1}"; true}.and :show
 
 
 

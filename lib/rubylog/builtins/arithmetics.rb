@@ -1,4 +1,4 @@
-Rubylog::DefaultBuiltins.amend do
+Rubylog do
 
   class << primitives_for Numeric
     def sum_of c, a, b

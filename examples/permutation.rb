@@ -1,5 +1,5 @@
 require "rubylog"
-extend Rubylog::Theory
+extend Rubylog::Context
 predicate_for Array, ".permutation()"
 
 [].permutation! []

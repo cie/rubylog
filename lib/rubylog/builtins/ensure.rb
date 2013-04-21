@@ -1,4 +1,4 @@
-Rubylog::DefaultBuiltins.amend do
+Rubylog do
   
   class << primitives_for ::Rubylog::Callable
     def ensure a, b
