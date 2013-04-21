@@ -27,6 +27,8 @@ Rubylog do
   [white,pawn]  .on! [7,7]
   [white,pawn]  .on! [8,4]
 
+  predicate ":show"
+
   :show.if do
     (R_.in(1..8).and(R.is{9-R_})).each do
       F.in(1..8).each do

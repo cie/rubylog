@@ -101,10 +101,9 @@ Rubylog do
     # variables in b if possible and collects the results. Then joins all b's
     # with .and() and solves it.
     def every _, a, b
-      p [a, b]
       c = []
       a.prove { c << b.rubylog_deep_dereference }
-      p(c.inject{|a,b|a.and b}).solve { yield }
+      c.inject{|a,b|a.and b}.solve { yield }
     end
   end
 

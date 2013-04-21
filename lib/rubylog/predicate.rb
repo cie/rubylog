@@ -13,6 +13,12 @@ module Rubylog
     end
 
     def functor_for subjects
+      if arity == 0
+        # We treat nullary predicates differently. Do not even create functors.
+        Rubylog::NullaryPredicates[functor] = self
+        return
+      end
+
       predicate = self
 
       [subjects].flatten.each do |subject|

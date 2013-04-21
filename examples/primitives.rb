@@ -1,8 +1,8 @@
 $:.unshift File.dirname(__FILE__)+"/../lib"
 require 'rubylog'
 
-Try = Rubylog.create_context do
-  subject String
+Try = Rubylog.create_context
+Try.amend do
   predicate ":hello_world"
 
   def primitives.hello
@@ -10,9 +10,11 @@ Try = Rubylog.create_context do
     yield
   end
 
-  def primitives.hello x
-    puts "Hello #{x.rubylog_deep_dereference}!"
-    yield
+  class << primitives_for(String)
+    def hello x
+      puts "Hello #{x.rubylog_deep_dereference}!"
+      yield
+    end
   end
 
   :hello_world.if "World".hello
@@ -22,4 +24,3 @@ end
 
 p Try.true? :hello
 p Try.true? :hello_world
-p Try.true?{X.is("World").and X.hello}

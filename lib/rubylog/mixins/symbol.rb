@@ -4,6 +4,10 @@ class Symbol
     Rubylog::NullaryPredicates[self] or raise Rubylog::ExistenceError.new(self)
   end
 
+  def args
+    []
+  end
+
   # Assertable methods
   include Rubylog::Assertable
 

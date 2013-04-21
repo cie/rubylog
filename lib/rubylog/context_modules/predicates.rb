@@ -122,7 +122,7 @@ module Rubylog
           ".#{functor}(#{ ','*(arity-2) })"
         elsif arity == 1
           ".#{functor}"
-        else
+        elsif arity == 0
           ":#{functor}"
         end
       end
