@@ -59,7 +59,9 @@ describe "builtin", :rubylog=>true do
     specify { proc { A.is(4).and(A.follows_from(B)).true? }.should raise_error NoMethodError }
 
     #[clause(f(_),5), type_error(callable,5)].
-    specify { predicate ".f"; proc { ANY.f.follows_from(B).true? }.should raise_error NoMethodError }
+    # As Rubylog only unifies the second argument with each body in the
+    # predicate, this does not lead to an error.
+    xspecify { predicate ".f"; proc { ANY.f.follows_from(5).true? }.should raise_error NoMethodError }
 
     #[clause(atom(_),Body), permission_error(access,private_procedure,atom/1)]. 
     specify { proc { ANY.false.follows_from(B).true? }.should raise_error NoMethodError }

@@ -1,1 +1,2 @@
 eql? at unify
+Comp{osite->ound}Term
