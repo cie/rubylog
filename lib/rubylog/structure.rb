@@ -77,8 +77,8 @@ module Rubylog
 
     attr_reader :rubylog_variables
 
-    # CompositeTerm methods
-    include Rubylog::CompositeTerm
+    # CompoundTerm methods
+    include Rubylog::CompoundTerm
     def rubylog_clone &block
       block.call Structure.new @predicate, @functor.rubylog_clone(&block),
         *@args.map{|a| a.rubylog_clone &block}

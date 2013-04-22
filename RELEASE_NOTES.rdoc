@@ -24,6 +24,7 @@
   * <tt>implicit</tt> is removed. No implicit mode anymore.
   * <tt>Theory#clear</tt> is replaced by <tt>Context#initialize\_context</tt>.
     However, currently it only clears <tt>default\_subject</tt>.
+  * <tt>CompositeTerm</tt> is renamed to <tt>CompoundTerm</tt>.
 * Features 
   * Rspec integration
   * +include+ or +extend+ <tt>Rubylog::Context</tt> into any class or object

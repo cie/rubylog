@@ -12,7 +12,7 @@ require 'rubylog/tracing'
 require 'rubylog/term'
 require 'rubylog/clause'
 require 'rubylog/assertable'
-require 'rubylog/composite_term'
+require 'rubylog/compound_term'
 
 # helpers
 require 'rubylog/errors'

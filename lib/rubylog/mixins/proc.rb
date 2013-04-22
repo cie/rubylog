@@ -7,8 +7,8 @@ class Proc
     yield if call_with_rubylog_variables
   end
 
-  # CompositeTerm methods
-  include Rubylog::CompositeTerm
+  # CompoundTerm methods
+  include Rubylog::CompoundTerm
   def rubylog_clone 
     yield dup
   end

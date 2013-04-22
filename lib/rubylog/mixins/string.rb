@@ -46,8 +46,8 @@ class String
 
   end
 
-  # CompositeTerm methods
-  include Rubylog::CompositeTerm
+  # CompoundTerm methods
+  include Rubylog::CompoundTerm
   def rubylog_clone &block
     scan RUBYLOG_VAR_REGEXP do
       guards = RubylogStringVariableGuards[$2.to_i] 
