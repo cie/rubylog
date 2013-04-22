@@ -18,6 +18,11 @@ describe "custom classes" do
         girl?
       end
 
+      def hello
+        "Hello #{U.is(self).and(U.girl).true? ? "Ms." : "Mr."} #{@name}!"
+      end
+
+
     end
   end
 
@@ -43,6 +48,11 @@ describe "custom classes" do
     janet.girl?.should be_false
     janet.girl!
     janet.girl?.should be_true
+  end
+
+  it "can use variables in instance methods" do
+    User.new("John").hello.should == "Hello Mr. John!"
+    User.new("Jane").hello.should == "Hello Ms. Jane!"
   end
 
 

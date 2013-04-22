@@ -52,12 +52,14 @@ module Rubylog
 
       context.initialize_context
 
-      # if context is a class or module, we also include DSL::Variables directly
-      # in it, so that they can be accessed from an instance
-      # Also, we set self as a subject, so that +predicate+ automatically attaches
-      # functors to it.
       if context.is_a? Module
+        # if context is a class or module, we also include DSL::Variables directly
+        # in it, so that they can be accessed in class_eval mode or from an
+        # instance method.
         context.send :include, Rubylog::DSL::Variables
+
+        # Also, we set self as a subject, so that +predicate+ automatically attaches
+        # functors to it.
         context.default_subject = context
       end
     end
