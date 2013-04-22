@@ -34,12 +34,13 @@ module Rubylog
   end
 
   class InstantiationError < RubylogError
-    def initialize predicate
-      super "Instantiation error in #{predicate.inspect}"
+    def initialize functor, args=nil
+      if args
+        super "Instantiation error in #{args[0].inspect}.#{functor}(#{args[1..-1].map{|a|a.rubylog_deep_dereference.inspect}.join(", ")})"
+      else
+        super "Instantiation error in #{functor.inspect}"
+      end
     end
-  end
-
-  class TypeError < RubylogError
   end
 
   class UnknownVariableError < RubylogError

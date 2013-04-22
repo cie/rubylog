@@ -23,7 +23,6 @@ Rubylog do
     def revoked h
       h = h.rubylog_dereference
       raise Rubylog::InstantiationError.new :revoked, [h] if h.is_a? Rubylog::Variable
-      raise Rubylog::TypeError.new :revoked, [h] unless h.respond_to? :indicator
 
       predicate = h.predicate
 

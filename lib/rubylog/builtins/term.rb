@@ -20,7 +20,7 @@ Rubylog do
       a = a.rubylog_resolve_function
       b = b.rubylog_resolve_function.rubylog_dereference
       if b.instance_of? Rubylog::Variable
-        raise Rubylog::InstantiationError.new b
+        raise Rubylog::InstantiationError.new :in, [a,b]
       else
         b.each do |e|
           a.rubylog_unify(e) { yield }

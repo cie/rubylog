@@ -32,7 +32,7 @@ class String
     other_has_vars = other =~ RUBYLOG_VAR_REGEXP
 
     return super{yield} unless self_has_vars or other_has_vars
-    raise Rubylog::InstantiationError, "Cannot unify two strings with variables inside" if self_has_vars and other_has_vars
+    raise ArgumentError, "Cannot unify two strings with variables inside" if self_has_vars and other_has_vars
 
     a, b = self_has_vars ? [self, other] : [other, self]
     a_segments, a_vars = a.rubylog_segments

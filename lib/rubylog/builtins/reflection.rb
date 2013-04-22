@@ -13,7 +13,7 @@ Rubylog do
         # We enable variable functors
         #raise Rubylog::InstantiationError, fct if fct.is_a? Rubylog::Variable
         
-        raise Rubylog::InstantiationError.new Rubylog::ReflectionBuiltinsForStructure, :structure, [c, predicate, fct, args] if args.is_a? Rubylog::Variable
+        raise Rubylog::InstantiationError.new :structure, [c, predicate, fct, args] if args.is_a? Rubylog::Variable
 
         c.rubylog_unify(Rubylog::Structure.new(predicate, fct, *args)) { yield }
       elsif c.is_a? Rubylog::Structure
