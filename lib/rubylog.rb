@@ -49,7 +49,7 @@ Rubylog.initialize_context
 
 
 # builtins
-require 'rubylog/builtins/default'
+require 'rubylog/builtins'
 
 
 

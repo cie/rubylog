@@ -31,6 +31,7 @@
   * Comments in indicators
   * New tracer
   * added <tt>every</tt>
+  * all builtins are available by default
 * Bug fixes
 
 
