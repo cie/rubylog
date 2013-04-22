@@ -15,7 +15,6 @@ module Rubylog
       def clear
         @public_interface = Module.new
         @default_subject = []
-        @check_discontiguous = true
         @prefix_functor_modules = []
         @last_predicate = nil
         super 
@@ -51,9 +50,6 @@ module Rubylog
 
       protected
 
-      def check_not_discontiguous predicate, head, body
-        raise Rubylog::DiscontiguousPredicateError.new(self, head.indicator) if check_discontiguous? and not predicate.empty? and predicate != @last_predicate and not predicate.discontiguous?
-      end
 
       def check_assertable predicate, head, body
         raise Rubylog::NonAssertableError.new(self, head.indicator) unless predicate.respond_to? :assertz

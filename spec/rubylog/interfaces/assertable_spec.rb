@@ -25,7 +25,6 @@ describe "rules", :rubylog=>true do
 
     it "can do simple general implications" do
       predicate [:is_happy,1], [:has,2]
-      discontiguous [:likes,2]
       X.is_happy.if X.likes(Y).and X.has(Y)
       :john.likes! :milk
       :john.is_happy?.should be_false

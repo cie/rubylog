@@ -18,12 +18,6 @@ module Rubylog
   class SyntaxError < RubylogError
   end
 
-  class DiscontiguousPredicateError < RubylogError
-    def initialize predicate
-      super "Predicate #{predicate.inspect} was not declared as discontiguous"
-    end
-  end
-
   class BuiltinPredicateError < RubylogError
     def initialize predicate
       super "Predicate #{predicate.inspect} is built-in"
