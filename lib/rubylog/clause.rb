@@ -1,4 +1,4 @@
-module Rubylog::Callable
+module Rubylog::Clause
   # Clients should implement this method. 
   # Yields for each possible solution of the predicate
   def prove

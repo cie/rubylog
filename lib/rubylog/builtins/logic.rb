@@ -17,9 +17,9 @@ Rubylog do
   end
 
 
-  primitives_for_callable = primitives_for [::Rubylog::Callable, ::Rubylog::Structure]
+  primitives_for_clause = primitives_for [::Rubylog::Clause, ::Rubylog::Structure]
 
-  class << primitives_for_callable
+  class << primitives_for_clause
     # Succeeds if both +a+ and +b+ succeeds.
     def and a, b
       a.prove { b.prove { yield } }
@@ -92,7 +92,7 @@ Rubylog do
     # we discard the first argument, which is the context,
     # because they are the same in  any context
     primitives_for_context.define_singleton_method fct do |_,*args,&block|
-      primitives_for_callable.send(fct, *args, &block)
+      primitives_for_clause.send(fct, *args, &block)
     end
   end
 

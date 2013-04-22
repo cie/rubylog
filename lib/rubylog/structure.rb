@@ -51,8 +51,8 @@ module Rubylog
     # Assertable methods
     include Rubylog::Assertable
 
-    # Callable methods
-    include Rubylog::Callable
+    # Clause methods
+    include Rubylog::Clause
 
     def prove
       count = 0

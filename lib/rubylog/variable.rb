@@ -102,8 +102,8 @@ module Rubylog
       end
     end
 
-    # Callable methods
-    include Callable
+    # Clause methods
+    include Clause
 
     def prove
       v = value

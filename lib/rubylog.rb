@@ -10,7 +10,7 @@ require 'rubylog/tracing'
 
 # interfaces
 require 'rubylog/term'
-require 'rubylog/callable'
+require 'rubylog/clause'
 require 'rubylog/assertable'
 require 'rubylog/composite_term'
 
