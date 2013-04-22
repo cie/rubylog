@@ -39,42 +39,10 @@ module Rubylog
         end
       end
 
-      def functor *functors
-        functors.flatten.each do |fct|
-          add_functors_to @public_interface, fct
-          [@default_subject].flatten.each do |s|
-            add_functors_to s, fct
-          end
-        end
-      end
-
       attr_accessor :default_subject
 
       # predicates
 
-
-      def retract head
-        indicator = head.indicator
-        predicate = @database[indicator]
-        check_exists predicate, head
-        check_assertable predicate, head, body
-
-        head = head.rubylog_compile_variables
-
-        index = nil
-        result = nil
-        catch :retract do
-          predicate.each_with_index do |rule, i|
-            head.rubylog_unify rule.head do
-              index = i
-              result = rule
-              throw :retract
-            end
-          end
-          return nil
-        end
-
-      end
 
       def create_procedure indicator
         Rubylog::SimpleProcedure.new indicator[0], indicator[1]
@@ -82,10 +50,6 @@ module Rubylog
 
 
       protected
-
-      def check_exists predicate, head
-        raise Rubylog::ExistenceError.new(self, head.indicator) unless predicate
-      end
 
       def check_not_discontiguous predicate, head, body
         raise Rubylog::DiscontiguousPredicateError.new(self, head.indicator) if check_discontiguous? and not predicate.empty? and predicate != @last_predicate and not predicate.discontiguous?

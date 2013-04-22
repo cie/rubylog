@@ -4,3 +4,4 @@ initialize_theory
 clear
 include_context
 demonstration_spec
+discontiguous
