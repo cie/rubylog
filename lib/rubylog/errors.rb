@@ -24,12 +24,6 @@ module Rubylog
     end
   end
 
-  class NonAssertableError < RubylogError
-    def initialize predicate
-      super "Predicate #{predicate.inspect} is not assertable"
-    end
-  end
-
   class ExistenceError < RubylogError
     def initialize predicate
       super "Predicate #{predicate.inspect} does not exist"

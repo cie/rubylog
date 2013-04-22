@@ -51,10 +51,6 @@ module Rubylog
       protected
 
 
-      def check_assertable predicate, head, body
-        raise Rubylog::NonAssertableError.new(self, head.indicator) unless predicate.respond_to? :assertz
-      end
-
       def check_modules modules
         modules.each do |m|
           raise ArgumentError, "#{m.inspect} is not a class or module",  caller[1..-1] unless m.is_a? Module
