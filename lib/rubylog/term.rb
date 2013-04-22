@@ -20,7 +20,7 @@ module Rubylog::Term
     if other.kind_of? Rubylog::Variable
       other.rubylog_unify(self) do yield end
     else
-      yield if self == other
+      yield if self.eql? other
     end
   end
 

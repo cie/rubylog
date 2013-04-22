@@ -9,6 +9,8 @@
     more inclusion of theories.
   * Predicates no more belong to the theory, they are just attached to the
     subject class at the time of functor creation.
+  * Unification uses <tt>eql?</tt> instead of <tt>==</tt>. This means
+    <tt>5.0.is\_not(5)</tt>
   * <tt>Theory#eval</tt> became <tt>Context#query</tt>
   * Removed <tt>functor</tt>, use <tt>predicate</tt> and <tt>predicate\_for</tt>
     instead. The latter ones have a different syntax for indicating predicates, eg.
