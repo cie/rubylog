@@ -11,12 +11,6 @@ module Rubylog
         super 
       end
 
-
-
-      
-
-      # directives
-      #
       def predicate *indicators
         each_indicator(indicators) do |indicator|
           create_procedure(indicator).functor_for [@default_subject, Variable]
@@ -31,21 +25,11 @@ module Rubylog
 
       attr_accessor :default_subject
 
-      # predicates
-
-
-      def create_procedure indicator
-        Rubylog::SimpleProcedure.new indicator[0], indicator[1]
-      end
-
 
       protected
 
-
-      def check_modules modules
-        modules.each do |m|
-          raise ArgumentError, "#{m.inspect} is not a class or module",  caller[1..-1] unless m.is_a? Module
-        end
+      def create_procedure indicator
+        Rubylog::SimpleProcedure.new indicator[0], indicator[1]
       end
 
       def each_indicator indicators
