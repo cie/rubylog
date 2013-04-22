@@ -1,6 +1,7 @@
 require "spec_helper"
 
 describe Rubylog::CompositeTerm, :rubylog=>true do
+  predicate_for Symbol, ".likes()"
 
   describe "compilation" do
 

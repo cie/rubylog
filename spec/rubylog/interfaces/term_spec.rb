@@ -1,3 +1,4 @@
+require 'spec_helper'
 
 describe "unification", :rubylog=>true do
   predicate_for Symbol, ".likes"

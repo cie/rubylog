@@ -17,13 +17,13 @@ describe "reflection builtins", :rubylog => true do
   end
 
   describe "structure" do
-    check A.likes(B).structure(:likes, [A,B])
-    check { A.likes(B).structure(X,Y).map{[X,Y]} == [[:likes, [A,B]]] }
+    check A.likes(B).structure(A.likes(B).predicate, :likes, [A,B])
+    check { A.likes(B).structure(P,X,Y).map{[P,X,Y]} == [[A.likes.predicate, :likes, [A,B]]] }
   end
 
   describe "structures with variable functor and partial argument list" do
-    check { K.structure(:drinks, ["John", "beer"]).map{K} == ["John".drinks("beer")] }
-    check { K.structure(A,[*B]).
+    check { K.structure(ANY.drinks(ANY).predicate, :drinks, ["John", "beer"]).map{K} == ["John".drinks("beer")] }
+    check { K.structure(Rubylog::SimpleProcedure.new(:drinks, 2), A,[*B]).
       and(A.is(:drinks)).
       and(B.is(["John","beer"])).
       map{K} == ["John".drinks("beer")] }
