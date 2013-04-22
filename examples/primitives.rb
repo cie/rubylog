@@ -2,7 +2,7 @@ $:.unshift File.dirname(__FILE__)+"/../lib"
 require 'rubylog'
 
 Try = Rubylog.create_context
-Try.amend do
+Try.instance_exec do
   predicate ":hello_world"
 
   def primitives.hello

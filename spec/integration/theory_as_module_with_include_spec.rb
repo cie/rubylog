@@ -6,7 +6,7 @@ end
 
 a=MyClass.new
 
-a.amend do
+a.instance_exec do
   predicate_for Integer, %w(.divides())
   (N.divides M).if { M%N == 0 }
 

@@ -1,4 +1,3 @@
-amend
 initialize_theory
 clear
 include_context
