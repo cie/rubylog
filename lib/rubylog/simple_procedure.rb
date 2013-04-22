@@ -25,6 +25,18 @@ module Rubylog
       @rules.each {|r| yield r}
     end
 
+    def delete_at index
+      @rules.delete_at index
+    end
+
+    def insert index, value
+      @rules.insert index, value
+    end
+
+    def [] index
+      @rules[index]
+    end
+
   end
 
 end
