@@ -25,8 +25,8 @@ module Rubylog
   end
 
   class ExistenceError < RubylogError
-    def initialize predicate
-      super "Predicate #{predicate.inspect} does not exist"
+    def initialize clause
+      super "Predicate #{clause.inspect} does not exist"
     end
   end
 
@@ -41,9 +41,6 @@ module Rubylog
         super "Instantiation error in #{functor.inspect}"
       end
     end
-  end
-
-  class UnknownVariableError < RubylogError
   end
 
   class CheckFailed < StandardError
