@@ -15,12 +15,6 @@ module Rubylog::ContextModules
 
         @included_contexts << context
 
-        # include prefix_functors
-        context.prefix_functor_modules.each do |m|
-          @prefix_functor_modules << m
-          extend m
-        end
-
       end
     end
 

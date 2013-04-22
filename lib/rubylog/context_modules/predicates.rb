@@ -7,7 +7,6 @@ module Rubylog
     module Predicates
 
       attr_reader :public_interface
-      attr_reader :prefix_functor_modules
 
       attr_accessor :last_predicate
 
@@ -15,7 +14,6 @@ module Rubylog
       def clear
         @public_interface = Module.new
         @default_subject = []
-        @prefix_functor_modules = []
         @last_predicate = nil
         super 
       end
