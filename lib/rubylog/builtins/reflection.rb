@@ -65,7 +65,7 @@ Rubylog do
     def follows_from head, body
       head = head.rubylog_dereference
       raise Rubylog::InstantiationError.new :follows_from, [head, body] if head.is_a? Rubylog::Variable
-      return unless head.respond_to? :functor
+      
       head.predicate.each do |rule|
         unless rule.body==:true # do not succeed for facts
           rule = rule.rubylog_compile_variables
