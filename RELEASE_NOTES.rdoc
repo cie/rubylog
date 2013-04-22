@@ -18,6 +18,7 @@
   * No more real prefix functors, prefix functors are attached to the context
   * object. Use <tt>predicate\_for Rubylog::Context, "..."</tt>.
   * <tt>Rubylog::DefaultBuiltins</tt> is replaced by <tt>Rubylog</tt>
+  * <tt>prove</tt> was removed. Use <tt>true?</tt>
 * Features 
   * Rspec integration
   * +include+ or +extend+ <tt>Rubylog::Context</tt> into any class or object
