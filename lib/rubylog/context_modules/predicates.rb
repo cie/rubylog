@@ -6,11 +6,7 @@ module Rubylog
   module ContextModules
     module Predicates
 
-      attr_reader :public_interface
-
-
       def clear
-        @public_interface = Module.new
         @default_subject = []
         super 
       end
