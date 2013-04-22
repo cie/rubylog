@@ -1,3 +1,1 @@
-initialize_theory
-clear
 demonstration_spec

@@ -6,7 +6,7 @@ module Rubylog
   module ContextModules
     module Predicates
 
-      def clear
+      def initialize_context
         @default_subject = []
         super 
       end

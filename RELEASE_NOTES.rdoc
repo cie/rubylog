@@ -22,6 +22,8 @@
   * <tt>Rubylog::Callable<tt> renamed to <tt>Rubylog::Clause</tt>
   * <tt>discontiguous</tt> is removed. No more discontiguity checks.
   * <tt>implicit</tt> is removed. No implicit mode anymore.
+  * <tt>Theory#clear</tt> is replaced by <tt>Context#initialize\_context</tt>.
+    However, currently it only clears <tt>default\_subject</tt>.
 * Features 
   * Rspec integration
   * +include+ or +extend+ <tt>Rubylog::Context</tt> into any class or object

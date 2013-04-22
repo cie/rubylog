@@ -6,13 +6,13 @@ module Rubylog::ContextModules
       super
     end
 
-    # Clear all data in the context and bring it to its initial state.
+    # Initializes the context
+    #
+    # We use this method instead of overriding initialize because often an
+    # object becomes a context after having been initialized.
     def initialize_context
-      clear
-    end
-
-    def clear
       # included modules override this
     end
+
   end
 end
