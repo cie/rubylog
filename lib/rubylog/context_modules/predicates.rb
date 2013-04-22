@@ -8,13 +8,10 @@ module Rubylog
 
       attr_reader :public_interface
 
-      attr_accessor :last_predicate
-
 
       def clear
         @public_interface = Module.new
         @default_subject = []
-        @last_predicate = nil
         super 
       end
 
