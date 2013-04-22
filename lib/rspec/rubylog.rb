@@ -32,15 +32,6 @@ RSpec.configure do |c|
     if self.class.metadata[:rubylog]
       # create the context from the example
       Rubylog.create_context self
-
-      # include the EG class
-      include_context self.class
-
-      # include nesting example groups upwards while they are rubylog example groups
-      m = self.class
-      while m = eval(m.name.rpartition("::")[0]) and m.include? Rubylog::RSpecExampleGroup
-        include_context m
-      end
     end
   end
 end
