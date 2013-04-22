@@ -21,6 +21,7 @@
   * <tt>Theory#prove</tt> was removed. Use <tt>Context#true?</tt>
   * <tt>Rubylog::Callable<tt> renamed to <tt>Rubylog::Clause</tt>
   * <tt>discontiguous</tt> is removed. No more discontiguity checks.
+  * <tt>implicit</tt> is removed. No implicit mode anymore.
 * Features 
   * Rspec integration
   * +include+ or +extend+ <tt>Rubylog::Context</tt> into any class or object

@@ -5,7 +5,6 @@ require 'rubylog/context_modules/builtins'
 require 'rubylog/context_modules/checks'
 require 'rubylog/context_modules/demonstration'
 require 'rubylog/context_modules/dynamic_mode'
-require 'rubylog/context_modules/implicit'
 require 'rubylog/context_modules/inclusion'
 require 'rubylog/context_modules/predicates'
 require 'rubylog/context_modules/primitives'
@@ -25,7 +24,6 @@ module Rubylog::Context
   include Rubylog::ContextModules::Checks
   include Rubylog::ContextModules::Demonstration
   include Rubylog::ContextModules::DynamicMode
-  include Rubylog::ContextModules::Implicit
   include Rubylog::ContextModules::Inclusion
   include Rubylog::ContextModules::Predicates
   include Rubylog::ContextModules::Primitives
