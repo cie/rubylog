@@ -18,7 +18,7 @@
   * <tt>Structure</tt> is bound to the predicate it represents.
   * <tt>current\_theory</tt> is removed.
   * No more real prefix functors, prefix functors are attached to the context
-  * object. Use <tt>predicate\_for Rubylog::Context, "..."</tt>.
+    object. Use <tt>predicate\_for Rubylog::Context, "..."</tt>.
   * <tt>Rubylog::DefaultBuiltins</tt> is replaced by <tt>Rubylog</tt>
   * <tt>Theory#prove</tt> was removed. Use <tt>Context#true?</tt>
   * <tt>Rubylog::Callable<tt> renamed to <tt>Rubylog::Clause</tt>
