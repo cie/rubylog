@@ -59,7 +59,7 @@ module Rubylog
         context.send :include, Rubylog::DSL::Variables
 
         # Also, we set self as a subject, so that +predicate+ automatically attaches
-        # functors to it.
+        # functors to the class.
         context.default_subject = context
       end
     end
