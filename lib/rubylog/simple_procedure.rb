@@ -37,6 +37,10 @@ module Rubylog
       @rules[index]
     end
 
+    def count
+      @rules.count
+    end
+
   end
 
 end

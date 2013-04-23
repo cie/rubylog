@@ -9,7 +9,9 @@ Rubylog do
     #
     # Please beware that unification requires equality by type, so 4.sum_of(2, 2.0) will fail.
     #
-    # It can add any type of object that responds_to + and/or -.
+    # It can add any type of object that responds_to + and/or -:
+    #     A.sum_of(B,C).predicate.add_functor_to String
+    #     check "hello".sum_of("he", "llo")
     #
     def sum_of c, a, b
       a, b, c = [a,b,c].map{|f|f.rubylog_resolve_function.rubylog_dereference}
