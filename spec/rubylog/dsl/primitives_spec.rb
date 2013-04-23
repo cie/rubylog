@@ -3,19 +3,19 @@ require "spec_helper"
 describe Rubylog::DSL::Primitives, :rubylog=>true do
   describe "#primitives" do
     before do
-      String.instance_methods.should_not include :long
+      String.instance_methods.should_not include :looong
     end
 
     it "defines functors on default subject" do
       self.default_subject = String
       class << primitives
-        def long s
+        def looong s
           yield if s.length > 10
         end
       end
-      String.instance_methods.should include :long
-      String.instance_methods.should include :long!
-      String.instance_methods.should include :long?
+      String.instance_methods.should include :looong
+      String.instance_methods.should include :looong!
+      String.instance_methods.should include :looong?
     end
   end
 

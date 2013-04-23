@@ -1,4 +1,3 @@
-require 'rubylog/simple_procedure'
 require 'rubylog/rule'
 
 
@@ -29,7 +28,7 @@ module Rubylog
       protected
 
       def create_procedure indicator
-        Rubylog::SimpleProcedure.new indicator[0], indicator[1]
+        Rubylog::Procedure.new indicator[0], indicator[1]
       end
 
       def each_indicator indicators

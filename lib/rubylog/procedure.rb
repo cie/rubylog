@@ -2,6 +2,15 @@ module Rubylog
   class Procedure < Predicate
     include Enumerable
 
+    def initialize functor, arity, rules=Array.new
+      super functor, arity
+      @rules = rules
+    end
+
+    def method_missing name, *args, &block
+      @rules.send name, *args, &block
+    end
+
     # accepts the *args of the called structure
     def call *args
       # catch cuts
@@ -23,10 +32,6 @@ module Rubylog
       end
     end
     rubylog_traceable :call
-
-    def each
-      raise "abstract method called"
-    end
 
     # Asserts a rule with a given head and body.
     def assert head, body=:true
