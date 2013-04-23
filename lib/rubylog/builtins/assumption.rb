@@ -48,7 +48,7 @@ Rubylog do
 
       predicate = h.predicate
 
-      (0...predicate.count).each do |i|
+      (0...predicate.size).each do |i|
         # retract the clause
         r = predicate.delete_at(i)
         begin
