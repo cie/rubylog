@@ -12,14 +12,6 @@ module Rubylog::RSpecExampleGroup
   end
 
   module ClassMethods
-    # Creates a new example. This is just a shorthand for specify { check ... }
-    #
-    def check goal=nil, &block
-      options = build_metadata_hash_from([])
-      desc = (goal ? goal.inspect : block.inspect)
-      examples << RSpec::Core::Example.new(self, desc, options, proc{check goal, &block})
-      examples.last
-    end
 
     def inherited subclass
       super
