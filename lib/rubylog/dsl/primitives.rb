@@ -17,10 +17,10 @@ module Rubylog
           Rubylog::NullaryPredicates[name] = predicate
         else
           if @subject
-            predicate.functor_for([@subject, Variable])
+            predicate.add_functor_to([@subject, Variable])
           else
             # use the default subject
-            predicate.functor_for([@context.default_subject, Variable])
+            predicate.add_functor_to([@context.default_subject, Variable])
           end
         end
       end

@@ -12,7 +12,7 @@ module Rubylog
       raise "abstract method called on #{self.inspect}"
     end
 
-    def functor_for subjects
+    def add_functor_to subjects
       if arity == 0
         # We treat nullary predicates differently. Do not even create functors.
         Rubylog::NullaryPredicates[functor] = self

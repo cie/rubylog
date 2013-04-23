@@ -13,13 +13,13 @@ module Rubylog
 
       def predicate *indicators
         each_indicator(indicators) do |indicator|
-          create_procedure(indicator).functor_for [@default_subject, Variable]
+          create_procedure(indicator).add_functor_to [@default_subject, Variable]
         end
       end
 
       def predicate_for subjects, *indicators
         each_indicator(indicators) do |indicator|
-          create_procedure(indicator).functor_for [subjects, Variable]
+          create_procedure(indicator).add_functor_to [subjects, Variable]
         end
       end
 
