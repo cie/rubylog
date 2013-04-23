@@ -52,7 +52,7 @@ Rubylog do
       return unless head.respond_to? :functor
       head.predicate.each do |rule|
         if rule.body == :true
-          rule = rule.rubylog_compile_variables
+          rule = rule.rubylog_match_variables
           rule.head.args.rubylog_unify head.args do
             yield
           end
@@ -68,7 +68,7 @@ Rubylog do
       
       head.predicate.each do |rule|
         unless rule.body==:true # do not succeed for facts
-          rule = rule.rubylog_compile_variables
+          rule = rule.rubylog_match_variables
           rule.head.args.rubylog_unify head.args do
             rule.body.rubylog_unify body do
               yield
@@ -83,7 +83,7 @@ Rubylog do
     # Removed because of the "every built-in prediate is pure logical" principle
     #def variable a, name
       #vars = name.rubylog_variables
-      #raise Rubylog::InvalidStateError, "variables not available" if not vars
+      #raise Rubylog::InvalidStateError, "variables not matched" if not vars
       #vars.find
     #end
 

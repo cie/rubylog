@@ -27,6 +27,8 @@
   * <tt>Theory#clear</tt> is replaced by <tt>Context#initialize\_context</tt>.
     However, currently it only clears <tt>default\_subject</tt>.
   * <tt>CompositeTerm</tt> is renamed to <tt>CompoundTerm</tt>.
+  * <tt>rublog\_compile\_variables</tt> is renamed to
+     <tt>rubylog\_match\_variables</tt>, <tt>variable\_hashes</tt> is removed.
 * Features 
   * Rspec integration
   * +include+ or +extend+ <tt>Rubylog::Context</tt> into any class or object

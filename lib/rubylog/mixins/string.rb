@@ -88,7 +88,7 @@ class String
     if @rubylog_variables
       @rubylog_variables.find{|v|v.name == s}
     else
-      raise Rubylog::InvalidStateError, "Rubylog variables not available"
+      raise Rubylog::InvalidStateError, "Variables not matched"
     end
   end
 

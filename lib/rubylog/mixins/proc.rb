@@ -22,7 +22,7 @@ class Proc
 
   def call_with_rubylog_variables vars = nil
     vars ||= @rubylog_variables
-    raise Rubylog::InvalidStateError, "Rubylog variables not available" if not vars
+    raise Rubylog::InvalidStateError, "Variables not matched" if not vars
 
     Rubylog::ContextModules::DynamicMode.with_vars vars do
       return call

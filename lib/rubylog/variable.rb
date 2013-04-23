@@ -109,9 +109,9 @@ module Rubylog
       v = value
       raise Rubylog::InstantiationError.new(self) if v.nil?
 
-      # compile if not compiled
-      if !v.rubylog_variables
-        v = v.rubylog_compile_variables
+      # match variables if not matched
+      unless v.rubylog_variables
+        v = v.rubylog_match_variables
       end
       
       v.prove{yield}

@@ -1,5 +1,5 @@
 module Rubylog::CompoundTerm
-  def rubylog_compile_variables 
+  def rubylog_match_variables 
     vars = []; vars_by_name = {}
     rubylog_clone do |subterm|
       case subterm

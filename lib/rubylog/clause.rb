@@ -11,7 +11,7 @@ module Rubylog::Clause
   end
 
   def solve &block
-    goal = rubylog_compile_variables 
+    goal = rubylog_match_variables 
     catch :cut do
       goal.prove { block.call_with_rubylog_variables(goal.rubylog_variables) if block }
     end

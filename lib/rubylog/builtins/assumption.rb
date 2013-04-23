@@ -29,7 +29,7 @@ Rubylog do
       (0...predicate.count).each do |i|
         r = predicate.delete_at(i)
         begin
-          rule = r.rubylog_compile_variables
+          rule = r.rubylog_match_variables
           rule.head.args.rubylog_unify h.args do
             rule.body.prove do
               yield

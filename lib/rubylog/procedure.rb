@@ -10,7 +10,7 @@ module Rubylog
         # for each rule
         each do |rule|
           # compile
-          rule = rule.rubylog_compile_variables
+          rule = rule.rubylog_match_variables
 
           # unify the head with the arguments
           rule.head.args.rubylog_unify(args) do

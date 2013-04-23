@@ -32,7 +32,7 @@ module Rubylog::Term
     self
   end
 
-  def rubylog_compile_variables
+  def rubylog_match_variables
     self
   end
 end
