@@ -33,7 +33,10 @@ Rubylog do
 
     # Succeeds if +a+ does not succeed.
     def false a
-      a.prove { return }
+      # catch cuts
+      catch :cut do
+        a.prove { return }
+      end
       yield
     end
 

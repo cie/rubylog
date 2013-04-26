@@ -591,19 +591,36 @@ describe "inriasuite", :rubylog=>true do
   end
 
   describe "not_unify" do
-    specify %(['\\='(1,1), failure].)
-    specify %(['\\='(X,1), failure].)
-    specify %(['\\='(X,Y), failure].)
-    specify %([('\\='(X,Y),'\\='(X,abc)), failure].)
-    specify %(['\\='(f(X,def),f(def,Y)), failure].)
-    specify %(['\\='(1,2), success].)
-    specify %(['\\='(1,1.0), success].)
-    specify %(['\\='(g(X),f(f(X))), success].)
-    specify %(['\\='(f(X,1),f(a(X))), success].)
-    specify %(['\\='(f(X,Y,X),f(a(X),a(Y),Y,2)), success].)
+    specify %(['\\='(1,1), failure].) do
+      1.is_not(1).true?.should == false
+    end
+    specify %(['\\='(X,1), failure].) do
+      X.is_not(1).true?.should == false
+    end
+    specify %(['\\='(X,Y), failure].) do
+      X.is_not(Y).true?.should == false
+    end
+    specify %([('\\='(X,Y),'\\='(X,abc)), failure].) do
+      X.is_not(Y).and(X.is_not(:abc)).true?.should == false
+    end
+    specify %(['\\='(f(X,def),f(def,Y)), failure].) do
+      X.and(:def).is_not(:def.and(Y)).true?.should == false
+    end
+    specify %(['\\='(1,2), success].) do
+      1.is_not(2).true?.should == true
+    end
+    specify %(['\\='(1,1.0), success].) do
+      1.is_not(1.0).true?.should == true
+    end
+    specify %(['\\='(g(X),f(f(X))), success].) do
+      predicate_for Rubylog::Structure ".g .f"
+      X.g.is_not(X.f.f).true?.should == true
+    end
+    specify %(['\\='(f(X,1),f(a(X))), success].), :pending=>"No overloading of procedures in Rubylog yet." 
+    specify %(['\\='(f(X,Y,X),f(a(X),a(Y),Y,2)), success].), :pending=>"No overloading of procedures in Rubylog yet."
   end
 
-  describe "number" do
+  describe "number", :pending=>"Not supported in Rubylog. Use #is_a?(Numeric)"  do
     specify %([number(3), success].)
     specify %([number(3.3), success].)
     specify %([number(-3), success].)
@@ -611,7 +628,7 @@ describe "inriasuite", :rubylog=>true do
     specify %([number(X), failure].)
   end
 
-  describe "number_chars" do
+  describe "number_chars", :pending=>"There is no such feature in Rubylog yet. Maybe someday." do
     specify %([number_chars(33,L), [[L <-- ['3','3']]]].)
     specify %([number_chars(33,['3','3']), success].)
     specify %([number_chars(33.0,L), [[L <-- ['3','3','.','0']]]].)
@@ -630,7 +647,7 @@ describe "inriasuite", :rubylog=>true do
     specify %([number_chars(A,['4',2]), type_error(character, 2)].)
   end
 
-  describe "number_codes" do
+  describe "number_codes", :pending=>"There is no such feature in Rubylog yet. Maybe someday." do
     specify %([number_codes(33,L), [[L <-- [0'3,0'3]]]].)
     specify %([number_codes(33,[0'3,0'3]), success].)
     specify %([number_codes(33.0,L), [[L <-- [51,51,46,48]]]].)
@@ -648,12 +665,29 @@ describe "inriasuite", :rubylog=>true do
   end
 
   describe "once" do
-    specify %([once(!), success].)
-    specify %([(once(!), (X=1; X=2)), [[X <-- 1],[X <-- 2]]].)
-    specify %([once(repeat), success].)
-    specify %([once(fail), failure].)
-    specify %([once(3), type_error(callable, 3)].)
-    specify %([once(X), instantiation_error]. % Culprit X)
+    specify %([once(!), success].) do
+      :cut!.any.true?.should == true
+    end
+    specify %([(once(!), (X=1; X=2)), [[X <-- 1],[X <-- 2]]].) do
+      :cut!.any.and(X.is(1).or(X.is(2))).map{X}.should == [1,2]
+    end
+    specify %([once(repeat), success].) do
+      class << primitives
+        def repeat
+          yield while true
+        end
+      end
+      :repeat.any.true?.should == true
+    end
+    specify %([once(fail), failure].) do
+      :fail.any.true?.should == false
+    end
+    specify %([once(3), type_error(callable, 3)].) do
+      expect { 3.any }.to raise_error(NoMethodError)
+    end
+    specify %([once(X), instantiation_error]. % Culprit X) do
+      expect { X.any }.to raise_error(Rubylog::InstantiationError)
+    end
   end
 
   describe "or" do
