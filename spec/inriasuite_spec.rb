@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "inriasuite", :rubylog=>true do
 
-  describe "abolish" do
+  describe "abolish", :pending=>"Not supported in Rubylog" do
     specify %([abolish(abolish/1), permission_error(modify,static_procedure,abolish/1)].)
     specify %([abolish(foo/a), type_error(integer,a)].)
     specify %([abolish(foo/(-1)), domain_error(not_less_than_zero,-1)].)
@@ -166,7 +166,7 @@ describe "inriasuite", :rubylog=>true do
     specify %(  permission_error(modify,static_procedure,atom/1)].)
   end
 
-  describe "atom" do
+  describe "atom", :pending=>"Not supported in Rubylog. Use #is_a?(String) or #is_a?(Symbol)" do
     specify %([atom(atom), success].)
     specify %([atom('string'), success].)
     specify %([atom(a(b)), failure].)
@@ -208,21 +208,35 @@ describe "inriasuite", :rubylog=>true do
   end
 
   describe "atom_concat" do
-    specify %([atom_concat('hello',' world',A), [[A <-- 'hello world']]].)
-    specify %([atom_concat(T,' world','small world'), [[T <-- 'small']]].)
-    specify %([atom_concat('hello',' world','small world'), failure].)
-    specify %([atom_concat(T1,T2,'hello'),)
-    specify %(  [[T1 <-- '',T2 <-- 'hello'],)
-    specify %(    [T1 <-- 'h',T2 <-- 'ello'],)
-    specify %(    [T1 <-- 'he',T2 <-- 'llo'],)
-    specify %(    [T1 <-- 'hel',T2 <-- 'lo'],)
-    specify %(    [T1 <-- 'hell',T2 <-- 'o'],)
-    specify %(    [T1 <-- 'hello',T2 <-- '']]]. )
-    specify %(    [atom_concat(A1,'iso',A3), instantiation_error].)
-    specify %(    [atom_concat('iso',A2,A3), instantiation_error].)
-    specify %(    [atom_concat(f(a),'iso',A3), type_error(atom,f(a))].)
-    specify %(    [atom_concat('iso',f(a),A3), type_error(atom,f(a))].)
-    specify %(    [atom_concat(A1,A2,f(a)), type_error(atom,f(a))].)
+    specify %([atom_concat('hello',' world',A), [[A <-- 'hello world']]].) do
+      A.is("#{"hello"}#{" world"}").map{A}.should eql ['hello world']
+    end
+    specify %([atom_concat(T,' world','small world'), [[T <-- 'small']]].) do
+      "small world".is("#{T} world").map{T}.should eql ['small']
+    end
+    specify %([atom_concat('hello',' world','small world'), failure].) do
+      "small world".is("#{"hello"}#{" world"}").true?.should be_false
+    end
+    specify %([atom_concat(T1,T2,'hello'),
+              [[T1 <-- '',T2 <-- 'hello'],
+              [T1 <-- 'h',T2 <-- 'ello'],
+              [T1 <-- 'he',T2 <-- 'llo'],
+              [T1 <-- 'hel',T2 <-- 'lo'],
+              [T1 <-- 'hell',T2 <-- 'o'],
+              [T1 <-- 'hello',T2 <-- '']]]. ) do
+              "hello".is("#{A}#{B}").map{[A,B]}.should eql [
+                  ['','hello'],
+                  ['h','ello'],
+                  ['he','llo'],
+                  ['hel','lo'],
+                  ['hell','o'],
+                  ['hello','']]
+    end
+    specify %(    [atom_concat(A1,'iso',A3), instantiation_error].), :pending=>"This is not an error in Rubylog"
+    specify %(    [atom_concat('iso',A2,A3), instantiation_error].), :pending=>"This is not an error in Rubylog"
+    specify %(    [atom_concat(f(a),'iso',A3), type_error(atom,f(a))].), :pending=>"This is not an error in Rubylog"
+    specify %(    [atom_concat('iso',f(a),A3), type_error(atom,f(a))].), :pending=>"This is not an error in Rubylog"
+    specify %(    [atom_concat(A1,A2,f(a)), type_error(atom,f(a))].), :pending=>"This is not an error in Rubylog"
   end
 
   describe "atom_length", :pending=>"Not supported in Rubylog" do
@@ -236,7 +250,7 @@ describe "inriasuite", :rubylog=>true do
     specify %([atom_length(atom, '4'), type_error(integer, '4')].)
   end
 
-  describe "atomic" do
+  describe "atomic", :pending=>"There is no such feature in Rubylog. Use !is_a?(Rubylog::CompoundTerm)" do
     specify %([atomic(atom), success].)
     specify %([atomic(a(b)), failure].)
     specify %([atomic(Var), failure].)
@@ -246,12 +260,18 @@ describe "inriasuite", :rubylog=>true do
   end
 
   describe "bagof" do
-    specify %([bagof(X,(X=1;X=2),L), [[L <-- [1, 2]]]].)
-    specify %([bagof(X,(X=1;X=2),X), [[X <-- [1, 2]]]].)
-    specify %([bagof(X,(X=Y;X=Z),L), [[L <-- [Y, Z]]]].)
-    specify %([bagof(X,fail,L), failure].)
-    specify %([bagof(1,(Y=1;Y=2),L), [[L <-- [1], Y <-- 1], [L <-- [1], Y <-- 2]]].)
-    specify %([bagof(f(X,Y),(X=a;Y=b),L), [[L <-- [f(a, _), f(_, b)]]]].)
+    specify %([bagof(X,(X=1;X=2),L), [[L <-- [1, 2]]]].) do
+      X.is(1).or(X.is(2)).map{X}.should eql [1,2]
+    end
+    specify %([bagof(X,(X=1;X=2),X), [[X <-- [1, 2]]]].), :pending=>"This does not work in Rubylog because of dynamic and static contexts" do
+      X.is{X.is(1).or(X.is(2)).map{X}}.should eql [1,2]
+    end
+    specify %([bagof(X,(X=Y;X=Z),L), [[L <-- [Y, Z]]]].), :pending=>"This does not work in Rubylog because of dynamic and static contexts"
+    specify %([bagof(X,fail,L), failure].), :pending=>"This does not work in Rubylog because of dynamic and static contexts"
+    specify %([bagof(1,(Y=1;Y=2),L), [[L <-- [1], Y <-- 1], [L <-- [1], Y <-- 2]]].), :pending=>"This does not work in Rubylog because of dynamic and static contexts"
+    specify %([bagof(f(X,Y),(X=a;Y=b),L), [[L <-- [f(a, _), f(_, b)]]]].) do
+      X.is('a').or(Y.is('b')).map{[X,Y]}.should eql [['a',nil],[nil,'b']]
+    end
     specify %([bagof(X,Y^((X=1,Y=1);(X=2,Y=2)),S), [[S <-- [1, 2]]]].)
     specify %([bagof(X,Y^((X=1;Y=1);(X=2,Y=2)),S), [[S <-- [1, _, 2]]]].)
     specify %([(set_prolog_flag(unknown, warning), 
@@ -340,7 +360,7 @@ describe "inriasuite", :rubylog=>true do
     end
   end
 
-  describe "compound" do
+  describe "compound", :pending=>"There is no such feature in Rubylog. Use is_a?(Rubylog::CompoundTerm)"  do
     specify %([compound(33.3), failure].)
     specify %([compound(-33.3), failure].)
     specify %([compound(-a), success].)
@@ -350,7 +370,7 @@ describe "inriasuite", :rubylog=>true do
     specify %([compound([a]),success].)
   end
 
-  describe "copy_term" do
+  describe "copy_term", :pending=>"Not supported in Rubylog" do
     specify %([copy_term(X,Y), success].)
     specify %([copy_term(X,3), success].)
     specify %([copy_term(_,a), success].)
@@ -363,15 +383,15 @@ describe "inriasuite", :rubylog=>true do
     specify %([(copy_term(a+X,X+b),copy_term(a+X,X+b)), failure].)
   end
 
-  describe "current_input" do
+  describe "current_input", :pending=>"Not supported in Rubylog. Use $stdin" do
     specify %([exists(current_input/1), success].)
   end
 
-  describe "current_output" do
+  describe "current_output", :pending=>"Not supported in Rubylog. Use $stdout" do
     specify %([exists(current_output/1), success]. )
   end
 
-  describe "current_predicate" do
+  describe "current_predicate", :pending=>"There is no such feature in Rubylog yet. Maybe someday." do
     specify %([current_predicate(current_predicate/1), failure]. )
     specify %(/* depends on the test harness */)
     specify %([current_predicate(run_tests/1), success].     )
@@ -380,7 +400,7 @@ describe "inriasuite", :rubylog=>true do
     specify %([current_predicate(0/dog), type_error(predicate_indicator, 0/dog)].)
   end
 
-  describe "current_prolog_flag" do
+  describe "current_prolog_flag", :pending=>"Not supported in Rubylog" do
     specify %([current_prolog_flag(debug, off), success].)
     specify %([(set_prolog_flag(unknown, warning), )
     specify %(  current_prolog_flag(unknown, warning)), success].)
@@ -392,8 +412,12 @@ describe "inriasuite", :rubylog=>true do
   end
 
   describe "cut" do
-    specify %([(!,fail;true), failure].)
-    specify %([(call(!),fail;true), success].)
+    specify %([(!,fail;true), failure].) do
+      :cut!.and(:fail).or(:true).true?.should be_false
+    end
+    specify %([(call(!),fail;true), success].) do
+      X.is(:cut!).and(X.and(:fail).or(:true)).true?.should be_true
+    end
   end
 
   describe "fail" do

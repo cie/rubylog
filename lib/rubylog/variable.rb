@@ -114,7 +114,9 @@ module Rubylog
         v = v.rubylog_match_variables
       end
       
-      v.prove{yield}
+      catch :cut do
+        v.prove{yield}
+      end
     end
 
 
