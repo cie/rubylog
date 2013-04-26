@@ -29,7 +29,7 @@ describe "inriasuite", :rubylog=>true do
     end
   end
 
-  describe "arg" do
+  describe "arg", :pending => "Not supported in Rubylog." do
     specify "[arg(1,foo(a,b),a), success]."
     specify "[arg(1,foo(a,b),X), [[X <-- a]]]."
     specify "[arg(1,foo(X,b),a), [[X <-- a]]]."
@@ -47,55 +47,109 @@ describe "inriasuite", :rubylog=>true do
   end
 
   describe "arith_diff" do
-    specify "['=\\\\='(0,1), success]."
-    specify "['=\\\\='(1.0,1), failure]."
-    specify "['=\\\\='(3 * 2,7 - 1), failure]."
-    specify "['=\\\\='(N,5), instantiation_error]."
-    specify "['=\\\\='(floot(1),5), type_error(evaluable, floot/1)]."
+    specify "['=\\\\='(0,1), success]." do
+      proc{0 != 1}.true?.should be_true
+    end
+    specify "['=\\\\='(1.0,1), failure]." do
+      proc{1.0 != 1}.true?.should be_false
+    end
+    specify "['=\\\\='(3 * 2,7 - 1), failure]." do
+      proc{3*2 != 7-1}.true?.should be_false
+    end
+    specify "['=\\\\='(N,5), instantiation_error].", :pending=> "this is not an error in Rubylog"
+    specify "['=\\\\='(floot(1),5), type_error(evaluable, floot/1)].", :pending=> "this is not an error in Rubylog"
   end
 
   describe "arith_eq" do
-    specify %(['=:='(0,1), failure].)
-    specify %(['=:='(1.0,1), success].)
-    specify %(['=:='(3 * 2,7 - 1), success].)
-    specify %(['=:='(N,5), instantiation_error].)
-    specify %(['=:='(floot(1),5), type_error(evaluable, floot/1)].)
-    specify %([0.333 =:= 1/3, failure].)
+    specify %(['=:='(0,1), failure].) do
+      proc{0 == 1}.true?.should be_false
+    end
+    specify %(['=:='(1.0,1), success].) do
+      proc{1.0 == 1}.true?.should be_true
+    end
+    specify %(['=:='(3 * 2,7 - 1), success].) do
+      proc{3*2 == 7-1}.true?.should be_true
+    end
+    specify %(['=:='(N,5), instantiation_error].), :pending=> "this is not an error in Rubylog"
+    specify %(['=:='(floot(1),5), type_error(evaluable, floot/1)].), :pending=> "this is not an error in Rubylog"
+    specify %([0.333 =:= 1/3, failure].) do
+      proc{0.333 == 1/3}.true?.should be_false
+    end
   end
 
   describe "arith_gt" do
-    specify %(['>'(0,1), failure].)
-    specify %(['>'(1.0,1), failure].)
-    specify %(['>'(3*2,7-1), failure].)
-    specify %(['>'(X,5), instantiation_error].)
-    specify %(['>'(2 + floot(1),5), type_error(evaluable, floot/1)].)
+    specify %(['>'(0,1), failure].) do
+      proc{0 > 1}.true?.should be_false
+    end
+    specify %(['>'(1.0,1), failure].) do
+      proc{1.0 > 1}.true?.should be_false
+    end
+    specify %(['>'(3*2,7-1), failure].) do
+      proc{3*2 > 7-1}.true?.should be_false
+    end
+    specify %(['>'(X,5), instantiation_error].) do
+      proc { proc{X > 5}.true? }.should raise_error NoMethodError
+    end
+    specify %(['>'(2 + floot(1),5), type_error(evaluable, floot/1)].) do
+      proc { proc{2+4.is(4) > 5}.true? }.should raise_error TypeError
+    end
   end
 
   describe "arith_gt=" do
-    specify %(['>='(0,1), failure].)
-    specify %(['>='(1.0,1), success].)
-    specify %(['>='(3*2,7-1), success].)
-    specify %(['>='(X,5), instantiation_error].)
-    specify %(['>='(2 + floot(1),5), type_error(evaluable, floot/1)].)
+    specify %(['>='(0,1), failure].) do
+      proc{0 >= 1}.true?.should be_false
+    end
+    specify %(['>='(1.0,1), success].) do
+      proc{1.0 >= 1}.true?.should be_true
+    end
+    specify %(['>='(3*2,7-1), success].) do
+      proc{3*2 >= 7-1}.true?.should be_true
+    end
+    specify %(['>='(X,5), instantiation_error].) do
+      proc { proc{X >= 5}.true? }.should raise_error NoMethodError
+    end
+    specify %(['>='(2 + floot(1),5), type_error(evaluable, floot/1)].) do
+      proc { proc{2+4.is(4) >= 5}.true? }.should raise_error TypeError
+    end
   end
 
   describe "arith_lt" do
-    specify %(['<'(0,1), success].)
-    specify %(['<'(1.0,1), failure].)
-    specify %(['<'(3*2,7-1), failure].)
-    specify %(['<'(X,5), instantiation_error].)
-    specify %(['<'(2 + floot(1),5), type_error(evaluable, floot/1)].)
+    specify %(['<'(0,1), success].) do
+      proc{0 < 1}.true?.should be_true
+    end
+    specify %(['<'(1.0,1), failure].) do
+      proc{1.0 < 1}.true?.should be_false
+    end
+    specify %(['<'(3*2,7-1), failure].) do
+      proc{3*2 < 7-1}.true?.should be_false
+    end
+    specify %(['<'(X,5), instantiation_error].) do
+      proc { proc{X < 5}.true? }.should raise_error NoMethodError
+    end
+    specify %(['<'(2 + floot(1),5), type_error(evaluable, floot/1)].) do
+      proc { proc{2+4.is(4) < 5}.true? }.should raise_error TypeError
+    end
   end
 
   describe "arith_lt=" do
-    specify %(['=<'(0,1), success].)
-    specify %(['=<'(1.0,1), success].)
-    specify %(['=<'(3*2,7-1), success].)
-    specify %(['=<'(X,5), instantiation_error].)
-    specify %(['=<'(2 + floot(1),5), type_error(evaluable, floot/1)].)
+    specify %(['=<'(0,1), success].) do
+      proc{0 <= 1}.true?.should be_true
+    end
+    specify %(['=<'(1.0,1), success].) do
+      proc{1.0 <= 1}.true?.should be_true
+    end
+    specify %(['=<'(3*2,7-1), success].) do
+      proc{3*2 <= 7-1}.true?.should be_true
+    end
+    specify %(['=<'(X,5), instantiation_error].) do
+      proc { proc{X <= 5}.true? }.should raise_error NoMethodError
+    end
+    specify %(['=<'(2 + floot(1),5), type_error(evaluable, floot/1)].) do
+      proc { proc{2+4.is(4) <= 5}.true? }.should raise_error TypeError
+    end
   end
 
-  describe "asserta" do
+  describe "asserta", :pending => "Not supported in Rubylog." do
     specify %([(asserta((bar(X) :- X)), clause(bar(X), B)), [[B <-- call(X)]]].)
     specify %([asserta(_), instantiation_error].)
     specify %([asserta(4), type_error(callable, 4)]. )
@@ -103,7 +157,7 @@ describe "inriasuite", :rubylog=>true do
     specify %([asserta((atom(_) :- true)), permission_error(modify,static_procedure,atom/1)].)
   end
 
-  describe "assertz" do
+  describe "assertz", :pending => "Not supported in Rubylog." do
     specify %([assertz((foo(X) :- X -> call(X))), success].)
     specify %([assertz(_), instantiation_error].)
     specify %([assertz(4), type_error(callable, 4)].)
@@ -122,7 +176,7 @@ describe "inriasuite", :rubylog=>true do
     specify %([atom(3.3), failure].)
   end
 
-  describe "atom_chars" do
+  describe "atom_chars", :pending => "Not supported in Rubylog." do
     specify %([atom_chars('',L), [[L <-- []]]].)
     specify %([atom_chars([],L), [[L <-- ['[',']']]]].)
     specify %([atom_chars('''',L), [[L <-- ['''']]]].)
@@ -139,7 +193,7 @@ describe "inriasuite", :rubylog=>true do
     specify %([(atom_chars(X,['1','2']), Y is X + 1), type_error(evaluable, '12'/0)].)
   end
 
-  describe "atom_codes" do
+  describe "atom_codes", :pending => "Not supported in Rubylog." do
     specify %([atom_codes('',L), [[L <-- []]]].)
     specify %([atom_codes([],L), [[L <-- [ 0'[, 0'] ]]]].)
     specify %([atom_codes('''',L), [[L <-- [ 39 ]]]].)
@@ -171,7 +225,7 @@ describe "inriasuite", :rubylog=>true do
     specify %(    [atom_concat(A1,A2,f(a)), type_error(atom,f(a))].)
   end
 
-  describe "atom_length" do
+  describe "atom_length", :pending=>"Not supported in Rubylog" do
     specify %([atom_length('enchanted evening', N), [[N <-- 17]]].)
     #specify %(%[atom_length('enchanted\)
      #evening', N), [[N <-- 17]]].)
@@ -233,7 +287,7 @@ describe "inriasuite", :rubylog=>true do
     specify %([call(1), type_error(callable,1)].) do
       lambda { A.is(1).and(A).true? }.should raise_error NoMethodError
     end
-    xspecify %([call((fail, 1)), type_error(callable,(fail,1))].) do
+    specify %([call((fail, 1)), type_error(callable,(fail,1))].), :pending=>"Not an error in Rubylog" do
       # in prolog this raises a type_error, because (fail,1) is compiled at the
       # time of the call() predicate is called. However, in Rubylog currently it
       # is interpreted, so no exception is raised.
@@ -247,16 +301,12 @@ describe "inriasuite", :rubylog=>true do
     end
   end
 
-  describe "catch-and-throw" do
-    specify %(run_bip('bips-ex/catch-and-throw'), )
-    specify %(display_io(off). )
-    specify %(*/)
-    specify %([(catch(true, C, write('something')), throw(blabla)), system_error]. )
-    specify %(% The system catchs 'blabla')
+  describe "catch-and-throw", :pending=>"There is no such thing in Rubylog yet. Maybe someday." do
+    specify %([(catch(true, C, write('something')), throw(blabla)), system_error]. ) #% The system catchs 'blabla'
     specify %([catch(number_chars(A,L), error(instantiation_error, _), fail), failure].)
   end
 
-  describe "char_code" do
+  describe "char_code", :pending=>"There is no such feature in Rubylog yet. Maybe someday." do
     specify %([char_code(Char,99),[[Char <-- c]]].)
     specify %([char_code(Char,0'c),[[Char <-- c]]].)
     specify %([char_code(Char,163),[[Char <-- '\xa3\']]].)
@@ -279,8 +329,8 @@ describe "inriasuite", :rubylog=>true do
     specify %([clause(4,B), type_error(callable,4)].) do
       proc { A.is(4).and(A.follows_from(B)).true? }.should raise_error NoMethodError
     end
-    xspecify %([clause(f(_),5), type_error(callable,5)].) do
-      # As Rubylog only unifies the second argument with each body in the
+    specify %([clause(f(_),5), type_error(callable,5)].), :pending=>"Not an error in Rubylog" do
+      # As Rubylog unifies the second argument with each body in the
       # predicate, this does not lead to an error.
       predicate ".f"
       proc { ANY.f.follows_from(5).true? }.should raise_error NoMethodError
