@@ -3,7 +3,7 @@ require "spec_helper"
 describe "rules", :rubylog=>true do
   before do
     predicate_for Symbol, ".likes(Drink) .is_happy .has()"
-    predicate_for Rubylog::Context, ".we_have()"
+    predicate_for_context ".we_have()"
   end
 
   describe "with prolog body" do

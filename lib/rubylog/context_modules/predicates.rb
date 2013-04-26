@@ -22,6 +22,12 @@ module Rubylog
         end
       end
 
+      def predicate_for_context *indicators
+        each_indicator(indicators) do |indicator|
+          create_procedure(indicator).add_functor_to ::Rubylog::Context
+        end
+      end
+
       attr_accessor :default_subject
 
 
