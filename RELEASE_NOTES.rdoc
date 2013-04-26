@@ -29,6 +29,7 @@
   * <tt>CompositeTerm</tt> is renamed to <tt>CompoundTerm</tt>.
   * <tt>rublog\_compile\_variables</tt> is renamed to
      <tt>rubylog\_match\_variables</tt>, <tt>variable\_hashes</tt> is removed.
+  * <tt>rubylog\_variables\_hash</tt> removed
 * Features 
   * Rspec integration
   * +include+ or +extend+ <tt>Rubylog::Context</tt> into any class or object

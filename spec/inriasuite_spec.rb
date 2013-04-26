@@ -613,7 +613,7 @@ describe "inriasuite", :rubylog=>true do
       1.is_not(1.0).true?.should == true
     end
     specify %(['\\='(g(X),f(f(X))), success].) do
-      predicate_for Rubylog::Structure ".g .f"
+      predicate_for Rubylog::Structure, ".g .f"
       X.g.is_not(X.f.f).true?.should == true
     end
     specify %(['\\='(f(X,1),f(a(X))), success].), :pending=>"No overloading of procedures in Rubylog yet." 
@@ -683,32 +683,51 @@ describe "inriasuite", :rubylog=>true do
       :fail.any.true?.should == false
     end
     specify %([once(3), type_error(callable, 3)].) do
-      expect { 3.any }.to raise_error(NoMethodError)
+      expect { 3.any.true? }.to raise_error(NoMethodError)
     end
     specify %([once(X), instantiation_error]. % Culprit X) do
-      expect { X.any }.to raise_error(Rubylog::InstantiationError)
+      expect { X.any.true? }.to raise_error(Rubylog::InstantiationError)
     end
   end
 
   describe "or" do
-    specify %([';'(true, fail), success].)
-    specify %([';'((!, fail), true), failure].)
-    specify %([';'(!, call(3)), success].)
-    specify %([';'((X=1, !), X=2), [[X <-- 1]]].)
-    specify %([';'(X=1, X=2), [[X <-- 1], [X <-- 2]]].)
+    specify %([';'(true, fail), success].) do
+      :true.or(:fail).true?.should == true
+    end
+    specify %([';'((!, fail), true), failure].) do
+      :cut!.and(:fail).or(:true).true?.should == false
+    end
+    specify %([';'(!, call(3)), success].) do
+      :cut!.or(proc{fail}).true?.should == true
+    end
+    specify %([';'((X=1, !), X=2), [[X <-- 1]]].) do
+      X.is(1).and(:cut!).or(X.is(2)).map{X}.should == [1]
+    end
+    specify %([';'(X=1, X=2), [[X <-- 1], [X <-- 2]]].) do
+      (X.is(1).or(X.is(2))).map{X}.should == [1,2]
+    end
   end
 
   describe "repeat" do
-    specify %([(repeat,!,fail), failure].)
+    before do
+      class << primitives
+        def repeat
+          yield while true
+        end
+      end
+    end
+    specify %([(repeat,!,fail), failure].) do
+      :repeat.and(:cut!).and(:fail).true?.should == false
+    end
   end
 
-  describe "retract" do
+  describe "retract", :pending=>"Not supported in Rubylog" do
     specify %([retract((4 :- X)), type_error(callable, 4)]. )
     specify %([retract((atom(_) :- X == '[]')), )
     specify %(  permission_error(modify,static_procedure,atom/1)].)
   end
 
-  describe "set_prolog_flag" do
+  describe "set_prolog_flag", :pending=>"Not supported in Rubylog" do
     specify %([(set_prolog_flag(unknown, fail),)
     specify %(current_prolog_flag(unknown, V)), [[V <-- fail]]].)
     specify %([set_prolog_flag(X, warning), instantiation_error].)
@@ -725,7 +744,7 @@ describe "inriasuite", :rubylog=>true do
     specify %([X = "fred", [[X <-- [f,r,e,d]]]].)
   end
 
-  describe "setof" do
+  describe "setof", :pending=>"Not supported in Rubylog. Use map{} instead" do
     specify %([setof(X,(X=1;X=2),L), [[L <-- [1, 2]]]].)
     specify %([setof(X,(X=1;X=2),X), [[X <-- [1, 2]]]].)
     specify %([setof(X,(X=2;X=1),L), [[L <-- [1, 2]]]].)
@@ -745,31 +764,52 @@ describe "inriasuite", :rubylog=>true do
   end
 
   describe "sub_atom" do
-    specify %([sub_atom(abracadabra, 0, 5, _, S2), [[S2 <-- 'abrac']]].)
-    specify %([sub_atom(abracadabra, _, 5, 0, S2), [[S2 <-- 'dabra']]].)
-    specify %([sub_atom(abracadabra, 3, Length, 3, S2), [[Length <-- 5, S2 <-- 'acada']]].)
-    specify %([sub_atom(abracadabra, Before, 2, After, ab), )
-    specify %(  [[Before <-- 0, After <-- 9],)
-    specify %(    [Before <-- 7, After <-- 2]]].)
-    specify %(    [sub_atom('Banana', 3, 2, _, S2), [[S2 <-- 'an']]].)
-    specify %(    [sub_atom('charity', _, 3, _, S2), [[S2 <-- 'cha'],)
-    specify %(      [S2 <-- 'har'],)
-    specify %(      [S2 <-- 'ari'],)
-    specify %(      [S2 <-- 'rit'],)
-    specify %(      [S2 <-- 'ity']]].)
-    specify %(      [sub_atom('ab', Before, Length, After, Sub_atom),)
-    specify %(        [[Before <-- 1, Length <-- 0, Sub_atom <-- ''],)
-    specify %(          [Before <-- 1, Length <-- 1, Sub_atom <-- 'a'],)
-    specify %(          [Before <-- 1, Length <-- 2, Sub_atom <-- 'ab'],)
-    specify %(          [Before <-- 2, Length <-- 0, Sub_atom <-- ''],)
-    specify %(          [Before <-- 2, Length <-- 1, Sub_atom <-- 'b'],)
-    specify %(          [Before <-- 3, Length <-- 0, Sub_atom <-- '']]].)
-    specify %(          [sub_atom(Banana, 3, 2, _, S2), instantiation_error].)
-    specify %(          [sub_atom(f(a), 2, 2, _, S2), type_error(atom,f(a))].)
-    specify %(          [sub_atom('Banana', 4, 2, _, 2), type_error(atom,2)].)
-    specify %(          [sub_atom('Banana', a, 2, _, S2), type_error(integer,a)].)
-    specify %(          [sub_atom('Banana', 4, n, _, S2), type_error(integer,n)].)
-    specify %(          [sub_atom('Banana', 4, _, m, S2), type_error(integer,m)].)
+    specify %([sub_atom(abracadabra, 0, 5, _, S2), [[S2 <-- 'abrac']]].) do
+      'abracadabra'.is("#{S2[:length=>5]}#{ANY}").map{S2}.should eql ['abrac']
+    end
+    specify %([sub_atom(abracadabra, _, 5, 0, S2), [[S2 <-- 'dabra']]].) do
+      'abracadabra'.is("#{ANY}#{S2[:length=>5]}").map{S2}.should eql ['dabra']
+    end
+    specify %([sub_atom(abracadabra, 3, Length, 3, S2), [[Length <-- 5, S2 <-- 'acada']]].), :pending=>"There is no such feature in Rubylog yet. Maybe someday." do
+      'abracadabra'.is("#{ANY[:length=>3]}#{S2}#{ANY[:length=>3]}").map{S2}.should eql ['acada']
+    end
+    specify %([sub_atom(abracadabra, Before, 2, After, ab), 
+              [[Before <-- 0, After <-- 9],
+              [Before <-- 7, After <-- 2]]].) do
+      'abracadabra'.is("#{X}ab#{Y}").map{[X.length,Y.length]}.should eql [[0,9],[7,2]]
+    end
+    specify %(    [sub_atom('Banana', 3, 2, _, S2), [[S2 <-- 'an']]].) do
+      'Banana'.is("#{ANY[:length=>3]}#{X[:length=>2]}#{ANY}").map{X}.should eql ["an"]
+    end
+    specify %(    [sub_atom('charity', _, 3, _, S2), [[S2 <-- 'cha'],
+              [S2 <-- 'har'],
+              [S2 <-- 'ari'],
+              [S2 <-- 'rit'],
+              [S2 <-- 'ity']]].) do
+      "charity".is("#{ANY}#{X[:length=>3]}#{ANY}").map{X}.should == 
+        %w(cha har ari rit ity)
+    end
+    specify %(      [sub_atom('ab', Before, Length, After, Sub_atom),
+              [[Before <-- 1, Length <-- 0, Sub_atom <-- ''],
+                [Before <-- 1, Length <-- 1, Sub_atom <-- 'a'],
+                [Before <-- 1, Length <-- 2, Sub_atom <-- 'ab'],
+                [Before <-- 2, Length <-- 0, Sub_atom <-- ''],
+                [Before <-- 2, Length <-- 1, Sub_atom <-- 'b'],
+                [Before <-- 3, Length <-- 0, Sub_atom <-- '']]].), :comment=>"This is a bug in inriasuite, the Before values are 1 less in reality, at least in GNU Prolog." do
+      "ab".is("#{B}#{X}#{ANY}").map{[B.length,X.length,X]}.should == 
+         [[0,0,''],
+          [0,1,'a'],
+          [0,2,'ab'],
+          [1,0,''],
+          [1,1,'b'],
+          [2,0,'']]
+    end
+    specify %(          [sub_atom(Banana, 3, 2, _, S2), instantiation_error].), :pending=>"Not supported in Rubylog"
+    specify %(          [sub_atom(f(a), 2, 2, _, S2), type_error(atom,f(a))].), :pending=>"Not an error in Rubylog"
+    specify %(          [sub_atom('Banana', 4, 2, _, 2), type_error(atom,2)].), :pending=>"Not supported in Rubylog"
+    specify %(          [sub_atom('Banana', a, 2, _, S2), type_error(integer,a)].), :pending=>"Not supported in Rubylog"
+    specify %(          [sub_atom('Banana', 4, n, _, S2), type_error(integer,n)].), :pending=>"Not supported in Rubylog"
+    specify %(          [sub_atom('Banana', 4, _, m, S2), type_error(integer,m)].), :pending=>"Not supported in Rubylog"
   end
 
   describe "term_diff" do
