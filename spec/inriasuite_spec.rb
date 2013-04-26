@@ -884,18 +884,40 @@ describe "inriasuite", :rubylog=>true do
     specify %(['='(X,1),[[X <-- 1]]].) do
       X.is(1).map{X}.should eql [1]
     end
-    specify %(['='(X,Y),[[Y <-- X]]].)
-    specify %([('='(X,Y),'='(X,abc)),[[X <-- abc, Y <-- abc]]].)
-    specify %(['='(f(X,def),f(def,Y)), [[X <-- def, Y <-- def]]].)
-    specify %(['='(1,2), failure].)
-    specify %(['='(1,1.0), failure].)
-    specify %(['='(g(X),f(f(X))), failure].)
-    specify %(['='(f(X,1),f(a(X))), failure].)
-    specify %(['='(f(X,Y,X),f(a(X),a(Y),Y,2)), failure].)
-    specify %(['='(f(A,B,C),f(g(B,B),g(C,C),g(D,D))),)
-    specify %(  [[A <-- g(g(g(D,D),g(D,D)),g(g(D,D),g(D,D))),)
-    specify %(    B <-- g(g(D,D),g(D,D)),)
-    specify %(    C <-- g(D,D)]]].)
+    specify %(['='(X,Y),[[Y <-- X]]].) do
+      X.is(Y).map{Y}.should eql [X]
+    end
+    specify %([('='(X,Y),'='(X,abc)),[[X <-- abc, Y <-- abc]]].) do
+      X.is(Y).and(X.is(:abc)).map{[X,Y]}.should eql [[:abc,:abc]]
+    end
+    specify %(['='(f(X,def),f(def,Y)), [[X <-- def, Y <-- def]]].) do
+      predicate_for Symbol, ".f()"
+      X.f(:def).is(:def.f(Y)).map{[X,Y]}.should eql [[:def,:def]]
+    end
+    specify %(['='(1,2), failure].) do
+      1.is?(2).should eql false
+    end
+    specify %(['='(1,1.0), failure].) do
+      1.is?(1.0).should eql false
+    end
+    specify %(['='(g(X),f(f(X))), failure].) do
+      predicate ".g .f"
+      X.g.is(X.f.f).true?.should eql false
+    end
+    specify %(['='(f(X,1),f(a(X))), failure].), :pending=>"No overloading in Rubylog yet"
+    specify %(['='(f(X,Y,X),f(a(X),a(Y),Y,2)), failure].), :pending=>"No overloading in Rubylog yet"
+    specify %(['='(f(A,B,C),f(g(B,B),g(C,C),g(D,D))),
+                [[A <-- g(g(g(D,D),g(D,D)),g(g(D,D),g(D,D))),
+                  B <-- g(g(D,D),g(D,D)),
+                  C <-- g(D,D)]]].) do
+      predicate ".g() .f(,)"
+      A.f(B,C).is(B.g(B).f(C.g(C),D.g(D))).map{[A,B,C]}.should eql [[
+        D.g(D).g(D.g(D)).g(D.g(D).g(D.g(D))),
+        D.g(D).g(D.g(D)),
+        D.g(D)
+      ]]
+    end
+
   end
 
 end

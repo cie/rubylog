@@ -27,19 +27,6 @@ Rubylog do
       end
     end
 
-    # I don't remember what this is supposed to be.
-    #def predicate l
-      #_functor = Rubylog::Variable.new(:_functor)
-      #_arity = Rubylog::Variable.new(:_arity)
-      #l.rubylog_unify [f, a] do
-        #if f = _functor.value
-          ## TODO
-        #else
-          ## TODO
-        #end
-      #end
-    #end
-    
   end
 
   class << primitives_for [Rubylog::Assertable, ::Rubylog::Structure]

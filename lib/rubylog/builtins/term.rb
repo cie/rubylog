@@ -5,13 +5,15 @@ Rubylog do
     def is a,b
       a = a.rubylog_resolve_function
       b = b.rubylog_resolve_function
-      a.rubylog_unify(b) { yield }
+      # the order is chosen based on inriasuite's requirements. Where it matters
+      # is A=B, write(A)
+      b.rubylog_unify(a) { yield }
     end
 
     def is_not a,b
       a = a.rubylog_resolve_function
       b = b.rubylog_resolve_function
-      a.rubylog_unify(b) { return }
+      b.rubylog_unify(a) { return }
       yield
     end
 
