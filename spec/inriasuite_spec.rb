@@ -13,10 +13,10 @@ describe "inriasuite", :rubylog=>true do
 
   describe "and" do
     specify "[','(X=1, var(X)), failure]." do
-      X.is(1).and{!X}.to_a.should == [] 
+      X.is(1).and{X.is_a? Rubylog::Variable}.to_a.should == [] 
     end
     specify "[','(var(X), X=1), [[X <-- 1]]]." do
-      proc{!X}.and(X.is(1)).map{X}.should == [1] 
+      proc{X.is_a? Rubylog::Variable}.and(X.is(1)).map{X}.should == [1] 
     end
     specify "[','(fail, call(3)), failure]." do
       :fail.and(proc{raise StopIteration}).true?.should be_false 
@@ -270,7 +270,7 @@ describe "inriasuite", :rubylog=>true do
     specify %([bagof(X,fail,L), failure].), :pending=>"This does not work in Rubylog because of dynamic and static contexts"
     specify %([bagof(1,(Y=1;Y=2),L), [[L <-- [1], Y <-- 1], [L <-- [1], Y <-- 2]]].), :pending=>"This does not work in Rubylog because of dynamic and static contexts"
     specify %([bagof(f(X,Y),(X=a;Y=b),L), [[L <-- [f(a, _), f(_, b)]]]].) do
-      X.is('a').or(Y.is('b')).map{[X,Y]}.should eql [['a',nil],[nil,'b']]
+      X.is('a').or(Y.is('b')).map{[X,Y]}.should eql [['a',Y],[X,'b']]
     end
     specify %([bagof(X,Y^((X=1,Y=1);(X=2,Y=2)),S), [[S <-- [1, 2]]]].)
     specify %([bagof(X,Y^((X=1;Y=1);(X=2,Y=2)),S), [[S <-- [1, _, 2]]]].)
@@ -547,22 +547,22 @@ describe "inriasuite", :rubylog=>true do
 
   describe "nonvar" do
     specify %([nonvar(33.3), success].) do
-      X.is(33.3).and{X}.true?.should == true
+      X.is(33.3).and{!X.is_a? Rubylog::Variable}.true?.should == true
     end
     specify %([nonvar(foo), success].) do
-      X.is(:foo).and{X}.true?.should be_true
+      X.is(:foo).and{!X.is_a? Rubylog::Variable}.true?.should be_true
     end
     specify %([nonvar(Foo), failure].) do
-      X.is(Foo).and{X}.true?.should be_false
+      X.is(Foo).and{!X.is_a? Rubylog::Variable}.true?.should be_false
     end
     specify %([(foo=Foo,nonvar(Foo)),[[Foo <-- foo]]].) do
-      :foo.is(Foo).and(X.is(Foo)).and{X}.true?.should == true
+      :foo.is(Foo).and(X.is(Foo)).and{!X.is_a? Rubylog::Variable}.true?.should == true
     end
     specify %([nonvar(_), failure].) do
-      ANY.is(X).and{X}.true?.should == false
+      ANY.is(X).and{!X.is_a? Rubylog::Variable}.true?.should == false
     end
     specify %([nonvar(a(b)), success].) do
-      :b.false.is(X).and{X}.true?.should == true
+      :b.false.is(X).and{!X.is_a? Rubylog::Variable}.true?.should == true
     end
   end
 
@@ -812,7 +812,7 @@ describe "inriasuite", :rubylog=>true do
     specify %(          [sub_atom('Banana', 4, _, m, S2), type_error(integer,m)].), :pending=>"Not supported in Rubylog"
   end
 
-  describe "term_diff" do
+  describe "term_diff", :pending=>"There is no such feature in Rubylog yet. Maybe someday." do
     specify %(['\\=='(1,1), failure].)
     specify %(['\\=='(X,X), failure].)
     specify %(['\\=='(1,2), success].)
@@ -823,7 +823,7 @@ describe "inriasuite", :rubylog=>true do
     specify %(['\\=='(f(a),f(a)), failure].)
   end
 
-  describe "term_eq" do
+  describe "term_eq", :pending=>"There is no such feature in Rubylog yet. Maybe someday." do
     specify %(['=='(1,1), success].)
     specify %(['=='(X,X), success].)
     specify %(['=='(1,2), failure].)
@@ -834,7 +834,7 @@ describe "inriasuite", :rubylog=>true do
     specify %(['=='(f(a),f(a)), success].)
   end
 
-  describe "term_gt" do
+  describe "term_gt", :pending=>"Not supported in Rubylog" do
     specify %(['@>'(1.0,1), failure].)
     specify %(['@>'(aardvark,zebra), failure].)
     specify %(['@>'(short,short), failure].)
@@ -844,7 +844,7 @@ describe "inriasuite", :rubylog=>true do
     specify %(['@>'(foo(a,X),foo(b,Y)), failure].)
   end
 
-  describe "term_gt=" do
+  describe "term_gt=", :pending=>"Not supported in Rubylog" do
     specify %(['@>='(1.0,1), failure].)
     specify %(['@>='(aardvark,zebra), failure].)
     specify %(['@>='(short,short), success].)
@@ -854,7 +854,7 @@ describe "inriasuite", :rubylog=>true do
     specify %(['@>='(foo(a,X),foo(b,Y)), failure].)
   end
 
-  describe "term_lt" do
+  describe "term_lt", :pending=>"Not supported in Rubylog" do
     specify %(['@<'(1.0,1), success].)
     specify %(['@<'(aardvark,zebra), success].)
     specify %(['@<'(short,short), failure].)
@@ -864,7 +864,7 @@ describe "inriasuite", :rubylog=>true do
     specify %(['@<'(foo(a,X),foo(b,Y)), success].)
   end
 
-  describe "term_lt=" do
+  describe "term_lt=", :pending=>"Not supported in Rubylog" do
     specify %(['@=<'(1.0,1), success].)
     specify %(['@=<'(aardvark,zebra), success].)
     specify %(['@=<'(short,short), success].)
@@ -875,11 +875,15 @@ describe "inriasuite", :rubylog=>true do
   end
 
   describe "true" do
-    specify %([true, success].)
+    specify %([true, success].) do
+      :true.true?.should == true
+    end
   end
 
   describe "unify" do
-    specify %(['='(X,1),[[X <-- 1]]].)
+    specify %(['='(X,1),[[X <-- 1]]].) do
+      X.is(1).map{X}.should eql [1]
+    end
     specify %(['='(X,Y),[[Y <-- X]]].)
     specify %([('='(X,Y),'='(X,abc)),[[X <-- abc, Y <-- abc]]].)
     specify %(['='(f(X,def),f(def,Y)), [[X <-- def, Y <-- def]]].)

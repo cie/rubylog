@@ -69,11 +69,11 @@ describe "queries", :rubylog=>true do
     k.should == [[:john, ANYTHING]]
   end
 
-  it "makes sure all variables are instantiated" do
+  it "leaves unboud variables as they are" do
     res = []
     A.likes(B).if {res << A << B }
     A.likes? :beer
-    res.should == [nil,:beer]
+    res.should eql [A,:beer]
   end
 
   it "substitutes deeper variables" do
@@ -84,6 +84,12 @@ describe "queries", :rubylog=>true do
      res.should == [:john, :swimming.in(:sea)]
   end
 
+  it "leaves deeper unboud variables as they are" do
+    res = []
+    A.likes(B).if {res << A << B; true}
+    (A.is(:john).and B.is(:swimming.in C).and A.likes B).map{[A,B,C]}.should eql [[:john,:swimming.in(C),C]]
+    res.should == [:john, :swimming.in(C)]
+  end
 
   describe "support Enumerable" do
     before do
