@@ -29,7 +29,7 @@ describe "inriasuite", :rubylog=>true do
     end
   end
 
-  describe "arg", :pending => "Not supported in Rubylog." do
+  describe "arg", :pending => "Not supported in Rubylog. Use s.structure(predicate, functor, args)" do
     specify "[arg(1,foo(a,b),a), success]."
     specify "[arg(1,foo(a,b),X), [[X <-- a]]]."
     specify "[arg(1,foo(X,b),a), [[X <-- a]]]."
@@ -421,14 +421,18 @@ describe "inriasuite", :rubylog=>true do
   end
 
   describe "fail" do
-    specify %([fail, failure].)
-    specify %([undef_pred, existence_error(procedure, undef_pred/0)]. % the value of flag 'unknown' is 'error'.)
-    specify %([(set_prolog_flag(unknown, fail), undef_pred), failure].)
-    specify %([(set_prolog_flag(unknown, warning), undef_pred), failure]. % A warning message)
-    specify %(% appears in the outputfile (see forest by: run_forest or bip_forest).)
+    specify %([fail, failure].) do
+      :fail.true?.should be_false
+    end
+    specify %([undef_pred, existence_error(procedure, undef_pred/0)]. % the value of flag 'unknown' is 'error'.) do
+      proc{ :undef_pred.true? }.should raise_error Rubylog::ExistenceError
+    end
+    specify %([(set_prolog_flag(unknown, fail), undef_pred), failure.), :pending=>"Not supported in Rubylog"
+    specify %([(set_prolog_flag(unknown, warning), undef_pred), failure]. % A warning message
+              % appears in the outputfile (see forest by: run_forest or bip_forest).), :pending=>"Not supported in Rubylog"
   end
 
-  describe "file_manip" do
+  describe "file_manip", :pending=>"Not supported in Rubylog" do
     specify %(/* by 'run_forest' predicate */)
     specify %([(seek(my_file,3),at(my_file,X)),in(my_file),[[X <-- 3]]].)
     specify %([(seek(my_file,eof),at(my_file,X)),in(my_file),[[X <-- eof]]].)
@@ -438,17 +442,33 @@ describe "inriasuite", :rubylog=>true do
   describe "findall" do
     predicate_for Symbol, ".likes()"
 
-    check S.is{X.is(1).or(X.is(2)).map{X}}.and{S == [1,2]}
-    check S.is{X.is(:john).map{X.likes(Y)}}.and{S == [:john.likes(Y)]}
-    check G.is(:fail.or :fail).and L.is{G.map{X}}.and{L == []}
-    check S.is{X.is(1).or(X.is(1)).map{X}}.and{S == [1,1]}
-    check [1,2].is{X.is(2).or(X.is(1)).map{X}}.false
-    check [X,Y].is{A.is(1).or(A.is(2)).map{A}}.and{X == 1}.and{Y == 2}
-    specify { expect {(S.is {Goal.map{X}}).solve}.to raise_error NoMethodError }
-    specify { expect {(S.is {4.map{X}}).solve}.to raise_error NoMethodError }
+    specify %([findall(X,(X=1 ; X=2),S),[[S <-- [1,2]]]].) do
+      check S.is{X.is(1).or(X.is(2)).map{X}}.and{S == [1,2]}
+    end
+    specify %([findall(X+Y,(X=1),S),[[S <-- [1+_]]]].) do
+      check S.is{X.is(:john).map{X.likes(Y)}}.and{S == [:john.likes(Y)]}
+    end
+    specify %([findall(X,fail,L),[[L <-- []]]].) do
+      check G.is(:fail.or :fail).and L.is{G.map{X}}.and{L == []}
+    end
+    specify %([findall(X,(X=1 ; X=1),S),[[S <-- [1,1]]]].) do
+      check S.is{X.is(1).or(X.is(1)).map{X}}.and{S == [1,1]}
+    end
+    specify %([findall(X,(X=2 ; X=1),[1,2]), failure].) do
+      check [1,2].is{X.is(2).or(X.is(1)).map{X}}.false
+    end
+    specify %([findall(X,(X=1 ; X=2),[X,Y]), [[X <-- 1, Y <-- 2]]].) do
+      check [X,Y].is{A.is(1).or(A.is(2)).map{A}}.and{X == 1}.and{Y == 2}
+    end
+    specify %([findall(X,Goal,S),instantiation_error]. % Culprit Goal) do
+      expect {(S.is {Goal.map{X}}).solve}.to raise_error NoMethodError
+    end
+    specify %([findall(X,4,S),type_error(callable, 4)].) do
+      expect {(S.is {4.map{X}}).solve}.to raise_error NoMethodError
+    end
   end
   
-  describe "float" do
+  describe "float", :pending=>"Not supported in Rubylog. Use is_a? Float" do
     specify %([float(3.3), success].)
     specify %([float(-3.3), success].)
     specify %([float(3), failure].)
@@ -456,7 +476,7 @@ describe "inriasuite", :rubylog=>true do
     specify %([float(X), failure].)
   end
 
-  describe "functor" do
+  describe "functor", :pending=>"Not supported in Rubylog. Use s.structure(predicate, functor, args)" do
     specify %([functor(foo(a,b,c),foo,3), success].)
     specify %([functor(foo(a,b,c),X,Y), [[X <-- foo, Y <-- 3]]].)
     specify %([functor(X,foo,3), [[X <-- foo(A,B,C)]]].  % A, B and C are 3 new variables)
@@ -478,13 +498,13 @@ describe "inriasuite", :rubylog=>true do
     specify %(  [functor(T, foo, -1), domain_error(not_less_than_zero,-1)].)
   end
 
-  describe "halt" do
+  describe "halt", :pending=>"Not supported in Rubylog" do
     specify %([halt, impl_defined].)
     specify %([halt(1), impl_defined].)
     specify %([halt(a), type_error(integer, a)].)
   end
 
-  describe "if-then" do
+  describe "if-then", :pending=>"Not supported in Rubylog yet. Maybe someday." do
     specify %(['->'(true, true), success].)
     specify %(['->'(true, fail), failure].)
     specify %(['->'(fail, true), failure].)
@@ -493,7 +513,7 @@ describe "inriasuite", :rubylog=>true do
     specify %(['->'(true, ';'(X=1, X=2)), [[X <-- 1], [X <-- 2]]].)
   end
 
-  describe "if-then-else" do
+  describe "if-then-else", :pending=>"Not supported in Rubylog yet. Maybe someday." do
     specify %([';'('->'(true, true), fail), success].)
     specify %([';'('->'(fail, true), true), success].)
     specify %([';'('->'(true, fail), fail), failure].)
@@ -504,7 +524,7 @@ describe "inriasuite", :rubylog=>true do
     specify %([';'('->'(';'(X=1, X=2), true), true), [[X <-- 1]]].)
   end
 
-  describe "integer" do
+  describe "integer", :pending=>"Not supported in Rubylog. Use #is_a?(Integer)" do
     specify %([integer(3), success].)
     specify %([integer(-3), success].)
     specify %([integer(3.3), failure].)
@@ -513,31 +533,61 @@ describe "inriasuite", :rubylog=>true do
   end
 
   describe "is" do
-    specify %(['is'(Result,3 + 11.0),[[Result <-- 14.0]]].)
-    specify %([(X = 1 + 2, 'is'(Y, X * 3)),[[X <-- (1 + 2), Y <-- 9]]]. % error? 1+2)
-    specify %(['is'(foo,77), failure]. % error? foo)
-    specify %(['is'(77, N), instantiation_error].)
-    specify %(['is'(77, foo), type_error(evaluable, foo/0)].)
-    specify %(['is'(X,float(3)),[[X <-- 3.0]]].)
+    specify %(['is'(Result,3 + 11.0),[[Result <-- 14.0]]].) do
+      Result.is{3+11.0}.map{Result}.should eql [14.0]
+    end
+    specify %([(X = 1 + 2, 'is'(Y, X * 3)),[[X <-- (1 + 2), Y <-- 9]]]. % error? 1+2), :pending=>"Not supported in Rubylog"
+    specify %(['is'(foo,77), failure]. % error? foo), :pending=>"Not supported in Rubylog"
+    specify %(['is'(77, N), instantiation_error].), :pending=>"Not supported in Rubylog"
+    specify %(['is'(77, foo), type_error(evaluable, foo/0)].), :pending=>"Not supported in Rubylog"
+    specify %(['is'(X,float(3)),[[X <-- 3.0]]].) do
+      X.is{3.to_f}.map{X}.should eql [3.0]
+    end
   end
 
   describe "nonvar" do
-    specify %([nonvar(33.3), success].)
-    specify %([nonvar(foo), success].)
-    specify %([nonvar(Foo), failure].)
-    specify %([(foo=Foo,nonvar(Foo)),[[Foo <-- foo]]].)
-    specify %([nonvar(_), failure].)
-    specify %([nonvar(a(b)), success].)
+    specify %([nonvar(33.3), success].) do
+      X.is(33.3).and{X}.true?.should == true
+    end
+    specify %([nonvar(foo), success].) do
+      X.is(:foo).and{X}.true?.should be_true
+    end
+    specify %([nonvar(Foo), failure].) do
+      X.is(Foo).and{X}.true?.should be_false
+    end
+    specify %([(foo=Foo,nonvar(Foo)),[[Foo <-- foo]]].) do
+      :foo.is(Foo).and(X.is(Foo)).and{X}.true?.should == true
+    end
+    specify %([nonvar(_), failure].) do
+      ANY.is(X).and{X}.true?.should == false
+    end
+    specify %([nonvar(a(b)), success].) do
+      :b.false.is(X).and{X}.true?.should == true
+    end
   end
 
   describe "not_provable" do
-    specify %([\+(true), failure].)
-    specify %([\+(!), failure].)
-    specify %([\+((!,fail)), success].)
-    specify %([((X=1;X=2), \+((!,fail))), [[X <-- 1],[X <-- 2]]].)
-    specify %([\+(4 = 5), success].)
-    specify %([\+(3), type_error(callable, 3)].)
-    specify %([\+(X), instantiation_error]. % Culprit X)
+    specify %([\+(true), failure].) do
+      :true.false.true?.should == false
+    end
+    specify %([\+(!), failure].) do
+      :cut!.false.true?.should == false
+    end
+    specify %([\+((!,fail)), success].) do
+      :cut!.and(:fail).false.true?.should == true
+    end
+    specify %([((X=1;X=2), \+((!,fail))), [[X <-- 1],[X <-- 2]]].) do
+      X.is(1).or(X.is(2)).and(:cut!.and(:fail).false).map{X}.should eql [1,2]
+    end
+    specify %([\+(4 = 5), success].) do
+      4.is(5).false.true?.should == true
+    end
+    specify %([\+(3), type_error(callable, 3)].) do
+      expect { 3.false.true? } .to raise_error NoMethodError
+    end
+    specify %([\+(X), instantiation_error]. % Culprit X) do
+      expect { X.false.true? }.to raise_error  Rubylog::InstantiationError 
+    end
   end
 
   describe "not_unify" do

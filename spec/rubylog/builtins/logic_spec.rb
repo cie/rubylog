@@ -230,6 +230,10 @@ describe "logic builtins", :rubylog => true do
       none(:todd.likes(X)).true?.should_not be_true
       none(:jim.likes(X)).true?.should be_true
     end
+
+    it "does not hijack variables" do
+      A.is(X.is(5)).and(A.all{X<10}).true?.should == true
+    end
   end
 
 end

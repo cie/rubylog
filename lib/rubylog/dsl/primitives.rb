@@ -1,7 +1,6 @@
 module Rubylog
   class DSL::Primitives
-    def initialize context, subject=nil
-      @context = context
+    def initialize subject
       @subject = subject
     end
 
@@ -16,12 +15,7 @@ module Rubylog
         if m.arity.zero?
           Rubylog::NullaryPredicates[name] = predicate
         else
-          if @subject
-            predicate.add_functor_to([@subject, Variable])
-          else
-            # use the default subject
-            predicate.add_functor_to([@context.default_subject, Variable])
-          end
+          predicate.add_functor_to(@subject)
         end
       end
     end

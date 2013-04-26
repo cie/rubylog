@@ -87,7 +87,6 @@ Rubylog do
   end
 
   # We also implement some of these methods in a prefix style
-  primitives_for_context = primitives_for(Rubylog::Context)
   %w(false all iff any one none).each do |fct|
     # we discard the first argument, which is the context,
     # because they are the same in  any context
