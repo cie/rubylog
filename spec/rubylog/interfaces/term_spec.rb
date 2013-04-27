@@ -1,3 +1,4 @@
+require 'spec_helper'
 
 describe "unification", :rubylog=>true do
   predicate_for Symbol, ".likes"
@@ -60,16 +61,16 @@ describe "unification", :rubylog=>true do
 
   it "works on clauses with repeated variables #1" do
     result = false
-    (A.likes A).rubylog_compile_variables.rubylog_unify(:john.likes :jane) { result = true }
+    (A.likes A).rubylog_match_variables.rubylog_unify(:john.likes :jane) { result = true }
     result.should == false
-    (A.likes A).rubylog_compile_variables.rubylog_unify(:john.likes :john) { result = true }
+    (A.likes A).rubylog_match_variables.rubylog_unify(:john.likes :john) { result = true }
     result.should == true
   end
   it "works on clauses with repeated variables #1" do
     result = false
-    (:john.likes :jane).rubylog_unify(A.likes(A).rubylog_compile_variables) { result = true }
+    (:john.likes :jane).rubylog_unify(A.likes(A).rubylog_match_variables) { result = true }
     result.should == false
-    (:john.likes :john).rubylog_unify(A.likes(A).rubylog_compile_variables) { result = true }
+    (:john.likes :john).rubylog_unify(A.likes(A).rubylog_match_variables) { result = true }
     result.should == true
   end
 

@@ -11,16 +11,11 @@ module Rubylog::Term
     self
   end
 
-  def rubylog_variables_hash
-    vars = rubylog_variables
-    Hash[vars.zip(vars.map{|v|v.value})]
-  end
-
   def rubylog_unify other
     if other.kind_of? Rubylog::Variable
       other.rubylog_unify(self) do yield end
     else
-      yield if self == other
+      yield if self.eql? other
     end
   end
 
@@ -32,7 +27,7 @@ module Rubylog::Term
     self
   end
 
-  def rubylog_compile_variables
+  def rubylog_match_variables
     self
   end
 end

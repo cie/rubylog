@@ -1,31 +1,33 @@
+require "spec_helper"
 
 describe "rules", :rubylog=>true do
+  before do
+    predicate_for Symbol, ".likes(Drink) .is_happy .has()"
+    predicate_for_context ".we_have()"
+  end
+
   describe "with prolog body" do
     it "cannot be asserted in a builtin's desc" do
       lambda {
         :john.likes(:beer).and! :jane.likes(:milk)
-      }.should raise_error(Rubylog::NonAssertableError)
+      }.should raise_error
     end
 
     it "can be asserted with if" do
-      predicate [:we_have, 2]
-      :john.is_happy.if :-@.we_have(:beer)
+      :john.is_happy.if we_have(:beer)
       :john.is_happy?.should be_false
-      :-@.we_have!(:beer)
+      we_have!(:beer)
       :john.is_happy?.should be_true
     end
 
     it "can be asserted with unless" do
-      predicate [:we_have, 2]
-      :john.is_happy.unless :-@.we_have(:problem)
+      :john.is_happy.unless we_have(:problem)
       :john.is_happy?.should be_true
-      :-@.we_have!(:problem)
+      we_have!(:problem)
       :john.is_happy?.should be_false
     end
 
     it "can do simple general implications" do
-      predicate [:is_happy,1], [:has,2]
-      discontiguous [:likes,2]
       X.is_happy.if X.likes(Y).and X.has(Y)
       :john.likes! :milk
       :john.is_happy?.should be_false
@@ -36,9 +38,9 @@ describe "rules", :rubylog=>true do
     end
 
     it "can yield implied solutions" do
-      X.brother(Y).if X.father(Z).and Y.father(Z).and X.neq(Y)
+      predicate_for Symbol, ".brother() .father() .uncle()"
+      X.brother(Y).if X.father(Z).and Y.father(Z).and {X != Y}
       X.uncle(Y).if X.father(Z).and Z.brother(Y)
-      X.neq(Y).if proc {X != Y}
 
       :john.father! :dad
       :jack.father! :dad
@@ -58,6 +60,7 @@ describe "rules", :rubylog=>true do
       :john.is_happy.if proc{ true }
       :john.is_happy?.should be_true
     end
+
     it "can be asserted (false)" do
       :john.is_happy.if proc{ false }
       :john.is_happy?.should be_false
@@ -84,6 +87,7 @@ describe "rules", :rubylog=>true do
     end
 
     it "can take arguments" do
+      predicate_for Integer, ".divides()"
       (A.divides B).if proc{B % A == 0}
       (4.divides? 16).should be_true
       (4.divides? 17).should be_false

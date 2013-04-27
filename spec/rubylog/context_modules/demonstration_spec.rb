@@ -1,26 +1,30 @@
+require "spec_helper"
 
 describe "queries", :rubylog=>true do
+  before do
+    predicate_for Symbol, ".likes(Drink)"
+  end
+
   it "can be run with true?" do
-    lambda {true?(:john.likes :beer)}.should raise_error(Rubylog::ExistenceError)
+    true?(:john.likes :beer).should be_false
     :john.likes! :beer
     true?(:john.likes :beer).should be_true
-    true?(:john.likes :milk).should be_false
   end
 
   it "can be run with question mark" do
-    lambda {true?(:john.likes :beer)}.should raise_error(Rubylog::ExistenceError)
+    :john.likes?(:beer).should be_false
     :john.likes! :beer
     :john.likes?(:beer).should be_true
   end
 
   it "can be run with true?" do
-    lambda {true?(:john.likes :beer)}.should raise_error(Rubylog::ExistenceError)
+    (:john.likes(:beer)).true?.should be_false
     :john.likes! :beer
     (:john.likes(:beer)).true?.should be_true
   end
 
   it "work with variables" do
-    lambda {true?(:john.likes X)}.should raise_error(Rubylog::ExistenceError)
+    :john.likes?(X).should be_false
     :john.likes! :water
     :john.likes?(X).should be_true
   end
@@ -65,11 +69,11 @@ describe "queries", :rubylog=>true do
     k.should == [[:john, ANYTHING]]
   end
 
-  it "makes sure all variables are instantiated" do
+  it "leaves unboud variables as they are" do
     res = []
     A.likes(B).if {res << A << B }
     A.likes? :beer
-    res.should == [nil,:beer]
+    res.should eql [A,:beer]
   end
 
   it "substitutes deeper variables" do
@@ -80,6 +84,12 @@ describe "queries", :rubylog=>true do
      res.should == [:john, :swimming.in(:sea)]
   end
 
+  it "leaves deeper unboud variables as they are" do
+    res = []
+    A.likes(B).if {res << A << B; true}
+    (A.is(:john).and B.is(:swimming.in C).and A.likes B).map{[A,B,C]}.should eql [[:john,:swimming.in(C),C]]
+    res.should == [:john, :swimming.in(C)]
+  end
 
   describe "support Enumerable" do
     before do

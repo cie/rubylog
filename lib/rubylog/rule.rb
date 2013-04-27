@@ -14,8 +14,8 @@ module Rubylog
       head == other.head and body == other.body
     end
 
-    # CompositeTerm methods
-    include Rubylog::CompositeTerm
+    # CompoundTerm methods
+    include Rubylog::CompoundTerm
     def rubylog_clone &block
       block.call Rule.new @head.rubylog_clone(&block), @body.rubylog_clone(&block)
     end

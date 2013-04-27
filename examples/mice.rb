@@ -53,11 +53,11 @@ class CupSet
   CS.has_neighbors.if [C,D].in{CS[0..-2].zip(CS[1..-1] || [])}.and C.has_mouse.and D.has_mouse
 
   # A predicate definitely solves a set if there is no ambiguity
-  predicate_for Rubylog::Callable, %w(.definitely_solves())
+  predicate_for Rubylog::Clause, %w(.definitely_solves())
   T.definitely_solves(CS).if T.any(CS.has_neighbors).and(T.any(CS.has_neighbors.false)).false
 
   # A trial consist of peeking some cups
-  predicate_for Rubylog::Callable, %w(.trial_for())
+  predicate_for Rubylog::Clause, %w(.trial_for())
   T.trial_for(CS).if T.is{C.in(CS).map{C.peeked.or :true}.inject(:true,&:and)}.and T
 
   # A set is easy if can be definitely solved by a trial that has not seen all

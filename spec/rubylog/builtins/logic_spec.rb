@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 describe "logic builtins", :rubylog => true do
-  predicate_for Symbol, ".likes() .happy"
+  before do
+    predicate_for Symbol, ".likes() .happy"
+  end
 
   specify "true" do
     :john.happy.if :true
@@ -227,6 +229,10 @@ describe "logic builtins", :rubylog => true do
       none(:jeff.likes(X)).true?.should_not be_true
       none(:todd.likes(X)).true?.should_not be_true
       none(:jim.likes(X)).true?.should be_true
+    end
+
+    it "does not hijack variables" do
+      A.is(X.is(5)).and(A.all{X<10}).true?.should == true
     end
   end
 

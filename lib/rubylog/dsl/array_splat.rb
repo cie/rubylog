@@ -12,8 +12,8 @@ class Rubylog::DSL::ArraySplat
     "*#{var}"
   end
 
-  # CompositeTerm methods
-  include Rubylog::CompositeTerm
+  # CompoundTerm methods
+  include Rubylog::CompoundTerm
 
   def rubylog_clone &block
     block[Rubylog::DSL::ArraySplat.new(@var.rubylog_clone(&block))]

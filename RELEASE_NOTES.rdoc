@@ -9,6 +9,8 @@
     more inclusion of theories.
   * Predicates no more belong to the theory, they are just attached to the
     subject class at the time of functor creation.
+  * Unification uses <tt>eql?</tt> instead of <tt>==</tt>. This means
+    <tt>5.0.is\_not(5)</tt>
   * <tt>Theory#eval</tt> became <tt>Context#query</tt>
   * Removed <tt>functor</tt>, use <tt>predicate</tt> and <tt>predicate\_for</tt>
     instead. The latter ones have a different syntax for indicating predicates, eg.
@@ -16,9 +18,18 @@
   * <tt>Structure</tt> is bound to the predicate it represents.
   * <tt>current\_theory</tt> is removed.
   * No more real prefix functors, prefix functors are attached to the context
-  * object. Use <tt>predicate\_for Rubylog::Context, "..."</tt>.
+    object. Use <tt>predicate\_for Rubylog::Context, "..."</tt>.
   * <tt>Rubylog::DefaultBuiltins</tt> is replaced by <tt>Rubylog</tt>
-  * <tt>prove</tt> was removed. Use <tt>true?</tt>
+  * <tt>Theory#prove</tt> was removed. Use <tt>Context#true?</tt>
+  * <tt>Rubylog::Callable<tt> renamed to <tt>Rubylog::Clause</tt>
+  * <tt>discontiguous</tt> is removed. No more discontiguity checks.
+  * <tt>implicit</tt> is removed. No implicit mode anymore.
+  * <tt>Theory#clear</tt> is replaced by <tt>Context#initialize\_context</tt>.
+    However, currently it only clears <tt>default\_subject</tt>.
+  * <tt>CompositeTerm</tt> is renamed to <tt>CompoundTerm</tt>.
+  * <tt>rublog\_compile\_variables</tt> is renamed to
+     <tt>rubylog\_match\_variables</tt>, <tt>variable\_hashes</tt> is removed.
+  * <tt>rubylog\_variables\_hash</tt> removed
 * Features 
   * Rspec integration
   * +include+ or +extend+ <tt>Rubylog::Context</tt> into any class or object
@@ -26,6 +37,7 @@
   * Comments in indicators
   * New tracer
   * added <tt>every</tt>
+  * all builtins are available by default
 * Bug fixes
 
 

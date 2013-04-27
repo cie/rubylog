@@ -1,4 +1,3 @@
-require 'rubylog/simple_procedure'
 require 'rubylog/rule'
 
 
@@ -6,99 +5,36 @@ module Rubylog
   module ContextModules
     module Predicates
 
-      attr_reader :public_interface
-      attr_reader :prefix_functor_modules
-
-      attr_accessor :last_predicate
-
-
-      def clear
-        @public_interface = Module.new
+      def initialize_context
         @default_subject = []
-        @check_discontiguous = true
-        @prefix_functor_modules = []
-        @last_predicate = nil
         super 
       end
 
-
-
-      
-
-      # directives
-      #
       def predicate *indicators
         each_indicator(indicators) do |indicator|
-          create_procedure(indicator).functor_for [@default_subject, Variable]
+          create_procedure(indicator).add_functor_to [@default_subject, Variable]
         end
       end
 
       def predicate_for subjects, *indicators
         each_indicator(indicators) do |indicator|
-          create_procedure(indicator).functor_for [subjects, Variable]
+          create_procedure(indicator).add_functor_to [subjects, Variable]
         end
       end
 
-      def functor *functors
-        functors.flatten.each do |fct|
-          add_functors_to @public_interface, fct
-          [@default_subject].flatten.each do |s|
-            add_functors_to s, fct
-          end
+      def predicate_for_context *indicators
+        each_indicator(indicators) do |indicator|
+          create_procedure(indicator).add_functor_to ::Rubylog::Context
         end
       end
 
       attr_accessor :default_subject
 
-      # predicates
-
-
-      def retract head
-        indicator = head.indicator
-        predicate = @database[indicator]
-        check_exists predicate, head
-        check_assertable predicate, head, body
-
-        head = head.rubylog_compile_variables
-
-        index = nil
-        result = nil
-        catch :retract do
-          predicate.each_with_index do |rule, i|
-            head.rubylog_unify rule.head do
-              index = i
-              result = rule
-              throw :retract
-            end
-          end
-          return nil
-        end
-
-      end
-
-      def create_procedure indicator
-        Rubylog::SimpleProcedure.new indicator[0], indicator[1]
-      end
-
 
       protected
 
-      def check_exists predicate, head
-        raise Rubylog::ExistenceError.new(self, head.indicator) unless predicate
-      end
-
-      def check_not_discontiguous predicate, head, body
-        raise Rubylog::DiscontiguousPredicateError.new(self, head.indicator) if check_discontiguous? and not predicate.empty? and predicate != @last_predicate and not predicate.discontiguous?
-      end
-
-      def check_assertable predicate, head, body
-        raise Rubylog::NonAssertableError.new(self, head.indicator) unless predicate.respond_to? :assertz
-      end
-
-      def check_modules modules
-        modules.each do |m|
-          raise ArgumentError, "#{m.inspect} is not a class or module",  caller[1..-1] unless m.is_a? Module
-        end
+      def create_procedure indicator
+        Rubylog::Procedure.new indicator[0], indicator[1]
       end
 
       def each_indicator indicators

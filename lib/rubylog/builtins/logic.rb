@@ -17,9 +17,9 @@ Rubylog do
   end
 
 
-  primitives_for_callable = primitives_for [::Rubylog::Callable, ::Rubylog::Structure]
+  primitives_for_clause = primitives_for [::Rubylog::Clause, ::Rubylog::Structure]
 
-  class << primitives_for_callable
+  class << primitives_for_clause
     # Succeeds if both +a+ and +b+ succeeds.
     def and a, b
       a.prove { b.prove { yield } }
@@ -33,7 +33,10 @@ Rubylog do
 
     # Succeeds if +a+ does not succeed.
     def false a
-      a.prove { return }
+      # catch cuts
+      catch :cut do
+        a.prove { return }
+      end
       yield
     end
 
@@ -87,12 +90,11 @@ Rubylog do
   end
 
   # We also implement some of these methods in a prefix style
-  primitives_for_context = primitives_for(Rubylog::Context)
   %w(false all iff any one none).each do |fct|
     # we discard the first argument, which is the context,
     # because they are the same in  any context
     primitives_for_context.define_singleton_method fct do |_,*args,&block|
-      primitives_for_callable.send(fct, *args, &block)
+      primitives_for_clause.send(fct, *args, &block)
     end
   end
 

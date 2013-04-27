@@ -32,7 +32,7 @@ class String
     other_has_vars = other =~ RUBYLOG_VAR_REGEXP
 
     return super{yield} unless self_has_vars or other_has_vars
-    raise Rubylog::InstantiationError, "Cannot unify two strings with variables inside" if self_has_vars and other_has_vars
+    raise ArgumentError, "Cannot unify two strings with variables inside" if self_has_vars and other_has_vars
 
     a, b = self_has_vars ? [self, other] : [other, self]
     a_segments, a_vars = a.rubylog_segments
@@ -46,8 +46,8 @@ class String
 
   end
 
-  # CompositeTerm methods
-  include Rubylog::CompositeTerm
+  # CompoundTerm methods
+  include Rubylog::CompoundTerm
   def rubylog_clone &block
     scan RUBYLOG_VAR_REGEXP do
       guards = RubylogStringVariableGuards[$2.to_i] 
@@ -58,12 +58,13 @@ class String
 
   def rubylog_deep_dereference 
     gsub RUBYLOG_VAR_REGEXP do
-      rubylog_get_string_variable($1).rubylog_deep_dereference.to_s
+      rubylog_get_string_variable($1,$2).rubylog_deep_dereference.to_s
     end
   end
 
-  # returns a list of substrings which are before, between and after the rubylog
-  # string variables
+  # returns a list of substrings which are before, between and after the
+  # rubylog
+  # string variables, and the list of variabes in between
   def rubylog_segments
     segments = [[0]]
     vars = []
@@ -72,7 +73,7 @@ class String
       match = Regexp.last_match
       segments.last << match.begin(0)
       segments << [match.end(0)]
-      vars << rubylog_get_string_variable(match[1])
+      vars << rubylog_get_string_variable(match[1], match[2])
     end
     
 
@@ -83,13 +84,13 @@ class String
 
   protected
 
-  def rubylog_get_string_variable s
-    s = s.to_sym
-    if @rubylog_variables
-      @rubylog_variables.find{|v|v.name == s}
-    else
-      raise Rubylog::InvalidStateError, "Rubylog variables not available"
-    end
+  # 
+  def rubylog_get_string_variable name, guards_index
+    name = name.to_sym
+    raise Rubylog::InvalidStateError, "Variables not matched" unless @rubylog_variables
+
+    @rubylog_variables.find{|v|v.name == name} || 
+      Rubylog::Variable.new[*RubylogStringVariableGuards[guards_index.to_i]]
   end
 
 end

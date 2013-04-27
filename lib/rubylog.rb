@@ -10,9 +10,9 @@ require 'rubylog/tracing'
 
 # interfaces
 require 'rubylog/term'
-require 'rubylog/callable'
+require 'rubylog/clause'
 require 'rubylog/assertable'
-require 'rubylog/composite_term'
+require 'rubylog/compound_term'
 
 # helpers
 require 'rubylog/errors'
@@ -49,7 +49,7 @@ Rubylog.initialize_context
 
 
 # builtins
-require 'rubylog/builtins/default'
+require 'rubylog/builtins'
 
 
 

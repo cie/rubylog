@@ -1,6 +1,9 @@
 require "spec_helper"
 
 describe Proc, :rubylog=>true do
+  before do
+    predicate_for Symbol, ".is_happy .likes()"
+  end
 
   describe "using ruby code in clauses" do
     it "works" do

@@ -51,8 +51,8 @@ module Rubylog
     # Assertable methods
     include Rubylog::Assertable
 
-    # Callable methods
-    include Rubylog::Callable
+    # Clause methods
+    include Rubylog::Clause
 
     def prove
       count = 0
@@ -77,38 +77,19 @@ module Rubylog
 
     attr_reader :rubylog_variables
 
-    # CompositeTerm methods
-    include Rubylog::CompositeTerm
+    # CompoundTerm methods
+    include Rubylog::CompoundTerm
+
     def rubylog_clone &block
       block.call Structure.new @predicate, @functor.rubylog_clone(&block),
         *@args.map{|a| a.rubylog_clone &block}
     end
+
     def rubylog_deep_dereference
       Structure.new @predicate, @functor.rubylog_deep_dereference,
         *@args.rubylog_deep_dereference
     end
 
-
-    # convenience methods
-    #def each_solution
-      #goal = rubylog_compile_variables 
-      #goal.variable_hashes_without_compile.each do |hash|
-        #yield goal.rubylog_clone {|i| hash[i] || i }
-      #end
-    #end
-
-    def variable_hashes
-      rubylog_compile_variables.variable_hashes_without_compile
-    end
-
-    protected
-
-    def variable_hashes_without_compile
-      variables = rubylog_variables
-      map do |*values|
-        Hash[variables.zip values]
-      end
-    end
   end
 end
 

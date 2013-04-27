@@ -8,7 +8,6 @@ module Rubylog
       include Rubylog::Context
     end
     source_object.initialize_context
-    source_object.include_context Rubylog
     source_object
   end
 
@@ -52,14 +51,15 @@ module Rubylog
       end
 
       context.initialize_context
-      context.include_context Rubylog
 
-      # if context is a class or module, we also include DSL::Variables directly
-      # in it, so that they can be accessed from an instance
-      # Also, we set self as a subject, so that +predicate+ automatically attaches
-      # functors to it.
       if context.is_a? Module
+        # if context is a class or module, we also include DSL::Variables directly
+        # in it, so that they can be accessed in class_eval mode or from an
+        # instance method.
         context.send :include, Rubylog::DSL::Variables
+
+        # Also, we set self as a subject, so that +predicate+ automatically attaches
+        # functors to the class.
         context.default_subject = context
       end
     end

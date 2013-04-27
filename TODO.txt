@@ -1,7 +1,0 @@
-Theory#assert
-amend
-initialize_theory
-clear
-include_context
-demonstration_spec
-theory_modules spec

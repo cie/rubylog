@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 describe "Term builtins", :rubylog => true do
-  predicate_for Symbol, ".likes"
+  before do
+    predicate_for Symbol, ".likes"
+  end
 
   describe "in" do
     before do

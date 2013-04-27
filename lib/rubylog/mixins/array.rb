@@ -95,8 +95,8 @@ class Array
     end
   end
 
-  # CompositeTerm methods
-  include Rubylog::CompositeTerm
+  # CompoundTerm methods
+  include Rubylog::CompoundTerm
   def rubylog_clone &block
     block[map{|t|t.rubylog_clone &block}]
   end

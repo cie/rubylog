@@ -26,7 +26,7 @@ describe "Rubylog", :rubylog => true do
   end
 
   it "can assert predicates" do
-    functor_for Integer, :divides
+    predicate_for Integer, ".divides()"
     (A.divides B).if {B%A == 0}
     check(4.divides 12)
     check((4.divides 30).false)

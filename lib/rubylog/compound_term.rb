@@ -1,5 +1,5 @@
-module Rubylog::CompositeTerm
-  def rubylog_compile_variables 
+module Rubylog::CompoundTerm
+  def rubylog_match_variables 
     vars = []; vars_by_name = {}
     rubylog_clone do |subterm|
       case subterm
@@ -21,7 +21,7 @@ module Rubylog::CompositeTerm
           end
         end
 
-      when Rubylog::CompositeTerm
+      when Rubylog::CompoundTerm
         subterm.instance_variable_set :"@rubylog_variables", vars
         subterm
       else
