@@ -1,9 +1,6 @@
 module Kernel
+  # Calls the given block within the default Rubylog context (::Rubylog)
   def Rubylog &block
-    if block
-      ::Rubylog.instance_exec &block
-    else
-      ::Rubylog
-    end
+    ::Rubylog.instance_exec &block
   end
 end

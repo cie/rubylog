@@ -1,94 +1,123 @@
 require 'rubylog/dsl/array_splat'
 
-module Rubylog
-  # for the future
-  #def self.unify_arrays a, a_start, a_end, b, b_start, b_end
-    #case
-    #when (a_start > a_end and b_start > b_end)
-      #yield
-    #when (a_start > a_end or b_start > b_end)
-      #return
-    #when (a[a_start].is_a? Rubylog::DSL::ArraySplat and b[b_start].is_a? Rubylog::DSL::ArraySplat)
-      #raise Rubylog::NotImplementedError.new Rubylog::Structure.new(:is, a, b)
-    #when (a[a_start].is_a? Rubylog::DSL::ArraySplat)
-      ## A=[]
-      #a[a_start].var.rubylog_unify [] do
-        #unify_arrays(a, a_start+1, a_end, b, b_start, b_end) { yield }
-      #end
-
-      ## A=[_X, *_Y]
-      #new_arr = [Rubylog::Variable.new, Rubylog::DSL::ArraySplat.new(Rubylog::Variable.new)]
-      #a[a_start].var.rubylog_unify new_arr do
-        #unify_arrays(a[a_start].var, a_start+1, a_end, b, b_start, b_end) { yield }
-      #end
-    #when (b[b_start].is_a? Rubylog::DSL::ArraySplat)
-      #raise "not implemented"
-    #else
-      #a[a_start].rubylog_unify b[b_start] do 
-        #unify_arrays(a, a_start+1, a_end, b, b_start+1, b_end) { yield }
-      #end
-    #end
-  #end
-end
-
 class Array
 
   # Term methods
   def rubylog_unify other
-    return super{yield} unless other.instance_of? self.class
-    #Rubylog.unify_arrays(self, 0, length-1, other, 0, other.length-1) { yield }
-    if empty?
-      if other.empty?
+    case
+
+    when ! other.is_a?(Array)
+      # [...] = 1
+      return super{yield} 
+
+    when empty? 
+      case 
+      when other.empty? 
+        # if [] = []
+        # then true
         yield
-      elsif other[0].is_a? Rubylog::DSL::ArraySplat
-        other[0].var.rubylog_unify [] do
+      when other[0].is_a?(Rubylog::DSL::ArraySplat)
+        # if [] = [*A,...]
+        # then [] = A, []=[...]
+        [].rubylog_unify other[0].var do
           self.rubylog_unify other[1..-1] do
             yield
           end
         end
       else
-        # failed
+        # fail
       end
-    else
-      if self[0].is_a? Rubylog::DSL::ArraySplat
-        # optimize [*A] = [*B]
-        if other[0].is_a? Rubylog::DSL::ArraySplat and self.length == 1 and other.length == 1
+
+    when self[0].is_a?(Rubylog::DSL::ArraySplat)
+      # if [*A,...] = [...]
+      case
+      when other.empty?
+        # [*A,...] = []
+        self[0].var.rubylog_unify [] do
+          self[1..-1].rubylog_unify [] do
+            yield
+          end
+        end
+      when other[0].is_a?(Rubylog::DSL::ArraySplat )
+        # [*A,...] = [*B,...]
+        case 
+        when self.length == 1 && other.length == 1
+          # if [*A] = [*B]
+          # then A=B
           self[0].var.rubylog_unify other[0].var do
             yield
           end
-          return
+        when self.length == 1
+          # if [*A] = [*B,...]
+          # then A=[...]
+          self[0].var.rubylog_unify other do
+            yield
+          end
+          # TODO: we can also optimize ends of arrays.
+        else
+          # this may lead to infinite loop if variables are unbound
+          # TODO: Maybe an InstantiationError may be better.
+          # if [*A,...] = [*B,...]
+          # then eiter A=[], [...]=[*B,...]
+          self[0].var.rubylog_unify [] do
+            self[1..-1].rubylog_unify other do
+              yield
+            end
+          end
+          # or A=[H,*T], [H,*T,...]=[*B,...]
+          part = [Rubylog::Variable.new, Rubylog::DSL::ArraySplat.new]
+          self[0].var.rubylog_unify part do
+            (part + self[1..-1]).rubylog_unify other do
+              yield
+            end
+          end
+
         end
 
+      else
+        # if [*A,...] = [X,...]
+        # then eiter A=[], [...]=[X,...]
         self[0].var.rubylog_unify [] do
           self[1..-1].rubylog_unify other do
             yield
           end
         end
+        # or A=[H,*T], [H,*T,...]=[X,...]
         part = [Rubylog::Variable.new, Rubylog::DSL::ArraySplat.new]
         self[0].var.rubylog_unify part do
           (part + self[1..-1]).rubylog_unify other do
             yield
           end
         end
+      end
+
+    else
+      # if [H,...]
+      case
+      when other.empty?
+        # [H,...] = []
+        # fail
+      when other[0].is_a?(Rubylog::DSL::ArraySplat)
+        # [H,...] = [*A,...]
+        # either []=A, [H,...]=[...]
+        [].rubylog_unify other[0].var do
+          self.rubylog_unify other[1..-1] do
+            yield
+          end
+        end
+        # or A=[X,*R], [H,...]=[X,*R,...]
+        part = [Rubylog::Variable.new, Rubylog::DSL::ArraySplat.new]
+        other[0].var.rubylog_unify part do
+          self.rubylog_unify(part + other[1..-1]) do
+            yield
+          end
+        end
       else
-        if other[0].is_a? Rubylog::DSL::ArraySplat
-          other[0].var.rubylog_unify [] do
-            self.rubylog_unify other[1..-1] do
-              yield
-            end
-          end
-          part = [Rubylog::Variable.new, Rubylog::DSL::ArraySplat.new]
-          other[0].var.rubylog_unify part do
-            self.rubylog_unify(part + other[1..-1]) do
-              yield
-            end
-          end
-        else
-          return if other.empty?
-          self[0].rubylog_unify other[0] do
-            self[1..-1].rubylog_unify other[1..-1] do
-              yield
-            end
+        # if [H,...]=[X,...]
+        # then H=X, [...]=[...]
+        self[0].rubylog_unify other[0] do
+          self[1..-1].rubylog_unify other[1..-1] do
+            yield
           end
         end
       end
@@ -106,9 +135,11 @@ class Array
       case t
       when Rubylog::DSL::ArraySplat
         v = t.var.rubylog_dereference
-        if v.is_a? Array
+        if v.is_a?(Array)
+          # if it could be resolved
           v.rubylog_deep_dereference
         else
+          # if it is still a variable
           [t]
         end
       else

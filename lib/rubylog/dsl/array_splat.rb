@@ -9,7 +9,15 @@ class Rubylog::DSL::ArraySplat
   end
 
   def inspect
-    "*#{var}"
+    "*#{var.inspect}"
+  end
+
+  def eql? other
+    self.class == other.class && @var.eql?(other.var)
+  end
+
+  def == other
+    self.class == other.class && @var == other.var
   end
 
   # CompoundTerm methods

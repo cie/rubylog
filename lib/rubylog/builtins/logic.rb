@@ -105,7 +105,7 @@ Rubylog do
     def every _, a, b
       c = []
       a.prove { c << b.rubylog_deep_dereference }
-      c.inject{|a,b|a.and b}.solve { yield }
+      c.inject(:true){|a,b|a.and b}.solve { yield }
     end
   end
 

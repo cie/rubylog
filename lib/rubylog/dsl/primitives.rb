@@ -22,9 +22,7 @@ module Rubylog
 
     def inspect
       if @subject
-        "#{@context}.primitives_for(#{@subject})"
-      else
-        "#{@context}.primitives"
+        "primitives_for(#{@subject.inspect})"
       end
     end
   end

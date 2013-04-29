@@ -24,6 +24,70 @@ describe Rubylog::Variable, :rubylog=>true do
     end
   end
 
+  describe "#value" do
+    it "returns the value if bound" do
+      a = A
+      a.send :bind_to, 5 do
+        a.value.should == 5
+      end
+    end
+
+    it "returns nil if unbound" do
+      a = A
+      a.send :bind_to, 5 do
+      end
+      a.value.should == nil
+    end
+  end
+
+  describe "unification" do
+    it "unifies with non-var" do
+      a=A
+      a.rubylog_unify(4) do
+        a.should be_bound
+        a.value.should eql 4
+      end
+    end
+
+    it "unifies with non-var (reversed)" do
+      a=A
+      4.rubylog_unify(a) do
+        a.should be_bound
+        a.value.should eql 4
+      end
+    end
+
+    it "unifies with another unbound variable with the other gettin bound" do
+      a=A
+      b=B
+      a.rubylog_unify(b) do
+        b.should be_bound
+        b.value.should equal a
+        a.should_not be_bound
+      end
+    end
+
+    it "unifies with a bound variable" do
+      a=A
+      b=B
+      b.send(:bind_to, 4) do
+        a.rubylog_unify(b) do
+          a.value.should == 4
+        end
+      end
+    end
+
+    it "when bound, unifies with an unbound variable" do
+      a=A
+      b=B
+      a.send(:bind_to, 4) do
+        a.rubylog_unify(b) do
+          b.value.should == 4
+        end
+      end
+    end
+  end
+
   describe "dereferencing" do
     predicate_for Integer, ".divides()"
 

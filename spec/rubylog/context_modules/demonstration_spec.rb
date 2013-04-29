@@ -23,6 +23,15 @@ describe "queries", :rubylog=>true do
     (:john.likes(:beer)).true?.should be_true
   end
 
+  it "can be run with solve" do
+    result = false
+    solve(:john.likes(:beer)) { result = true }
+    result.should == false
+    :john.likes! :beer
+    solve(:john.likes(:beer)) { result = true }
+    result.should == true
+  end
+
   it "work with variables" do
     :john.likes?(X).should be_false
     :john.likes! :water

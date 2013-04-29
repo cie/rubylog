@@ -263,9 +263,7 @@ describe "inriasuite", :rubylog=>true do
     specify %([bagof(X,(X=1;X=2),L), [[L <-- [1, 2]]]].) do
       X.is(1).or(X.is(2)).map{X}.should eql [1,2]
     end
-    specify %([bagof(X,(X=1;X=2),X), [[X <-- [1, 2]]]].), :pending=>"This does not work in Rubylog because of dynamic and static contexts" do
-      X.is{X.is(1).or(X.is(2)).map{X}}.should eql [1,2]
-    end
+    specify %([bagof(X,(X=1;X=2),X), [[X <-- [1, 2]]]].), :pending=>"This does not work in Rubylog because of dynamic and static contexts"
     specify %([bagof(X,(X=Y;X=Z),L), [[L <-- [Y, Z]]]].), :pending=>"This does not work in Rubylog because of dynamic and static contexts"
     specify %([bagof(X,fail,L), failure].), :pending=>"This does not work in Rubylog because of dynamic and static contexts"
     specify %([bagof(1,(Y=1;Y=2),L), [[L <-- [1], Y <-- 1], [L <-- [1], Y <-- 2]]].), :pending=>"This does not work in Rubylog because of dynamic and static contexts"
@@ -307,12 +305,7 @@ describe "inriasuite", :rubylog=>true do
     specify %([call(1), type_error(callable,1)].) do
       lambda { A.is(1).and(A).true? }.should raise_error NoMethodError
     end
-    specify %([call((fail, 1)), type_error(callable,(fail,1))].), :pending=>"Not an error in Rubylog" do
-      # in prolog this raises a type_error, because (fail,1) is compiled at the
-      # time of the call() predicate is called. However, in Rubylog currently it
-      # is interpreted, so no exception is raised.
-      lambda { A.is(:fail.and(1)).and(A).true? }.should raise_error NoMethodError
-    end
+    specify %([call((fail, 1)), type_error(callable,(fail,1))].), :pending=>"Not an error in Rubylog"
     specify %([call((write(3), 1)), type_error(callable,(write(3), 1))].) do
       lambda { A.is(proc{p 3; true}.and(1)).and(A).true? }.should raise_error NoMethodError
     end
@@ -349,12 +342,7 @@ describe "inriasuite", :rubylog=>true do
     specify %([clause(4,B), type_error(callable,4)].) do
       proc { A.is(4).and(A.follows_from(B)).true? }.should raise_error NoMethodError
     end
-    specify %([clause(f(_),5), type_error(callable,5)].), :pending=>"Not an error in Rubylog" do
-      # As Rubylog unifies the second argument with each body in the
-      # predicate, this does not lead to an error.
-      predicate ".f"
-      proc { ANY.f.follows_from(5).true? }.should raise_error NoMethodError
-    end
+    specify %([clause(f(_),5), type_error(callable,5)].), :pending=>"As there is no compiling, this is not an error in Rubylog, it simply fails."
     specify %([clause(atom(_),Body), permission_error(access,private_procedure,atom/1)]. ) do
       proc { ANY.false.follows_from(B).true? }.should raise_error NoMethodError
     end
@@ -770,9 +758,7 @@ describe "inriasuite", :rubylog=>true do
     specify %([sub_atom(abracadabra, _, 5, 0, S2), [[S2 <-- 'dabra']]].) do
       'abracadabra'.is("#{ANY}#{S2[:length=>5]}").map{S2}.should eql ['dabra']
     end
-    specify %([sub_atom(abracadabra, 3, Length, 3, S2), [[Length <-- 5, S2 <-- 'acada']]].), :pending=>"There is no such feature in Rubylog yet. Maybe someday." do
-      'abracadabra'.is("#{ANY[:length=>3]}#{S2}#{ANY[:length=>3]}").map{S2}.should eql ['acada']
-    end
+    specify %([sub_atom(abracadabra, 3, Length, 3, S2), [[Length <-- 5, S2 <-- 'acada']]].), :pending=>"There is no such feature in Rubylog yet. Maybe someday." 
     specify %([sub_atom(abracadabra, Before, 2, After, ab), 
               [[Before <-- 0, After <-- 9],
               [Before <-- 7, After <-- 2]]].) do

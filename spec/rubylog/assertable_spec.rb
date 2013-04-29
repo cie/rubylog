@@ -98,4 +98,14 @@ describe "rules", :rubylog=>true do
       (3.divides? 6).should be_true
     end
   end
+
+  describe "#if!" do
+    it "can be used to cut off branches" do
+      predicate_for Integer, ".divides()"
+      1.divides(X).if! :true
+      (A.divides B).if proc{B % A == 0}
+      1.divides(4).map{}.should == [nil]
+      2.divides(4).map{}.should == [nil]
+    end
+  end
 end
