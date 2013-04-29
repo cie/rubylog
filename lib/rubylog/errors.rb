@@ -18,12 +18,6 @@ module Rubylog
   class SyntaxError < RubylogError
   end
 
-  class BuiltinPredicateError < RubylogError
-    def initialize predicate
-      super "Predicate #{predicate.inspect} is built-in"
-    end
-  end
-
   class ExistenceError < RubylogError
     def initialize clause
       super "Predicate #{clause.inspect} does not exist"

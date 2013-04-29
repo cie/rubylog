@@ -99,6 +99,28 @@ describe "logic builtins", :rubylog => true do
     end
   end
 
+  describe "iff" do
+    it "works 1" do
+      :john.happy.if :fail.iff :true
+      :john.should_not be_happy
+    end
+
+    it "works 2" do
+      :john.happy.if :true.iff :fail
+      :john.should_not be_happy
+    end
+
+    it "works 3" do
+      :john.happy.if :fail.iff :fail
+      :john.should be_happy
+    end
+
+    it "works 4" do
+      :john.happy.if :true.iff :true
+      :john.should be_happy
+    end
+  end
+
   describe "cut" do
     it "works with branch or" do
       :john.happy.if :true.and :cut!.and :fail
@@ -143,7 +165,7 @@ describe "logic builtins", :rubylog => true do
     end
   end
 
-  describe "all,any,one,none" do
+  describe "all,any,one,none,every" do
     before do
       :john.likes! :water
       :john.likes! :beer
@@ -234,7 +256,40 @@ describe "logic builtins", :rubylog => true do
     it "does not hijack variables" do
       A.is(X.is(5)).and(A.all{X<10}).true?.should == true
     end
+
+    describe "every" do
+      specify "works like all" do
+        every(:john.likes(X),:john.likes(X)).true?.should be_true
+        every(:john.likes(X),:jane.likes(X)).true?.should be_true
+        every(:john.likes(X),:jeff.likes(X)).true?.should_not be_true
+        every(:john.likes(X),:todd.likes(X)).true?.should_not be_true
+
+        every(:jane.likes(X),:john.likes(X)).true?.should_not be_true
+        every(:jane.likes(X),:jane.likes(X)).true?.should be_true
+        every(:jane.likes(X),:jeff.likes(X)).true?.should_not be_true
+        every(:jane.likes(X),:todd.likes(X)).true?.should_not be_true
+
+        every(:jeff.likes(X),:john.likes(X)).true?.should_not be_true
+        every(:jeff.likes(X),:jane.likes(X)).true?.should_not be_true
+        every(:jeff.likes(X),:jeff.likes(X)).true?.should be_true
+        every(:jeff.likes(X),:todd.likes(X)).true?.should_not be_true
+
+        every(:todd.likes(X),:john.likes(X)).true?.should_not be_true
+        every(:todd.likes(X),:jane.likes(X)).true?.should be_true
+        every(:todd.likes(X),:jeff.likes(X)).true?.should_not be_true
+        every(:todd.likes(X),:todd.likes(X)).true?.should be_true
+      end
+
+      specify "can be used for assumptions" do
+        predicate_for Symbol, ".good"
+        # assumptions reverse the order
+        every(:john.likes(X), X.good.assumed).and(Y.good).map{Y}.should == [:beer, :water]
+      end
+
+    end
+
+
+
   end
 
 end
-

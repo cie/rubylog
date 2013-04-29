@@ -10,7 +10,6 @@ describe Rubylog::DSL::Primitives, :rubylog=>true do
       self.default_subject = String
       class << primitives
         def looong s
-          yield if s.length > 10
         end
       end
       String.instance_methods.should include :looong
@@ -27,12 +26,17 @@ describe Rubylog::DSL::Primitives, :rubylog=>true do
     it "defines functors on the given subject" do
       class << primitives_for(Integer)
         def large s
-          yield if s > 10
         end
       end
       Integer.instance_methods.should include :large
       Integer.instance_methods.should include :large!
       Integer.instance_methods.should include :large?
+    end
+  end
+
+  describe "Primitives#inspect" do
+    specify do
+      primitives_for(Integer).inspect.should =~ /\Aprimitives_for\(.*\)\z/
     end
   end
 

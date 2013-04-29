@@ -10,17 +10,15 @@ module Rubylog
       @body = body
     end
 
-    def == other
-      head == other.head and body == other.body
-    end
-
     # CompoundTerm methods
     include Rubylog::CompoundTerm
     def rubylog_clone &block
       block.call Rule.new @head.rubylog_clone(&block), @body.rubylog_clone(&block)
     end
     def rubylog_deep_dereference
-      Rule.new @head, @body
+      # this is not necessary
+      #Rule.new @head.rubylog_deep_dereference, @body.rubylog_deep_dereference
+      raise "Not implemented."
     end
   end
 end

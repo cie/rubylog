@@ -75,4 +75,20 @@ describe "Arithmetics builtins", :rubylog=>true do
   it "casts types" do
     A.product_of(3,2.0).map{A}.should be_eql [6.0]
   end
+
+  it "checks instatiation" do
+    expect { 8.product_of(B,C).map{[B,C]} }.to raise_error Rubylog::InstantiationError
+  end
+  
+  it "checks instatiation" do
+    expect { 8.sum_of(B,C).map{[B,C]} }.to raise_error Rubylog::InstantiationError
+  end
+
+  it "checks instatiation" do
+    expect { A.sum_of(B,2).map{[B,C]} }.to raise_error Rubylog::InstantiationError
+  end
+
+  it "checks instatiation" do
+    expect { A.product_of(B,2).map{[B,C]} }.to raise_error Rubylog::InstantiationError
+  end
 end
