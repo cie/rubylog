@@ -9,31 +9,39 @@ module Rubylog
     attr_reader :traceable_methods
     attr_accessor :trace_levels
 
-    # debugging
+    # Turns trace on. If value is given and is false, turns trace off. If a
+    # block is given, calls the block with trace on.
     #
-    #
-    def trace! value=true
-      @trace = value
-      @trace_levels = 0
-      setup_trace
-    end
-
-    def trace
-      begin
-        trace!
-        return yield
-      ensure
-        trace! false
+    def trace value=true
+      if not block_given?
+        @trace = value
+        @trace_levels = 0
+        update_trace
+      else
+        begin
+          trace
+          return yield
+        ensure
+          trace false
+        end
       end
     end
+
+    # returns true if tracing is active
+    def trace?
+      @trace
+    end
+
 
     def traceable method
       @traceable_methods ||= []
       @traceable_methods << method
     end
 
-    def setup_trace
-      if @trace
+    private
+
+    def update_trace
+      if trace?
         traceable_methods.each do |m|
           m.owner.send :define_method, m.name do |*args,&block|
             begin
