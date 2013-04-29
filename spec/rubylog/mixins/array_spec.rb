@@ -34,7 +34,16 @@ describe Array, :rubylog=>true do
       a = A
       b = B
       can_unify [*a], [*b] do
-        a.instance_variable_get(:"@value").should == b
+        b.value.should equal a
+      end
+    end
+
+    it "unifies two arrays with splats at the first element" do
+      a = A
+      b = B
+      l = []
+      can_unify [*a], [*b,5] do
+        a.value.should eql [*b,5]
       end
     end
 
