@@ -20,10 +20,6 @@ class Rubylog::DSL::ArraySplat
     self.class == other.class && @var == other.var
   end
 
-  def hash
-    @var.hash
-  end
-
   # CompoundTerm methods
   include Rubylog::CompoundTerm
 

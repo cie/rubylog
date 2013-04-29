@@ -2,6 +2,8 @@ require "spec_helper"
 
 describe Rubylog::Tracing, :rubylog=>true do
   before do
+    @old_argv = ARGV.dup
+    ARGV.replace ["spec/rubylog/tracing_spec.input"]
     @old_stdout = $stdout
     $stdout = @output = StringIO.new
   end
@@ -9,6 +11,7 @@ describe Rubylog::Tracing, :rubylog=>true do
   after do
     Rubylog.trace?.should == false
     $stdout = @old_stdout
+    ARGV.replace @old_argv
   end
 
   it "can be called with true/false" do
