@@ -41,11 +41,40 @@ describe Array, :rubylog=>true do
     it "unifies two arrays with splats at the first element" do
       a = A
       b = B
-      l = []
       can_unify [*a], [*b,5] do
         a.value.should eql [*b,5]
       end
     end
 
+    it "unifies a splat with empty array" do
+      a = A
+      can_unify [*a], [] do
+        a.value.should eql []
+      end
+    end
+
+    it "unififes splats at first elements" do
+      A.is([1,2,3]).and([*A,4].is([*B,*ANY])).map{B}.should ==
+        [[],[1],[1,2],[1,2,3],[1,2,3,4]]
+    end
+
+    it "unififes first splat with first non-splat" do
+      A.is([1,2,3]).and([*A,4].is([X,*C])).map{[X,C]}.should ==
+        [[1,[2,3,4]]]
+    end
+
+    it "unififes first empty splat with first non-splat" do
+      A.is([]).and([*A,4].is([X,*C])).map{[X,C]}.should ==
+        [[4,[]]]
+    end
+
+
   end
+
+  describe "#rubylog_deep_dereference" do
+    it "does keeps unbound splats" do
+      [*A].rubylog_deep_dereference.should eql [*A]
+    end
+  end
+
 end

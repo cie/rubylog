@@ -13,11 +13,11 @@ class Rubylog::DSL::ArraySplat
   end
 
   def eql? other
-    @var.eql? other.var
+    self.class == other.class && @var.eql?(other.var)
   end
 
   def == other
-    @var == other.var
+    self.class == other.class && @var == other.var
   end
 
   def hash

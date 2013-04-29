@@ -39,6 +39,7 @@ class Array
           end
         end
       when other[0].is_a?(Rubylog::DSL::ArraySplat )
+        # [*A,...] = [*B,...]
         case 
         when self.length == 1 && other.length == 1
           # if [*A] = [*B]
@@ -47,23 +48,41 @@ class Array
             yield
           end
         when self.length == 1
-          # if [*A] = [...]
+          # if [*A] = [*B,...]
           # then A=[...]
           self[0].var.rubylog_unify other do
             yield
           end
+          # TODO: we can also optimize ends of arrays.
         else
-          # TODO
+          # this may lead to infinite loop if variables are unbound
+          # TODO: Maybe an InstantiationError may be better.
+          # if [*A,...] = [*B,...]
+          # then eiter A=[], [...]=[*B,...]
+          self[0].var.rubylog_unify [] do
+            self[1..-1].rubylog_unify other do
+              yield
+            end
+          end
+          # or A=[H,*T], [H,*T,...]=[*B,...]
+          part = [Rubylog::Variable.new, Rubylog::DSL::ArraySplat.new]
+          self[0].var.rubylog_unify part do
+            (part + self[1..-1]).rubylog_unify other do
+              yield
+            end
+          end
+
         end
 
       else
-        # then eiter A=[], [...]=[...]
+        # if [*A,...] = [X,...]
+        # then eiter A=[], [...]=[X,...]
         self[0].var.rubylog_unify [] do
           self[1..-1].rubylog_unify other do
             yield
           end
         end
-        # or A=[H,*T], [H,*T,...]=[...]
+        # or A=[H,*T], [H,*T,...]=[X,...]
         part = [Rubylog::Variable.new, Rubylog::DSL::ArraySplat.new]
         self[0].var.rubylog_unify part do
           (part + self[1..-1]).rubylog_unify other do
@@ -117,8 +136,10 @@ class Array
       when Rubylog::DSL::ArraySplat
         v = t.var.rubylog_dereference
         if v.is_a?(Array)
+          # if it could be resolved
           v.rubylog_deep_dereference
         else
+          # if it is still a variable
           [t]
         end
       else
