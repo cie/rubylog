@@ -21,7 +21,7 @@ Rubylog do
     def in a,b
       a = a.rubylog_resolve_function
       b = b.rubylog_resolve_function.rubylog_dereference
-      if b.instance_of? Rubylog::Variable
+      if b.is_a? Rubylog::Variable
         raise Rubylog::InstantiationError.new :in, [a,b]
       else
         b.each do |e|

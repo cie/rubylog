@@ -24,6 +24,22 @@ describe Rubylog::Variable, :rubylog=>true do
     end
   end
 
+  describe "#value" do
+    it "returns the value if bound" do
+      a = A
+      a.send :bind_to, 5 do
+        a.value.should == 5
+      end
+    end
+
+    it "returns nil if unbound" do
+      a = A
+      a.send :bind_to, 5 do
+      end
+      a.value.should == nil
+    end
+  end
+
   describe "dereferencing" do
     predicate_for Integer, ".divides()"
 

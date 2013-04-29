@@ -35,8 +35,7 @@ module Rubylog
 
 
     def value
-      return nil if (val = rubylog_dereference).kind_of? Variable
-      val
+      @value if @bound
     end
 
     def dont_care? 
@@ -106,8 +105,8 @@ module Rubylog
     include Clause
 
     def prove
-      v = value
-      raise Rubylog::InstantiationError.new(self) if v.nil?
+      v = rubylog_dereference
+      raise Rubylog::InstantiationError.new(self) if v.is_a? Rubylog::Variable
 
       # match variables if not matched
       unless v.rubylog_variables
