@@ -5,20 +5,19 @@
     <tt>dir\_in</tt> also yields relative paths.
   * <tt>trace</tt> has became <tt>Rubylog.trace</tt>. If you use
     <tt>Kernel#Rubylog</tt>, it does not matter.
-  * <tt>Theory</tt> has changed to <tt>Context</tt> and it became a module. No
-    more inclusion of theories.
-  * Predicates no more belong to the theory, they are just attached to the
-    subject class at the time of functor creation.
+  * <tt>Theory</tt> has changed to <tt>Context</tt> and it became a module. 
+  * No more inclusion of theories (contexts).
+  * Predicates do not have reference in the theory (context), they are only referenced from the
+    subject class in closures of the functor methods.
   * Unification uses <tt>eql?</tt> instead of <tt>==</tt>. This means
     <tt>5.0.is\_not(5)</tt>
-  * <tt>Theory#eval</tt> became <tt>Context#query</tt>
+  * <tt>Theory#eval</tt> removed. Use <tt>Context#instance\_eval</tt>.
   * Removed <tt>functor</tt>, use <tt>predicate</tt> and <tt>predicate\_for</tt>
     instead. The latter ones have a different syntax for indicating predicates, eg.
     <tt>".and() .false :true"</tt> or <tt>"L.splits\_to(H,T)"</tt>
-  * <tt>Structure</tt> is bound to the predicate it represents.
+  * <tt>Structure</tt> is bound to the predicate it represents. The first argument of <tt>Structure.new</tt> is the predicate. <tt>S.structure(Predicate,Functor,Args)</tt> now has 4 arguments.
   * <tt>current\_theory</tt> is removed.
-  * No more real prefix functors, prefix functors are attached to the context
-    object. Use <tt>predicate\_for Rubylog::Context, "..."</tt>.
+  * No more real prefix functors, n-ary prefix functors are n\+1-ary functors with the context object as the first argument. Use <tt>predicate\_for Rubylog::Context, "..."</tt>.
   * <tt>Rubylog::DefaultBuiltins</tt> is replaced by <tt>Rubylog</tt>
   * <tt>Theory#prove</tt> was removed. Use <tt>Context#true?</tt>
   * <tt>Rubylog::Callable<tt> renamed to <tt>Rubylog::Clause</tt>
