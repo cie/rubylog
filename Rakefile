@@ -34,38 +34,8 @@ RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = FileList['spec/**/*_spec.rb']
 end
 
-require 'reek/rake/task'
-Reek::Rake::Task.new do |t|
-  t.fail_on_error = true
-  t.verbose = false
-  t.source_files = 'lib/**/*.rb'
-end
-
-require 'roodi'
-require 'roodi_task'
-RoodiTask.new do |t|
-  t.verbose = false
-end
-
-task :default => :logic
-
 require 'yard'
 YARD::Rake::YardocTask.new
-
-task :logic do
-  require "simplecov"
-  SimpleCov.start
-
-  require "rubylog"
-
-  files = Dir['./logic/**/*_logic.rb']
-
-  files.each do |x|
-    puts x
-    require x
-    puts
-  end
-end
 
 file "doc/models.dot" do |f|
   sh "yard graph > #{f.name}"
