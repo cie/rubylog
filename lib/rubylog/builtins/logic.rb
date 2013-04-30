@@ -99,12 +99,29 @@ Rubylog do
   end
 
   class << primitives_for_context
-    # finds every solution of a and for every solution dereferences all
+    # finds every solution of a, and for each solution dereferences all
     # variables in b if possible and collects the results. Then joins all b's
-    # with .and() and solves it.
+    # with .and() and solves the resulted expression.
     def every _, a, b
       c = []
-      a.prove { c << b.rubylog_deep_dereference }
+      a.prove do
+        if b.is_a? Proc
+          # save copies of actual variables
+          vars = a.rubylog_variables.map do |v|
+            new_v = Rubylog::Variable.new(v.name)
+            new_v.send :bind_to!, v.value if v.bound?
+          end
+
+          # store them in a closure
+          b_resolved = proc do
+            b.call_with_rubylog_variables vars
+          end
+        else
+          # dereference actual variables
+          b_resolved = b.rubylog_deep_dereference 
+        end
+        c << b_resolved
+      end
       c.inject(:true){|a,b|a.and b}.solve { yield }
     end
   end

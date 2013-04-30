@@ -168,6 +168,12 @@ module Rubylog
     end
     rubylog_traceable :bind_to
 
+    def bind_to! other
+      @bound = true; @value = other
+      self
+    end
+    private :bind_to!
+
     # yields with self.guards = self.guards + other_guards, then restores guards
     def append_guards other_guards
       original_guards = @guards

@@ -13,19 +13,14 @@ First, install the gem
 
 or, if you use +bundler+, add this line to your +Gemfile+:
 
-  gem 'rubylog', '~>1.0.0'
+  gem 'rubylog', '~>2.0pre1'
 
 
 
-First, you have to create a theory and write your code in the block given to it:
+First, you need a Rubylog context. The simplest you can do is to extend Rubylog::Context into the main object.
 
   require 'rubylog'
-
-  MyTheory = theory do
-    # your code here
-  end
-
-All further examples in this file should be written within the +theory+ block.
+  extend Rubylog::Context
 
 
 === Data types
@@ -40,13 +35,6 @@ Rubylog variables are (undefined) constant names:
 A variables whose name starts with +ANY...+ (case-insensitive) is a don't-care
 variable (like +_+ in Prolog).
 
-Structures are in a different order than they are in prolog:
-
-  functor_for String, :likes
-  'John'.likes('beer')
-
-which would be +likes('John','beer')+ in prolog.
-
 Lists are just Ruby arrays:
 
   [1, 2, 3]
@@ -55,13 +43,20 @@ They can have splats:
 
   [1, 2, *T]
 
-Which would be +[1,2|T]+ in Prolog, however, in Rubylog, splats are not limited
+Which would be <tt>[1,2|T]</tt> in Prolog, however, in Rubylog, splats are not limited
 to the end.
 
 === Predicates
+As in prolog, predicates are the buinding blocks of your program. However, the arguments are in a different order than they are in prolog:
+
+  predicate_for String, ".likes()"
+  'John'.likes!('beer')
+
+which would be <tt>likes('John','beer').</tt> in prolog. In Rubylog, predicates must be declared. The string indicating the predicate syntax is <tt>".likes()"</tt>. The format is <tt>:asdf .asdf .asdf() .asdf(,) .asdf(,,)</tt> for predicates with 0,1,2,3,4 arguments.
 
 You can assert a rule with the +if+ method:
 
+  predicate_for String, ".drinks() .has()"
   X.drinks(Y).if X.has(Y).and X.likes(Y)        
 
 This would be +drinks(X,Y) :- has(X,Y), likes(X,Y)+ in Prolog.
@@ -71,12 +66,13 @@ syntax:
 
   'John'.likes! 'milk'                         
 
-Bang assertions return their first argument (which is +'John'+ in this case), so they can be chained:
+Bang assertions return their first argument (which is <tt>'John'</tt> in this case), so they can be chained:
 
   'John'.likes!('beer').has!('beer')
 
 You can also use +unless+:
 
+  predicate_for String, ".good .bad"
   A.good.unless A.bad              
 
 Nullary predicates are symbols, similar to Prolog:
@@ -93,17 +89,19 @@ Some built-in predicates and their Prolog equivalents:
   -------  ------ 
   :true     true
   :fail     fail
-  .and      ,
-  .or       ;
+  .and()    ,
+  .or()     ;
   :false    \+
-  .is       =
-  .is_not   =/=
-  .in       member
+  .is()     =
+  .is_not() =/=
+  .in()     member
   :cut!     !
 
 There are some new ones:
 
   is_not, not_in, all, any, one, none, iff
+
+See the documentation in <tt>lib/rubylog/builtins/</tt>
 
 === Unification
 

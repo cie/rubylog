@@ -2,6 +2,7 @@
 * New features
   * solve without a block returns an enumerator
   * warning for singleton variables
+  * predicate for checking bound/unbound variables
 
 == Version 2.0.0 (to be released)
 * Backwards incompatibilities

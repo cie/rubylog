@@ -5,7 +5,7 @@ Rubylog do
   predicate_for Integer, ".on(,)", ".attacks(,)", ".placed"
   predicate ":arranged"
 
-  N=4
+  N=7
 
   A.attacks(R,ANY_C).if A.on(R,ANY_C)
   A.attacks(ANY_R,C).if A.on(ANY_R,C)

@@ -226,6 +226,28 @@ describe "logic builtins", :rubylog => true do
       (:todd.likes(X).all(:todd.likes(X))).true?.should be_true
     end
 
+    specify "all works with procs" do
+      (:john.likes(X).all{:john.likes?(X)}).true?.should be_true
+      (:john.likes(X).all{:jane.likes?(X)}).true?.should be_true
+      (:john.likes(X).all{:jeff.likes?(X)}).true?.should_not be_true
+      (:john.likes(X).all{:todd.likes?(X)}).true?.should_not be_true
+
+      (:jane.likes(X).all{:john.likes?(X)}).true?.should_not be_true
+      (:jane.likes(X).all{:jane.likes?(X)}).true?.should be_true
+      (:jane.likes(X).all{:jeff.likes?(X)}).true?.should_not be_true
+      (:jane.likes(X).all{:todd.likes?(X)}).true?.should_not be_true
+
+      (:jeff.likes(X).all{:john.likes?(X)}).true?.should_not be_true
+      (:jeff.likes(X).all{:jane.likes?(X)}).true?.should_not be_true
+      (:jeff.likes(X).all{:jeff.likes?(X)}).true?.should be_true
+      (:jeff.likes(X).all{:todd.likes?(X)}).true?.should_not be_true
+
+      (:todd.likes(X).all{:john.likes?(X)}).true?.should_not be_true
+      (:todd.likes(X).all{:jane.likes?(X)}).true?.should be_true
+      (:todd.likes(X).all{:jeff.likes?(X)}).true?.should_not be_true
+      (:todd.likes(X).all{:todd.likes?(X)}).true?.should be_true
+    end
+
     it "can be called with global functor syntax" do
       all(:john.likes(X), :jane.likes(X)).true?.should be_true
       all(:jane.likes(X), :john.likes(X)).true?.should_not be_true
@@ -279,6 +301,29 @@ describe "logic builtins", :rubylog => true do
         every(:todd.likes(X),:jeff.likes(X)).true?.should_not be_true
         every(:todd.likes(X),:todd.likes(X)).true?.should be_true
       end
+
+      specify "works like all with procs" do
+        every(:john.likes(X)){:john.likes?(X)}.true?.should be_true
+        every(:john.likes(X)){:jane.likes?(X)}.true?.should be_true
+        every(:john.likes(X)){:jeff.likes?(X)}.true?.should_not be_true
+        every(:john.likes(X)){:todd.likes?(X)}.true?.should_not be_true
+
+        every(:jane.likes(X)){:john.likes?(X)}.true?.should_not be_true
+        every(:jane.likes(X)){:jane.likes?(X)}.true?.should be_true
+        every(:jane.likes(X)){:jeff.likes?(X)}.true?.should_not be_true
+        every(:jane.likes(X)){:todd.likes?(X)}.true?.should_not be_true
+
+        every(:jeff.likes(X)){:john.likes?(X)}.true?.should_not be_true
+        every(:jeff.likes(X)){:jane.likes?(X)}.true?.should_not be_true
+        every(:jeff.likes(X)){:jeff.likes?(X)}.true?.should be_true
+        every(:jeff.likes(X)){:todd.likes?(X)}.true?.should_not be_true
+
+        every(:todd.likes(X)){:john.likes?(X)}.true?.should_not be_true
+        every(:todd.likes(X)){:jane.likes?(X)}.true?.should be_true
+        every(:todd.likes(X)){:jeff.likes?(X)}.true?.should_not be_true
+        every(:todd.likes(X)){:todd.likes?(X)}.true?.should be_true
+      end
+
 
       specify "can be used for assumptions" do
         predicate_for Symbol, ".good"
