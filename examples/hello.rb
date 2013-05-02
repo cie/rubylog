@@ -3,7 +3,7 @@ $:.unshift File.dirname(__FILE__)+"/../lib"
 require 'rubylog'
 
 
-Rubylog do
+rubylog do
   predicate_for String, ".written :hello"
 
   X.written.if {puts X; true}
@@ -11,5 +11,7 @@ Rubylog do
   :hello.if "Hello world!".written
 end
 
-Rubylog.solve :hello
+rubylog do
+  solve :hello
+end
 

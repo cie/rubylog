@@ -1,7 +1,7 @@
 require "rubylog"
 
 
-Rubylog do
+rubylog do
   predicate_for Array, ".on()"
 
   black, white = 0, 1

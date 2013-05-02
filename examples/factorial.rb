@@ -1,7 +1,7 @@
 $:.unshift File.dirname(__FILE__)+"/../lib"
 require 'rubylog'
 
-Rubylog do
+rubylog do
   predicate_for Integer, ".factorial()"
 
   0.factorial! 1

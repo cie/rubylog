@@ -19,6 +19,6 @@ module Rubylog::Assertable
   # block as the body to the head's predicate. Adds a .false to the body.
   def unless body=nil, &block
     raise Rubylog::SyntaxError, "No body given", caller unless body || block
-    predicate.assert self, Rubylog.false(body || block)
+    predicate.assert self, Rubylog::DefaultContext.false(body || block)
   end
 end

@@ -1,4 +1,4 @@
-Rubylog do
+rubylog do
   predicate_for String, ".filename_in()", ".dirname_in()", ".file_in()", ".dir_in()"
   
   # If D is not a variable, succeeds if D is a name of an existing directory and 

@@ -1,7 +1,7 @@
 $:.unshift File.dirname(__FILE__)+"/../lib"
 require "rubylog"
 
-Rubylog do
+rubylog do
   predicate_for Integer, ".on(,)", ".attacks(,)", ".placed"
   predicate ":arranged"
 

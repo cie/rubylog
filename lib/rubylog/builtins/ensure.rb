@@ -1,4 +1,4 @@
-Rubylog do
+rubylog do
   
   class << primitives_for ::Rubylog::Clause
     # succeeds if A succeeds. At backtracking, solves B
