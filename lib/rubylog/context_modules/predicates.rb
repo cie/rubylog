@@ -5,14 +5,9 @@ module Rubylog
   module ContextModules
     module Predicates
 
-      def initialize_context
-        @default_subject = []
-        super 
-      end
-
       def predicate *indicators
         each_indicator(indicators) do |indicator|
-          create_procedure(indicator).add_functor_to [@default_subject, Variable]
+          create_procedure(indicator).add_functor_to [default_subject, Variable]
         end
       end
 
@@ -28,7 +23,10 @@ module Rubylog
         end
       end
 
-      attr_accessor :default_subject
+      attr_writer :default_subject
+      def default_subject
+        @default_subject || []
+      end 
 
 
       protected

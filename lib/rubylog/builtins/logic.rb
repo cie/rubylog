@@ -1,4 +1,4 @@
-Rubylog do
+rubylog do
   class << primitives
     # true
     def true

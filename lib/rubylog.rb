@@ -41,12 +41,8 @@ require 'rubylog/mixins/proc'
 require 'rubylog/mixins/string'
 require 'rubylog/mixins/symbol'
 
-# create a context in the Rubylog object
-class << Rubylog
-  include Rubylog::Context
-end
-Rubylog.initialize_context
-
+# defaul context
+require 'rubylog/default_context'
 
 # builtins
 require 'rubylog/builtins'

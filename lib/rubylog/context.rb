@@ -1,6 +1,5 @@
 
 require 'rubylog/dsl/variables'
-require 'rubylog/context_modules/base'
 require 'rubylog/context_modules/checks'
 require 'rubylog/context_modules/demonstration'
 require 'rubylog/context_modules/predicates'
@@ -12,9 +11,6 @@ require 'rubylog/context_modules/thats'
 module Rubylog::Context
 
 
-  # this must be included first
-  include Rubylog::ContextModules::Base
-    
   include Rubylog::ContextModules::Checks
   include Rubylog::ContextModules::Demonstration
   include Rubylog::ContextModules::Predicates

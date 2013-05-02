@@ -1,4 +1,4 @@
-Rubylog do
+rubylog do
 
   class << primitives_for Numeric
     # Succeeds if +c+ unifies with the sum of +a+ and +b+ if +a+ and +b+ is given.

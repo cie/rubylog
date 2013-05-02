@@ -7,7 +7,6 @@ module Rubylog
     class << source_object
       include Rubylog::Context
     end
-    source_object.initialize_context
     source_object
   end
 
@@ -49,8 +48,6 @@ module Rubylog
       class << context
         include Rubylog::DSL::Variables
       end
-
-      context.initialize_context
 
       if context.is_a? Module
         # if context is a class or module, we also include DSL::Variables directly

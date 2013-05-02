@@ -1,6 +1,6 @@
 require "rubylog"
 
-Rubylog do
+rubylog do
   predicate_for String, ".dir", ".contains()"
 
   ".git".dir!.contains! "Git repository"

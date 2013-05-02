@@ -1,4 +1,4 @@
-Rubylog do
+rubylog do
   predicate_for ::Rubylog::Assertable, ".assumed", ".rejected", ".revoked", ".assumed_if()", ".assumed_unless()", ".rejected_if()", ".rejected_unless()"
 
   # Asserts a rule with head H and body B in the predicate of H. It retracts it
