@@ -5,17 +5,15 @@
 
 Gem::Specification.new do |s|
   s.name = "rubylog"
-  s.version = "1.0.0"
+  s.version = ""
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bern\u{e1}t Kall\u{f3}"]
-  s.date = "2013-02-27"
-  s.description = "Rubylog is an embedded Prolog language and interpreter for Ruby."
+  s.date = "2013-05-02"
+  s.description = "Rubylog is a Prolog-like DSL for Ruby."
   s.email = "kallo.bernat@gmail.com"
-  s.executables = ["rubylog"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
-    "README.hu.rb",
     "README.rdoc"
   ]
   s.files = [
@@ -24,11 +22,9 @@ Gem::Specification.new do |s|
     "Gemfile",
     "Gemfile.lock",
     "LICENSE.txt",
-    "README.hu.rb",
     "README.rdoc",
     "Rakefile",
     "VERSION",
-    "bin/rubylog",
     "examples/dcg.rb",
     "examples/dcg2.rb",
     "examples/enumerators.rb",
@@ -37,27 +33,17 @@ Gem::Specification.new do |s|
     "examples/hello.rb",
     "examples/parsing.rb",
     "examples/primitives.rb",
-    "examples/theory.rb",
     "lib/rubylog.rb",
-    "lib/rubylog/builtins/default.rb",
     "lib/rubylog/builtins/file_system.rb",
     "lib/rubylog/builtins/logic.rb",
     "lib/rubylog/builtins/reflection.rb",
     "lib/rubylog/builtins/term.rb",
-    "lib/rubylog/dsl.rb",
     "lib/rubylog/dsl/array_splat.rb",
     "lib/rubylog/dsl/primitives.rb",
     "lib/rubylog/dsl/thats.rb",
     "lib/rubylog/dsl/variables.rb",
     "lib/rubylog/errors.rb",
-    "lib/rubylog/interfaces/assertable.rb",
-    "lib/rubylog/interfaces/callable.rb",
-    "lib/rubylog/interfaces/composite_term.rb",
-    "lib/rubylog/interfaces/predicate.rb",
-    "lib/rubylog/interfaces/procedure.rb",
-    "lib/rubylog/interfaces/term.rb",
     "lib/rubylog/mixins/array.rb",
-    "lib/rubylog/mixins/class.rb",
     "lib/rubylog/mixins/hash.rb",
     "lib/rubylog/mixins/kernel.rb",
     "lib/rubylog/mixins/method.rb",
@@ -65,45 +51,9 @@ Gem::Specification.new do |s|
     "lib/rubylog/mixins/proc.rb",
     "lib/rubylog/mixins/string.rb",
     "lib/rubylog/mixins/symbol.rb",
-    "lib/rubylog/simple_procedure.rb",
     "lib/rubylog/structure.rb",
-    "lib/rubylog/theory.rb",
     "lib/rubylog/variable.rb",
-    "logic/builtins/file_system_logic.rb",
-    "logic/builtins/reflection_logic.rb",
-    "logic/dereference_logic.rb",
-    "logic/directory_structure_logic.rb",
-    "logic/dsl_logic.rb",
-    "logic/errors_logic.rb",
-    "logic/guard_logic.rb",
-    "logic/list_logic.rb",
-    "logic/map_logic.rb",
-    "logic/multitheory.rb",
-    "logic/recursion_logic.rb",
-    "logic/string_logic.rb",
-    "logic/thats_logic.rb",
-    "logic/variable_logic.rb",
     "rubylog.gemspec",
-    "spec/bartak_guide_spec.rb",
-    "spec/builtins/all_spec.rb",
-    "spec/builtins/and_spec.rb",
-    "spec/builtins/array_spec.rb",
-    "spec/builtins/branch_or_spec.rb",
-    "spec/builtins/cut_spec.rb",
-    "spec/builtins/fail_spec.rb",
-    "spec/builtins/false_spec.rb",
-    "spec/builtins/in_spec.rb",
-    "spec/builtins/is_false_spec.rb",
-    "spec/builtins/is_spec.rb",
-    "spec/builtins/matches_spec.rb",
-    "spec/builtins/or_spec.rb",
-    "spec/builtins/splits_to.rb",
-    "spec/builtins/then_spec.rb",
-    "spec/builtins/true_spec.rb",
-    "spec/clause_spec.rb",
-    "spec/compilation_spec.rb",
-    "spec/custom_classes_spec.rb",
-    "spec/dereference.rb",
     "spec/inriasuite/README",
     "spec/inriasuite/abolish",
     "spec/inriasuite/and",
@@ -172,55 +122,37 @@ Gem::Specification.new do |s|
     "spec/inriasuite/true",
     "spec/inriasuite/unify",
     "spec/inriasuite_spec.rb",
-    "spec/queries_spec.rb",
-    "spec/recursion_spec.rb",
-    "spec/ruby_code_spec.rb",
-    "spec/rules_spec.rb",
-    "spec/spec_helper.rb",
-    "spec/theory_spec.rb",
-    "spec/unification_spec.rb",
-    "spec/variable_spec.rb"
+    "spec/spec_helper.rb"
   ]
   s.homepage = "https://github.com/cie/rubylog"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
+  s.required_ruby_version = Gem::Requirement.new("= 1.9.2")
   s.rubygems_version = "1.8.15"
-  s.summary = "An embedded Prolog interpreter"
+  s.summary = "A Prolog-like DSL"
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<rspec>, ["~> 2.8.0"])
+      s.add_development_dependency(%q<rspec>, ["< 3", ">= 2.8.0"])
       s.add_development_dependency(%q<yard>, ["~> 0.7"])
-      s.add_development_dependency(%q<rdoc>, ["~> 3.12"])
-      s.add_development_dependency(%q<cucumber>, [">= 0"])
-      s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
-      s.add_development_dependency(%q<jeweler>, ["~> 1.8.3"])
+      s.add_development_dependency(%q<bundler>, [">= 1.0.0"])
+      s.add_development_dependency(%q<jeweler>, [">= 1.8.3"])
       s.add_development_dependency(%q<simplecov>, [">= 0"])
-      s.add_development_dependency(%q<reek>, ["~> 1.2.8"])
-      s.add_development_dependency(%q<roodi>, ["~> 2.1.0"])
     else
-      s.add_dependency(%q<rspec>, ["~> 2.8.0"])
+      s.add_dependency(%q<rspec>, ["< 3", ">= 2.8.0"])
       s.add_dependency(%q<yard>, ["~> 0.7"])
-      s.add_dependency(%q<rdoc>, ["~> 3.12"])
-      s.add_dependency(%q<cucumber>, [">= 0"])
-      s.add_dependency(%q<bundler>, ["~> 1.0.0"])
-      s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
+      s.add_dependency(%q<bundler>, [">= 1.0.0"])
+      s.add_dependency(%q<jeweler>, [">= 1.8.3"])
       s.add_dependency(%q<simplecov>, [">= 0"])
-      s.add_dependency(%q<reek>, ["~> 1.2.8"])
-      s.add_dependency(%q<roodi>, ["~> 2.1.0"])
     end
   else
-    s.add_dependency(%q<rspec>, ["~> 2.8.0"])
+    s.add_dependency(%q<rspec>, ["< 3", ">= 2.8.0"])
     s.add_dependency(%q<yard>, ["~> 0.7"])
-    s.add_dependency(%q<rdoc>, ["~> 3.12"])
-    s.add_dependency(%q<cucumber>, [">= 0"])
-    s.add_dependency(%q<bundler>, ["~> 1.0.0"])
-    s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
+    s.add_dependency(%q<bundler>, [">= 1.0.0"])
+    s.add_dependency(%q<jeweler>, [">= 1.8.3"])
     s.add_dependency(%q<simplecov>, [">= 0"])
-    s.add_dependency(%q<reek>, ["~> 1.2.8"])
-    s.add_dependency(%q<roodi>, ["~> 2.1.0"])
   end
 end
 
