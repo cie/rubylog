@@ -7,21 +7,6 @@ module Rubylog::RSpecExampleGroup
   def self.included example_group
     # Make it a context
     example_group.extend Rubylog::Context
-    # Add helper methods
-    example_group.extend Rubylog::RSpecExampleGroup::ClassMethods
-  end
-
-  module ClassMethods
-
-    def inherited subclass
-      super
-      # When a subclass (a sub-example-group) is created, we initialize it. We
-      # do not have to include Rubylog::Context in it because it is included in
-      # the superclass (self). We no not either extend Rubylog::Context in it
-      # because self.singleton_class.instance_methods are available in
-      # subclass.singleton_class. However, we need to initialize it.
-      subclass.initialize_context
-    end
   end
 end
 

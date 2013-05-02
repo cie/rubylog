@@ -6,5 +6,4 @@ module Rubylog
     include Rubylog::Context
   end
 
-  DefaultContext.initialize_context
 end
