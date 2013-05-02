@@ -5,16 +5,17 @@
 
 Gem::Specification.new do |s|
   s.name = "rubylog"
-  s.version = ""
+  s.version = "2.0pre1"
 
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
+  s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bern\u{e1}t Kall\u{f3}"]
   s.date = "2013-05-02"
   s.description = "Rubylog is a Prolog-like DSL for Ruby."
   s.email = "kallo.bernat@gmail.com"
   s.extra_rdoc_files = [
     "LICENSE.txt",
-    "README.rdoc"
+    "README.rdoc",
+    "README.rdoc.orig"
   ]
   s.files = [
     ".document",
@@ -23,21 +24,58 @@ Gem::Specification.new do |s|
     "Gemfile.lock",
     "LICENSE.txt",
     "README.rdoc",
+    "RELEASE_NOTES.rdoc",
     "Rakefile",
+    "TODO.txt",
     "VERSION",
+    "examples/a_plus_b.rb",
+    "examples/checkmate.rb",
+    "examples/combination.rb",
     "examples/dcg.rb",
     "examples/dcg2.rb",
+    "examples/directory_structure_logic.rb",
+    "examples/dirlist.rb",
+    "examples/divisors.rb",
     "examples/enumerators.rb",
     "examples/factorial.rb",
+    "examples/file_search.rb",
     "examples/hanoi.rb",
     "examples/hello.rb",
+    "examples/mice.rb",
+    "examples/mice2.rb",
+    "examples/n_queens.rb",
+    "examples/object_oriented.rb",
+    "examples/palindrome_detection.rb",
     "examples/parsing.rb",
+    "examples/permutation.rb",
+    "examples/prefix.rb",
+    "examples/primality_by_division.rb",
     "examples/primitives.rb",
+    "examples/sieve_of_eratosthenes.rb",
+    "examples/string_interpolation.rb",
+    "examples/sudoku.rb",
+    "examples/tracing.rb",
+    "lib/rspec/rubylog.rb",
     "lib/rubylog.rb",
+    "lib/rubylog/assertable.rb",
+    "lib/rubylog/builtins.rb",
+    "lib/rubylog/builtins/arithmetics.rb",
+    "lib/rubylog/builtins/assumption.rb",
+    "lib/rubylog/builtins/ensure.rb",
     "lib/rubylog/builtins/file_system.rb",
     "lib/rubylog/builtins/logic.rb",
     "lib/rubylog/builtins/reflection.rb",
     "lib/rubylog/builtins/term.rb",
+    "lib/rubylog/clause.rb",
+    "lib/rubylog/compound_term.rb",
+    "lib/rubylog/context.rb",
+    "lib/rubylog/context_creation.rb",
+    "lib/rubylog/context_modules/checks.rb",
+    "lib/rubylog/context_modules/demonstration.rb",
+    "lib/rubylog/context_modules/predicates.rb",
+    "lib/rubylog/context_modules/primitives.rb",
+    "lib/rubylog/context_modules/thats.rb",
+    "lib/rubylog/default_context.rb",
     "lib/rubylog/dsl/array_splat.rb",
     "lib/rubylog/dsl/primitives.rb",
     "lib/rubylog/dsl/thats.rb",
@@ -51,7 +89,14 @@ Gem::Specification.new do |s|
     "lib/rubylog/mixins/proc.rb",
     "lib/rubylog/mixins/string.rb",
     "lib/rubylog/mixins/symbol.rb",
+    "lib/rubylog/nullary_predicates.rb",
+    "lib/rubylog/predicate.rb",
+    "lib/rubylog/primitive.rb",
+    "lib/rubylog/procedure.rb",
+    "lib/rubylog/rule.rb",
     "lib/rubylog/structure.rb",
+    "lib/rubylog/term.rb",
+    "lib/rubylog/tracing.rb",
     "lib/rubylog/variable.rb",
     "rubylog.gemspec",
     "spec/inriasuite/README",
@@ -122,12 +167,43 @@ Gem::Specification.new do |s|
     "spec/inriasuite/true",
     "spec/inriasuite/unify",
     "spec/inriasuite_spec.rb",
-    "spec/spec_helper.rb"
+    "spec/integration/custom_classes_spec.rb",
+    "spec/integration/dsl_spec.rb",
+    "spec/integration/recursion_spec.rb",
+    "spec/integration/theory_as_module_spec.rb",
+    "spec/integration/theory_as_module_with_include_spec.rb",
+    "spec/rspec/rubylog_spec.rb",
+    "spec/rubylog/assertable_spec.rb",
+    "spec/rubylog/builtins/arithmetics_spec.rb",
+    "spec/rubylog/builtins/assumption_spec.rb",
+    "spec/rubylog/builtins/ensure_spec.rb",
+    "spec/rubylog/builtins/file_system_spec.rb",
+    "spec/rubylog/builtins/logic_spec.rb",
+    "spec/rubylog/builtins/reflection_spec.rb",
+    "spec/rubylog/builtins/term_spec.rb",
+    "spec/rubylog/context_modules/demonstration_spec.rb",
+    "spec/rubylog/context_modules/predicates_spec.rb",
+    "spec/rubylog/context_modules/thats_spec.rb",
+    "spec/rubylog/dsl/array_splat_spec.rb",
+    "spec/rubylog/dsl/primitives_spec.rb",
+    "spec/rubylog/errors_spec.rb",
+    "spec/rubylog/interfaces/term_spec.rb",
+    "spec/rubylog/mixins/array_spec.rb",
+    "spec/rubylog/mixins/composite_term_spec.rb",
+    "spec/rubylog/mixins/proc_spec.rb",
+    "spec/rubylog/mixins/string_spec.rb",
+    "spec/rubylog/mixins/symbol_spec.rb",
+    "spec/rubylog/structure_spec.rb",
+    "spec/rubylog/term_spec.rb",
+    "spec/rubylog/tracing_spec.input",
+    "spec/rubylog/tracing_spec.rb",
+    "spec/rubylog/variable_spec.rb",
+    "spec/spec_helper.rb",
+    "vimrc"
   ]
   s.homepage = "https://github.com/cie/rubylog"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.required_ruby_version = Gem::Requirement.new("= 1.9.2")
   s.rubygems_version = "1.8.15"
   s.summary = "A Prolog-like DSL"
 
