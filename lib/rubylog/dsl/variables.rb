@@ -51,7 +51,7 @@ module Rubylog::DSL
         begin
           old_vars = Thread.current[:rubylog_current_variables]
           if old_vars
-            Thread.current[:rubylog_current_variables] = old_vars + vars
+            Thread.current[:rubylog_current_variables] = vars + old_vars
           else
             Thread.current[:rubylog_current_variables] = vars
           end
