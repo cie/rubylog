@@ -3,11 +3,17 @@ module Rubylog
 
     # data structure
     attr_reader :functor, :args
-    def initialize functor, *args
+
+    def initialize predicate, functor, *args
       #raise Rubylog::TypeError, "functor cannot be #{functor}" unless functor.is_a? Symbol
+      @predicate = predicate
       @functor = functor
       @args = args.freeze
       @arity = args.count
+    end
+
+    def predicate
+      @predicate 
     end
 
     def [] i
@@ -45,21 +51,15 @@ module Rubylog
     # Assertable methods
     include Rubylog::Assertable
 
-    # Callable methods
-    include Rubylog::Callable
+    # Clause methods
+    include Rubylog::Clause
 
     def prove
-      begin
-        Rubylog.current_theory.print_trace 1, self, rubylog_variables_hash
-        predicate = Rubylog.current_theory[indicator]
-        raise Rubylog::ExistenceError, indicator.inspect if not predicate
-        count = 0
-        predicate.call(*@args) { yield; count+=1 }
-        count
-      ensure
-        Rubylog.current_theory.print_trace -1
-      end
+      count = 0
+      predicate.call(*@args) { yield; count+=1 }
+      count
     end
+    rubylog_traceable :prove
     
 
     # enumerable methods
@@ -77,38 +77,19 @@ module Rubylog
 
     attr_reader :rubylog_variables
 
-    # CompositeTerm methods
-    include Rubylog::CompositeTerm
+    # CompoundTerm methods
+    include Rubylog::CompoundTerm
+
     def rubylog_clone &block
-      block.call Structure.new @functor,
+      block.call Structure.new @predicate, @functor.rubylog_clone(&block),
         *@args.map{|a| a.rubylog_clone &block}
     end
+
     def rubylog_deep_dereference
-      Structure.new @functor.rubylog_deep_dereference,
+      Structure.new @predicate, @functor.rubylog_deep_dereference,
         *@args.rubylog_deep_dereference
     end
 
-
-    # convenience methods
-    #def each_solution
-      #goal = rubylog_compile_variables 
-      #goal.variable_hashes_without_compile.each do |hash|
-        #yield goal.rubylog_clone {|i| hash[i] || i }
-      #end
-    #end
-
-    def variable_hashes
-      rubylog_compile_variables.variable_hashes_without_compile
-    end
-
-    protected
-
-    def variable_hashes_without_compile
-      variables = rubylog_variables
-      map do |*values|
-        Hash[variables.zip values]
-      end
-    end
   end
 end
 

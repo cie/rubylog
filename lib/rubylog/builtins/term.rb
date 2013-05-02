@@ -1,8 +1,6 @@
-Rubylog.theory "Rubylog::TermBuiltins", nil do
-  subject ::Rubylog::Term
+rubylog do
 
-  class << primitives
-
+  class << primitives_for Rubylog::Term
     # Unifies +a+ with +b+. Both can be a proc, which is then called and the result
     # is taken.
     def is a,b
@@ -29,14 +27,8 @@ Rubylog.theory "Rubylog::TermBuiltins", nil do
     def in a,b
       a = a.rubylog_resolve_function
       b = b.rubylog_resolve_function.rubylog_dereference
-      if b.instance_of? Rubylog::Variable
-        Rubylog::InternalHelpers.non_empty_list {|l|
-          a.rubylog_unify(l[-1]) {
-            b.rubylog_unify(l) {
-              yield
-            }
-          }
-        }
+      if b.is_a? Rubylog::Variable
+        raise Rubylog::InstantiationError.new :in, [a,b]
       else
         b.each do |e|
           a.rubylog_unify(e) { yield }
@@ -50,8 +42,4 @@ Rubylog.theory "Rubylog::TermBuiltins", nil do
       yield
     end
   end
-end
-
-Rubylog::DefaultBuiltins.amend do
-  include Rubylog::TermBuiltins
 end

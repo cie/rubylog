@@ -1,9 +1,9 @@
 $:.unshift File.dirname(__FILE__)+"/../lib"
 require 'rubylog'
 
-theory do
-  subject Symbol
-  functor :likes
+rubylog do
+  self.default_subject = Symbol
+  predicate ".likes()"
 
   :john.likes! :beer
   :john.likes! :milk

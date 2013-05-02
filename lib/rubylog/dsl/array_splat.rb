@@ -9,11 +9,19 @@ class Rubylog::DSL::ArraySplat
   end
 
   def inspect
-    "*#{var}"
+    "*#{var.inspect}"
   end
 
-  # CompositeTerm methods
-  include Rubylog::CompositeTerm
+  def eql? other
+    self.class == other.class && @var.eql?(other.var)
+  end
+
+  def == other
+    self.class == other.class && @var == other.var
+  end
+
+  # CompoundTerm methods
+  include Rubylog::CompoundTerm
 
   def rubylog_clone &block
     block[Rubylog::DSL::ArraySplat.new(@var.rubylog_clone(&block))]

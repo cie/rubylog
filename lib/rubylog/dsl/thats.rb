@@ -20,3 +20,9 @@ class Rubylog::DSL::Thats < BasicObject
     end
   end
 end
+
+class Rubylog::DSL::Thats::Not < Rubylog::DSL::Thats
+  def rubylog_matches_as_guard? other
+    not super
+  end
+end

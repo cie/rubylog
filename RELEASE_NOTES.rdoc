@@ -1,0 +1,51 @@
+== Version 2.1 (planned)
+* New features
+  * solve without a block returns an enumerator
+  * warning for singleton variables
+  * predicate for checking bound/unbound variables
+
+== Version 2.0.0 (to be released)
+* Backwards incompatibilities
+  * <tt>Rubylog.theory</tt> is removed. Use <tt>Kernel#Rubylog</tt>.
+  * <tt>file\_in</tt> includes directories and yields relative paths.
+    <tt>dir\_in</tt> also yields relative paths.
+  * <tt>trace</tt> has became <tt>Rubylog.trace</tt>. If you use
+    <tt>Kernel#Rubylog</tt>, it does not matter.
+  * <tt>Theory</tt> has changed to <tt>Context</tt> and it became a module. 
+  * No more inclusion of theories (contexts).
+  * Predicates do not have reference in the theory (context), they are only referenced from the
+    subject class in closures of the functor methods.
+  * Unification uses <tt>eql?</tt> instead of <tt>==</tt>. This means
+    <tt>5.0.is\_not(5)</tt>
+  * <tt>Theory#eval</tt> removed. Use <tt>Context#instance\_eval</tt>.
+  * Removed <tt>functor</tt>, use <tt>predicate</tt> and <tt>predicate\_for</tt>
+    instead. The latter ones have a different syntax for indicating predicates, eg.
+    <tt>".and() .false :true"</tt> or <tt>"L.splits\_to(H,T)"</tt>
+  * <tt>Structure</tt> is bound to the predicate it represents. The first argument of <tt>Structure.new</tt> is the predicate. <tt>S.structure(Predicate,Functor,Args)</tt> now has 4 arguments.
+  * <tt>current\_theory</tt> is removed.
+  * No more real prefix functors, n-ary prefix functors are n\+1-ary functors with the context object as the first argument. Use <tt>predicate\_for Rubylog::Context, "..."</tt>.
+  * <tt>Rubylog::DefaultBuiltins</tt> is replaced by <tt>Rubylog</tt>
+  * <tt>Theory#prove</tt> was removed. Use <tt>Context#true?</tt>
+  * <tt>Rubylog::Callable<tt> renamed to <tt>Rubylog::Clause</tt>
+  * <tt>discontiguous</tt> is removed. No more discontiguity checks.
+  * <tt>implicit</tt> is removed. No implicit mode anymore.
+  * <tt>Theory#clear</tt> is replaced by <tt>Context#initialize\_context</tt>.
+    However, currently it only clears <tt>default\_subject</tt>.
+  * <tt>CompositeTerm</tt> is renamed to <tt>CompoundTerm</tt>.
+  * <tt>rublog\_compile\_variables</tt> is renamed to
+     <tt>rubylog\_match\_variables</tt>, <tt>variable\_hashes</tt> is removed.
+  * <tt>rubylog\_variables\_hash</tt> removed
+* Features 
+  * Rspec integration
+  * +include+ or +extend+ <tt>Rubylog::Context</tt> into any class or object
+  * thats\_not
+  * Comments in indicators
+  * New tracer
+  * added <tt>every</tt>
+  * all builtins are available by default
+* Bug fixes
+
+
+== Version 1.0.0
+== Version 0.0.1
+== Version 0.0.0

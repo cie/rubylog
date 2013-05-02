@@ -1,4 +1,4 @@
-Rubylog.theory "Rubylog::NullaryLogicBuiltins", nil do
+rubylog do
   class << primitives
     # true
     def true
@@ -15,12 +15,11 @@ Rubylog.theory "Rubylog::NullaryLogicBuiltins", nil do
       throw :cut
     end
   end
-end
 
-Rubylog.theory "Rubylog::LogicBuiltinsForCallable", nil do
-  subject ::Rubylog::Callable, ::Rubylog::Structure, Symbol, Proc
 
-  class << primitives
+  primitives_for_clause = primitives_for [::Rubylog::Clause, ::Rubylog::Structure]
+
+  class << primitives_for_clause
     # Succeeds if both +a+ and +b+ succeeds.
     def and a, b
       a.prove { b.prove { yield } }
@@ -34,7 +33,10 @@ Rubylog.theory "Rubylog::LogicBuiltinsForCallable", nil do
 
     # Succeeds if +a+ does not succeed.
     def false a
-      a.prove { return }
+      # catch cuts
+      catch :cut do
+        a.prove { return }
+      end
       yield
     end
 
@@ -61,15 +63,17 @@ Rubylog.theory "Rubylog::LogicBuiltinsForCallable", nil do
 
     # Succeeds if for any solution of +a+, +b+ is solveable.
     #
-    # Equivalent with <tt>a.and(b).any</tt>
-    def any a,b
+    # @param a
+    # @param b defaults to :true
+    def any a,b=:true
       a.prove { b.prove { yield; return } }
     end
 
     # Succeeds if there exists one solution of +a+ where +b+ is true.
     #
-    # Equivalent with <tt>a.and(b).one</tt>
-    def one a,b
+    # @param a
+    # @param b defaults to :true
+    def one a,b=:true
       stands = false
       a.prove { 
         b.prove {
@@ -80,46 +84,57 @@ Rubylog.theory "Rubylog::LogicBuiltinsForCallable", nil do
       yield if stands
     end
 
-    # Succeeds if there is no solution of both +a+ and +b+
+    # For each successful solutions of +a+, tries to solve +b+. If any of +b+'s
+    # solutions succeeds, it fails, otherwise it succeeds
     #
-    # Equivalent with <tt>a.and(b).false</tt>
-    def none a,b
-      a.prove { b.prove { return } }
-      yield 
-    end
-
-    # Succeeds if there is a solution of +a+
-    #
-    # Equivalent with <tt>a.false.false</tt>
-    def any a
-      a.prove { yield; return }
-    end
-
-    # Succeeds if there is exactly one solution of +a+
-    #
-    def one a
-      stands = false
-      a.prove { 
-        return if stands
-        stands = true
+    # Equivalent to <tt>a.all(b.false)</tt>
+    # @param a
+    # @param b defaults to :true
+    def none a,b=:true
+      a.prove {
+        b.prove { return } 
       }
-      yield if stands
+      yield
     end
-    
-    alias none false
 
   end
 
-  prefix_functor :all, :any, :one, :none, :iff
+  # We also implement some of these methods in a prefix style
+  %w(false all iff any one none).each do |fct|
+    # we discard the first argument, which is the context,
+    # because they are the same in  any context
+    primitives_for_context.define_singleton_method fct do |_,*args,&block|
+      primitives_for_clause.send(fct, *args, &block)
+    end
+  end
 
-end
+  class << primitives_for_context
+    # finds every solution of a, and for each solution dereferences all
+    # variables in b if possible and collects the results. Then joins all b's
+    # with .and() and solves the resulted expression.
+    def every _, a, b
+      c = []
+      a.prove do
+        if b.is_a? Proc
+          # save copies of actual variables
+          vars = a.rubylog_variables.map do |v|
+            new_v = Rubylog::Variable.new(v.name)
+            new_v.send :bind_to!, v.value if v.bound?
+          end
 
-Rubylog.theory "Rubylog::LogicBuiltins", nil do
-  include Rubylog::NullaryLogicBuiltins
-  include Rubylog::LogicBuiltinsForCallable
-end
+          # store them in a closure
+          b_resolved = proc do
+            b.call_with_rubylog_variables vars
+          end
+        else
+          # dereference actual variables
+          b_resolved = b.rubylog_deep_dereference 
+        end
+        c << b_resolved
+      end
+      c.inject(:true){|a,b|a.and b}.solve { yield }
+    end
+  end
 
-Rubylog::DefaultBuiltins.amend do
-  include Rubylog::LogicBuiltins
 end
 

@@ -35,8 +35,7 @@ module Rubylog
 
 
     def value
-      return nil if (val = rubylog_dereference).kind_of? Variable
-      val
+      @value if @bound
     end
 
     def dont_care? 
@@ -51,7 +50,13 @@ module Rubylog
       [self]
     end
 
-    # unify two variables
+    # Unifies the receiver with another value.
+    #
+    # First dereferences both the receiver and the other. If both dereferenced
+    # values are variables, unifies them with the other being bound to the
+    # receiver. If one of them is a variable, it gets bound to the other value.
+    # If none of them is a variable, they are checked for equality with eql?.
+    #
     def rubylog_unify other
       # check if we are bound
       if @bound
@@ -68,7 +73,9 @@ module Rubylog
         if other.is_a? Rubylog::Variable
           # we union our guards with the other's
           other.append_guards guards do
-            bind_to other do
+            # we bind the other to self (this order comes from
+            # inriasuite_spec#unify)
+            other.bind_to self do
               yield
             end
           end
@@ -102,13 +109,21 @@ module Rubylog
       end
     end
 
-    # Callable methods
-    include Callable
+    # Clause methods
+    include Clause
 
     def prove
-      v = value
-      raise InstantiationError, self if v.nil?
-      v.prove{yield}
+      v = rubylog_dereference
+      raise Rubylog::InstantiationError.new(self) if v.is_a? Rubylog::Variable
+
+      # match variables if not matched
+      unless v.rubylog_variables
+        v = v.rubylog_match_variables
+      end
+      
+      catch :cut do
+        v.prove{yield}
+      end
     end
 
 
@@ -145,15 +160,19 @@ module Rubylog
     def bind_to other
       begin
         @bound = true; @value = other
-        Rubylog.current_theory.print_trace 1, "#{inspect}=#{@value.inspect}"
 
         yield
-
       ensure
         @bound = false
-        Rubylog.current_theory.print_trace -1
       end
     end
+    rubylog_traceable :bind_to
+
+    def bind_to! other
+      @bound = true; @value = other
+      self
+    end
+    private :bind_to!
 
     # yields with self.guards = self.guards + other_guards, then restores guards
     def append_guards other_guards
