@@ -338,6 +338,18 @@ describe "logic builtins", :rubylog => true do
         every(:john.likes(X), X.good.assumed).and(Y.good).map{Y}.should == [:beer, :water]
       end
 
+      specify "passes variables" do 
+        solve N.is(5).and K.in{1..N}.every {N.should eql 5}
+      end 
+
+      specify "passes variables" do 
+        solve N.is(5).and K.in{1..N}.every L.in{1..N}
+      end 
+
+      specify "passes variables if b contains the variable" do 
+        solve N.is(5).and every I.in{2..N}, K.is{N/I}
+      end 
+
     end
 
 

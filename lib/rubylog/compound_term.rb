@@ -1,19 +1,27 @@
 module Rubylog::CompoundTerm
+
+  # returns a copy of the term, with variables with the same name meade same
+  # objects. Don't care variables are not matched.
   def rubylog_match_variables 
     vars = []; vars_by_name = {}
+
     rubylog_clone do |subterm|
       case subterm
       when Rubylog::Variable
         var = subterm
 
         if var.dont_care?
+          # duplicate don't care variables
           var.dup
         else
+          # see if a var with that name already exists
           new_var = vars_by_name[var.name]
           if new_var
+            # append guards
             new_var.guards = new_var.guards + var.guards
             new_var
           else
+            # create and add new var
             new_var = var.dup
             vars << new_var
             vars_by_name[var.name] = new_var
@@ -22,7 +30,8 @@ module Rubylog::CompoundTerm
         end
 
       when Rubylog::CompoundTerm
-        subterm.instance_variable_set :"@rubylog_variables", vars
+        # save rubylog variables
+        subterm.rubylog_variables=vars
         subterm
       else
         subterm
@@ -35,7 +44,8 @@ module Rubylog::CompoundTerm
     #self.class.new attr1.rubylog_deep_dereference
   #end
 
-  attr_reader :rubylog_variables
+  attr_accessor :rubylog_variables
+  protected :rubylog_variables=
 
 
   # This is a general deep-copy generating method
