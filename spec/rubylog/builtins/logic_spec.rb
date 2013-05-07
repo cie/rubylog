@@ -280,6 +280,13 @@ describe "logic builtins", :rubylog => true do
     end
 
     describe "every" do
+      specify "works as infix" do
+        :john.likes(X).every(:john.likes(X)).true?.should be_true
+        :john.likes(X).every(:jane.likes(X)).true?.should be_true
+        :john.likes(X).every(:jeff.likes(X)).true?.should_not be_true
+        :john.likes(X).every(:todd.likes(X)).true?.should_not be_true
+      end
+      
       specify "works like all" do
         every(:john.likes(X),:john.likes(X)).true?.should be_true
         every(:john.likes(X),:jane.likes(X)).true?.should be_true

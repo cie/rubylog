@@ -97,22 +97,10 @@ rubylog do
       yield
     end
 
-  end
-
-  # We also implement some of these methods in a prefix style
-  %w(false all iff any one none).each do |fct|
-    # we discard the first argument, which is the context,
-    # because they are the same in  any context
-    primitives_for_context.define_singleton_method fct do |_,*args,&block|
-      primitives_for_clause.send(fct, *args, &block)
-    end
-  end
-
-  class << primitives_for_context
     # finds every solution of a, and for each solution dereferences all
     # variables in b if possible and collects the results. Then joins all b's
     # with .and() and solves the resulted expression.
-    def every _, a, b
+    def every a, b
       c = []
       a.prove do
         if b.is_a? Proc
@@ -135,6 +123,16 @@ rubylog do
       c.inject(:true){|a,b|a.and b}.solve { yield }
     end
   end
+
+  # We also implement some of these methods in a prefix style
+  %w(false all iff any one none every).each do |fct|
+    # we discard the first argument, which is the context,
+    # because they are the same in  any context
+    primitives_for_context.define_singleton_method fct do |_,*args,&block|
+      primitives_for_clause.send(fct, *args, &block)
+    end
+  end
+
 
 end
 
