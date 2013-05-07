@@ -16,10 +16,12 @@ module Rubylog
     end
 
     def inspect
+      return "#{@name}=#{@value.inspect}" if @bound
+
       if @guards.empty?
         @name.to_s
       else
-        "#{@name}#{@guards}"
+        "#{@name}#{@guards.inspect}"
       end
     end
 
@@ -56,6 +58,7 @@ module Rubylog
     # values are variables, unifies them with the other being bound to the
     # receiver. If one of them is a variable, it gets bound to the other value.
     # If none of them is a variable, they are checked for equality with eql?.
+    # Succeeds if other is the same object as the receiver.
     #
     def rubylog_unify other
       # check if we are bound
@@ -71,11 +74,13 @@ module Rubylog
 
         # if the other is a variable
         if other.is_a? Rubylog::Variable
+          # succeed if same object
+          (yield; return) if self.equal? other
+
           # we union our guards with the other's
           other.append_guards guards do
-            # we bind the other to self (this order comes from
-            # inriasuite_spec#unify)
-            other.bind_to self do
+            # and bind to the other
+            bind_to other do
               yield
             end
           end
@@ -109,8 +114,8 @@ module Rubylog
       end
     end
 
-    # Clause methods
-    include Clause
+    # Goal methods
+    include Goal
 
     def prove
       v = rubylog_dereference
@@ -120,10 +125,25 @@ module Rubylog
       unless v.rubylog_variables
         v = v.rubylog_match_variables
       end
-      
-      catch :cut do
-        v.prove{yield}
+
+      caught_cut = false
+
+      catch :rubylog_cut do
+        v.prove do
+          # intercept cuts that come from the yield
+          catch :rubylog_no_cut do
+            catch :rubylog_cut do
+              yield
+              throw :rubylog_no_cut
+            end
+            caught_cut = true
+          end
+          break if caught_cut
+        end
       end
+
+      # pass through cut if one was caught from yield
+      throw :rubylog_cut if caught_cut
     end
 
 

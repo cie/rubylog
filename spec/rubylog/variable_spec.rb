@@ -57,13 +57,13 @@ describe Rubylog::Variable, :rubylog=>true do
       end
     end
 
-    it "unifies with another unbound variable with the other gettin bound" do
+    it "unifies with another unbound variable with getting bound" do
       a=A
       b=B
       a.rubylog_unify(b) do
-        b.should be_bound
-        b.value.should equal a
-        a.should_not be_bound
+        a.should be_bound
+        a.value.should equal b
+        b.should_not be_bound
       end
     end
 
@@ -83,6 +83,23 @@ describe Rubylog::Variable, :rubylog=>true do
       a.send(:bind_to, 4) do
         a.rubylog_unify(b) do
           b.value.should == 4
+        end
+      end
+    end
+
+    it "unifies with self" do
+      a=A
+      a.rubylog_unify(a) do
+        a.should_not be_bound
+      end 
+    end 
+
+    it "unifies with another bound to self" do
+      a=A
+      b=B
+      a.rubylog_unify(b) do
+        b.rubylog_unify(a) do
+          b.should_not be_bound
         end
       end
     end

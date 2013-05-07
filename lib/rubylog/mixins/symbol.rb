@@ -14,8 +14,8 @@ class Symbol
   # Term methods
   include Rubylog::Term
 
-  # Clause methods
-  include Rubylog::Clause
+  # Goal methods
+  include Rubylog::Goal
 
   def prove
     predicate.call { yield }

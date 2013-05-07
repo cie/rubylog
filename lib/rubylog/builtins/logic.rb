@@ -12,14 +12,14 @@ rubylog do
     # !
     def cut!
       yield
-      throw :cut
+      throw :rubylog_cut
     end
   end
 
 
-  primitives_for_clause = primitives_for [::Rubylog::Clause, ::Rubylog::Structure]
+  primitives_for_goal = primitives_for [::Rubylog::Goal, ::Rubylog::Structure]
 
-  class << primitives_for_clause
+  class << primitives_for_goal
     # Succeeds if both +a+ and +b+ succeeds.
     def and a, b
       a.prove { b.prove { yield } }
@@ -34,7 +34,7 @@ rubylog do
     # Succeeds if +a+ does not succeed.
     def false a
       # catch cuts
-      catch :cut do
+      catch :rubylog_cut do
         a.prove { return }
       end
       yield
@@ -97,44 +97,66 @@ rubylog do
       yield
     end
 
-  end
 
-  # We also implement some of these methods in a prefix style
-  %w(false all iff any one none).each do |fct|
-    # we discard the first argument, which is the context,
-    # because they are the same in  any context
-    primitives_for_context.define_singleton_method fct do |_,*args,&block|
-      primitives_for_clause.send(fct, *args, &block)
-    end
-  end
-
-  class << primitives_for_context
     # finds every solution of a, and for each solution dereferences all
     # variables in b if possible and collects the results. Then joins all b's
     # with .and() and solves the resulted expression.
-    def every _, a, b
-      c = []
-      a.prove do
-        if b.is_a? Proc
+    def every a, b
+
+      # a block that makes a snapshot of b
+      snapshot = nil
+      snapshot = proc do |subterm|
+        case subterm
+        when Proc
           # save copies of actual variables
           vars = a.rubylog_variables.map do |v|
             new_v = Rubylog::Variable.new(v.name)
             new_v.send :bind_to!, v.value if v.bound?
+            new_v
           end
 
           # store them in a closure
-          b_resolved = proc do
-            b.call_with_rubylog_variables vars
+          proc do
+            subterm.call_with_rubylog_variables vars
+          end
+        when Rubylog::Variable
+          # dereference actual variables
+          if subterm.bound?
+            subterm.rubylog_dereference.rubylog_clone(&snapshot)
+          else 
+            subterm
           end
         else
-          # dereference actual variables
-          b_resolved = b.rubylog_deep_dereference 
+          subterm
         end
-        c << b_resolved
+      end 
+
+      # collect resolved b's in an array
+      resolved_bs = []
+      a.prove do
+        resolved_bs << b.rubylog_clone(&snapshot)
       end
-      c.inject(:true){|a,b|a.and b}.solve { yield }
+
+      # chain resolved b's together
+      goal = resolved_bs.empty? ? :true : resolved_bs.inject{|a,b|a.and b}
+
+      # match variables in the resolved b's together with variables in a
+      goal = [a.rubylog_variables, goal].rubylog_match_variables[1]
+
+      # prove b's
+      goal.prove { yield }
     end
   end
+
+  # We also implement some of these methods in a prefix style
+  %w(false all iff any one none every).each do |fct|
+    # we discard the first argument, which is the context,
+    # because they are the same in  any context
+    primitives_for_context.define_singleton_method fct do |_,*args,&block|
+    primitives_for_goal.send(fct, *args, &block)
+    end
+  end
+
 
 end
 

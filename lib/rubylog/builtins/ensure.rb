@@ -1,6 +1,6 @@
 rubylog do
   
-  class << primitives_for ::Rubylog::Clause
+  class << primitives_for [::Rubylog::Structure, ::Rubylog::Goal]
     # succeeds if A succeeds. At backtracking, solves B
     def ensure a, b
       begin

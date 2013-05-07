@@ -163,6 +163,29 @@ describe "logic builtins", :rubylog => true do
       :john.happy.if((:true.and :true).or :true)
       :john.should be_happy
     end
+
+    it "works after variable calls" do 
+      (A.is(:true).and A.and :cut!.and :fail).or(:true).true?.should be_false
+    end 
+
+    it "works after variable calls (control)" do 
+      (A.is(:true).and A.and :fail).or(:true).true?.should be_true
+    end 
+
+    it "works after variable calls (branch or)" do 
+      :john.happy.if A.is(:true).and A.and :cut!.and :fail
+      :john.happy.if :true
+      :john.should_not be_happy
+    end 
+
+    it "works after variable calls with multiple solutions of the variable" do 
+      (A.is(B.is(4).or(B.is(6))).and A.and :cut!).map{B}.should == [4]
+    end 
+
+    it "works after variable calls with multiple solutions of the variable (control)" do 
+      (A.is(B.is(4).or(B.is(6))).and A).map{B}.should == [4,6]
+    end 
+
   end
 
   describe "all,any,one,none,every" do
@@ -280,6 +303,13 @@ describe "logic builtins", :rubylog => true do
     end
 
     describe "every" do
+      specify "works as infix" do
+        :john.likes(X).every(:john.likes(X)).true?.should be_true
+        :john.likes(X).every(:jane.likes(X)).true?.should be_true
+        :john.likes(X).every(:jeff.likes(X)).true?.should_not be_true
+        :john.likes(X).every(:todd.likes(X)).true?.should_not be_true
+      end
+      
       specify "works like all" do
         every(:john.likes(X),:john.likes(X)).true?.should be_true
         every(:john.likes(X),:jane.likes(X)).true?.should be_true
@@ -330,6 +360,18 @@ describe "logic builtins", :rubylog => true do
         # assumptions reverse the order
         every(:john.likes(X), X.good.assumed).and(Y.good).map{Y}.should == [:beer, :water]
       end
+
+      specify "passes variables" do 
+        solve N.is(5).and K.in{1..N}.every {N.should eql 5}
+      end 
+
+      specify "passes variables" do 
+        solve N.is(5).and K.in{1..N}.every L.in{1..N}
+      end 
+
+      specify "passes variables if b contains the variable" do 
+        solve N.is(5).and every I.in{2..N}, K.is{N/I}
+      end 
 
     end
 

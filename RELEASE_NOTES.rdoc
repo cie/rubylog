@@ -6,11 +6,10 @@
 
 == Version 2.0.0 (to be released)
 * Backwards incompatibilities
-  * <tt>Rubylog.theory</tt> is removed. Use <tt>Kernel#Rubylog</tt>.
+  * <tt>Rubylog.theory</tt> renamed to <tt>Kernel#rubylog</tt>.
   * <tt>file\_in</tt> includes directories and yields relative paths.
     <tt>dir\_in</tt> also yields relative paths.
-  * <tt>trace</tt> has became <tt>Rubylog.trace</tt>. If you use
-    <tt>Kernel#Rubylog</tt>, it does not matter.
+  * <tt>trace</tt> has became <tt>Rubylog.trace</tt>.
   * <tt>Theory</tt> has changed to <tt>Context</tt> and it became a module. 
   * No more inclusion of theories (contexts).
   * Predicates do not have reference in the theory (context), they are only referenced from the
@@ -26,7 +25,7 @@
   * No more real prefix functors, n-ary prefix functors are n\+1-ary functors with the context object as the first argument. Use <tt>predicate\_for Rubylog::Context, "..."</tt>.
   * <tt>Rubylog::DefaultBuiltins</tt> is replaced by <tt>Rubylog</tt>
   * <tt>Theory#prove</tt> was removed. Use <tt>Context#true?</tt>
-  * <tt>Rubylog::Callable<tt> renamed to <tt>Rubylog::Clause</tt>
+  * <tt>Rubylog::Callable<tt> renamed to <tt>Rubylog::Goal</tt>
   * <tt>discontiguous</tt> is removed. No more discontiguity checks.
   * <tt>implicit</tt> is removed. No implicit mode anymore.
   * <tt>Theory#clear</tt> is replaced by <tt>Context#initialize\_context</tt>.

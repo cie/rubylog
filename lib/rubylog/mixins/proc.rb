@@ -1,7 +1,7 @@
 class Proc
 
-  # Clause methods
-  include Rubylog::Clause
+  # Goal methods
+  include Rubylog::Goal
 
   def prove
     yield if call_with_rubylog_variables
