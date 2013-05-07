@@ -59,9 +59,6 @@ module Rubylog
     # Succeeds if other is the same object as the receiver.
     #
     def rubylog_unify other
-      # succeed if same object
-      (yield; return) if self.equal? other
-
       # check if we are bound
       if @bound
         # if we are bound
@@ -75,6 +72,9 @@ module Rubylog
 
         # if the other is a variable
         if other.is_a? Rubylog::Variable
+          # succeed if same object
+          (yield; return) if self.equal? other
+
           # we union our guards with the other's
           other.append_guards guards do
             # and bind to the other

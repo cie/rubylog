@@ -93,6 +93,16 @@ describe Rubylog::Variable, :rubylog=>true do
         a.should_not be_bound
       end 
     end 
+
+    it "unifies with another bound to self" do
+      a=A
+      b=B
+      a.rubylog_unify(b) do
+        b.rubylog_unify(a) do
+          b.should_not be_bound
+        end
+      end
+    end
   end
 
   describe "dereferencing" do
