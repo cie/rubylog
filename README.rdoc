@@ -37,7 +37,7 @@ Another option is to use Kernel#rubylog:
   end
 
 
-=== Data types
+== Data types
 
 Rubylog is similar to Prolog, but there are quite a few differences.
 
@@ -62,7 +62,9 @@ to the end:
   [1, *X, 5]
   [*A, *B]
 
-=== Predicates
+Currently you cannot use hashes as terms.
+
+== Predicates
 As in prolog, predicates are the building blocks of your program. However, the arguments are in a different order than they are in prolog:
 
   'John'.likes('beer')
@@ -75,21 +77,34 @@ In Rubylog, predicates must be declared with +predicate_for+:
   
 You have to specify the class of the possible first arguments (+String+ in this case), this is called the subject class. This could also be an array of classes. The string indicating the predicate syntax is <tt>".likes()"</tt>. The format is <tt>.asdf .asdf() .asdf(,) .asdf(,,)</tt> for predicates with 1,2,3 and 4 arguments. You can add descriptions in the indicator string e.g. <tt>"Person.likes(Drink)"</tt> means the same as <tt>".likes()"</tt>.
 
+Declaring a predicate with arguments gives you three methods on the subject class:
+
+  predicate_for String, ".likes()"
+  'John'.likes('beer')    # returns a structure object representing this logical statement
+  'John'.likes!('beer')   # asserts that this statement as a fact
+  'John'.likes?('beer')   # tells if this statement is true (in this case, returns true)
+
+=== Nullary predicates
+
 Nullary predicates are symbols, and they have to be declared with +predicate+:
 
   predicate ":asdf"
   :asdf
 
-Declaring a predicate with arguments gives you three methods on the subject class:
+
+== Asserting clauses
+
+As in Prolog, there are two types of program clauses: facts and rules.
+You can assert facts with the bang syntax:
 
   predicate_for String, ".likes()"
-  'John'.likes('beer')    # returns a structure object representing this logical statement
-  'John'.likes!('beer')   # asserts that this statement is a fact
-  'John'.likes?('beer')   # tells if this statement is true (in this case, returns true)
+  'John'.likes! 'milk'                         
 
-=== Asserting clauses
+This would be <tt>likes('John','beer').</tt> in Prolog. Bang assertions return their first argument (which is <tt>'John'</tt> in this case), so they can be chained:
 
-As in Prolog, there are two types of program clauses, rules and facts. You can assert a rule with the +if+ method:
+  'John'.likes!('beer').has!('beer')
+
+You can assert rules with the +if+ method:
 
   predicate_for String, ".likes() .drinks() .has()"
   
@@ -97,13 +112,6 @@ As in Prolog, there are two types of program clauses, rules and facts. You can a
 
 This would be <tt>drinks(X,Y) :- has(X,Y), likes(X,Y).</tt> in Prolog.
 
-You can assert facts with the bang syntax:
-
-  'John'.likes! 'milk'                         
-
-This would be <tt>likes('John','beer').</tt> in Prolog. Bang assertions return their first argument (which is <tt>'John'</tt> in this case), so they can be chained:
-
-  'John'.likes!('beer').has!('beer')
 
 You can also use +unless+:
 
@@ -111,33 +119,9 @@ You can also use +unless+:
   A.good.unless A.bad              
 
 
-=== Built-in predicates
-
-Some built-in predicates and their Prolog equivalents:
-
-  Rubylog  Prolog
-  -------  ------ 
-  :true     true
-  :fail     fail
-  .and()    ,
-  .or()     ;
-  .false    \+
-  .is()     =
-  .is_not() =/=
-  .in()     member
-  :cut!     !
-
-There are some new ones:
-
-  .not_in(), .all(), .any(), .one(), .none(), .iff()
 
 
-
-You can see reference of these in <tt>lib/rubylog/builtins/logic.rb</tt> and <tt>lib/rubylog/builtins/term.rb</tt>
-
-
-
-=== Unification
+== Unification
 
 In Rubylog, unification works like in Prolog, but with the +is+ functor.
 
@@ -152,7 +136,7 @@ The +in+ predicate unifies the first argument with any member of the collection:
 
   4.in([1,2,3,4])             # member(4,[1,2,3,4]) in prolog
 
-=== Guards
+== Guards
 
 You can use guards. These are constant expressions that restrict the unification of variables. There are several types of guards:
 
@@ -165,13 +149,13 @@ You can use guards. These are constant expressions that restrict the unification
 +thats+ can receive any number of messages chained, and this will be applied to the value that would be bound to the variable. 
 You can add various guards to a variable. +thats\_not+ is the negation of +thats+.
 
-  A[Integer, thats%2 ==0].even!
+  A[Integer, thats%2 == 0].even!
 
-Currently, you cannot use variables in guards.
+This is an experimental feature. Currently, you cannot use variables in guards, only constant values.
 
 
-=== Moving between Ruby and Rubylog
-==== Running a query
+== Moving between Ruby and Rubylog
+=== Running a query
 
 If you want to run a query, you have three different syntaxes:
 
@@ -179,7 +163,7 @@ If you want to run a query, you have three different syntaxes:
   ('John'.drinks 'beer').true?  # => true
   'John'.drinks? 'beer'         # => true
 
-==== Finding solutions
+=== Finding solutions
 
 +Structure+ implements +Enumerable+, and yields the solutions. Within the
 enumeration block, you can access the values of your variables.
@@ -191,7 +175,7 @@ enumeration block, you can access the values of your variables.
 
 You can also use +solve+, which is equivalent with +each+.
 
-==== Procs as predicates
+=== Procs as predicates
 
 You can invoke Ruby codes in Rubylog rules with a proc:
 
@@ -203,14 +187,14 @@ or in most cases you can use just a block:
 
 The predicate succeeds if the block returns a true value.
 
-==== Procs as functions
+=== Procs as functions
 
 +is+ and +in+ can take a proc or block argument, which they execute and take its return value:
 
   X.good.if X.is { 'BEER'.downcase }
   X.good.if X.in { get_good_drinks() }
 
-==== Variables in blocks
+=== Variables in blocks
 
 When you use blocks or procs as predicates or functions, or when you use enumeration methods with blocks, you can access values of variables by their name in the blocks (if they are bound).
 
@@ -224,7 +208,7 @@ If your variable is unbound, you will get the variable object.
   X.is(Y).each { p X.class }   # outputs 'Rubylog::Variable'
 
 
-=== Rspec integration
+== Rspec integration
 
 Rubylog can integrate with RSpec. This enables you to use variables and predicates in specs.
 
@@ -240,9 +224,53 @@ There is an assertion method called +check+ that receives a predicate as an argu
 
   check 5.is(5)
 
-=== Built-in predicates
+== Built-in predicates
 
-==== File system
+Some built-in predicates and their Prolog equivalents:
+
+  Rubylog  Prolog
+  -------  ------ 
+  :true     true
+  :fail     fail
+  .and()    ,
+  .or()     ;
+  .false    \+
+  .is()     =
+  .is_not() =/=
+  .in()     member
+  :cut!     !
+
+There are some new ones which do not exist in prolog. 
+
+* <tt>.not\_in()</tt> is the negation of <tt>.in()</tt>.
+
+
+=== Quantifiers
+
+<tt>.all(), .any(), .one(), .none()</tt> are prediates that are analogous to their equivalents in <tt>Enumerable</tt>. They prove their first argument, and for each solution try to prove their second argument. If the second argument succeeds for all / any / exactly one / none of the solutions of the first argument, they succeed. Some examples:
+
+  predicate_for Integer, ".even"
+  X.even.if { X%2 == 0 } 
+  check X.in([2,4]).all(X.even)
+  check X.in([1,2,4]).any(X.even)
+  check X.in([1,2,3]).one(X.even)
+  check X.in([1,3]).none(X.even)
+
+There is another similar predicate <tt>A.iff(B)</tt>, that succeeds if for all solutions of A, B is true, and vice versa. For example,
+
+  check X.in([2,4]).iff(X.in(1..4).and X.even)
+
+These predicates also have a prefix form, which can be used to create more naturally sounding program lines:
+
+  check all X.in([2,4]), X.even
+  check any X.in([1,2,4]), X.even
+  check one X.in([1,2,3]), X.even
+  check none X.in([1,3]), X.even
+  check iff X.in([2,4]), X.in(1..4).and(X.even)
+
+There is another quantifier, which only has a prefix form <tt>every(A, B)</tt>. This works similarly to <tt>.all()</tt>, but for each solution of A, creates a copy of B and chains them together with <tt>.and()</tt>. It can be useful for work with assumptions, see below. This is an experimental feature, and still contains bugs.
+
+=== File system
 
 You can make some queries on the file system:
 
@@ -252,7 +280,7 @@ You can make some queries on the file system:
   X.dirname_in(".").each { puts X }
 
 
-==== Reflection
+=== Reflection
 
 You can make some metaprogramming with Rubylog
 
@@ -271,7 +299,7 @@ You can make some metaprogramming with Rubylog
 
   end
 
-==== Arithmetics
+=== Arithmetics
 
   check 5.sum_of(2,3)
   check 5.product_of(1,5)
@@ -283,6 +311,33 @@ These work as expected if you provide any two of the three paramters. For exampl
   A.in(1..21).and(21.product_of(A,B)).each do
     p [A,B]
   end # outputs pairs of divisors
+
+=== Assumptions
+
+An assumption is an assertion that gets erased at backtracking. There are several possibilites for assuming clauses.
+
+  A.assumed              # assumes A as a fact
+  A.assumed_if(B)        # assumes A.if(B)
+  A.assumed_unless(B)    # assumes A.unless(B)
+  A.rejected             # assumes A.if(:cut!.and :fail) to the beginning of the rule list
+  A.rejected_if(B)       # assumes A.if(B.and :cut!.and :fail) to the beginning of the rule list
+  A.rejected_unless(B)   # assumes A.if(B.false.and :cut!.and :fail) to the beginning of the rule list
+  A.revoked              # temporarily removes a rule which holds for A
+
+These are experimental features.
+
+== Troubleshooting
+
+You can turn on tracing with
+
+  Rubylog.trace
+
+Or, you can trace a specific code block with
+
+  Rubylog.trace do
+    ...
+  end
+
 
 == Contributing
 
