@@ -32,7 +32,7 @@ describe "thats", :rubylog=>true do
   describe "files" do
     check {     "#{S[String, thats.start_with?(".")]}".filename_in(".").map{S}.include? ".gitignore" }
     check { not "#{S[String, thats.start_with?(".")]}". dirname_in(".").map{S}.include? "lib" }
-    check { "#{S[/\A(.*)\.rb/]}".filename_in("lib").map{S} == ["rubylog.rb"] }
+    specify { "#{S[/\A(.*)\.rb/]}".filename_in("lib").map{S}.should == ["rubylog.rb"] }
   end
 
   describe "factorial" do

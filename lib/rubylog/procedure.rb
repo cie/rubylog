@@ -7,6 +7,10 @@ module Rubylog
       @rules = rules
     end
 
+    def inspect
+      "#{Rubylog::DSL::Indicators.humanize_indicator([functor,arity])}: #{@rules.inspect}"
+    end 
+
     def method_missing name, *args, &block
       @rules.send name, *args, &block
     end

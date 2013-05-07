@@ -16,10 +16,12 @@ module Rubylog
     end
 
     def inspect
+      return "#{@name}=#{@value.inspect}" if @bound
+
       if @guards.empty?
         @name.to_s
       else
-        "#{@name}#{@guards}"
+        "#{@name}#{@guards.inspect}"
       end
     end
 

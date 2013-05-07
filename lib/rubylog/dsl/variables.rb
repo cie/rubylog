@@ -15,7 +15,7 @@ module Rubylog::DSL
   #     A.is(5).map{A}                       # => [5]
   #     B.is(5).and(A.is([2,B])).map{A}      # => [[2,5]]
   #
-  # When variables do not have a value, it is not substituted.
+  # When a variable does not have a value, it is not substituted.
   #
   #     A.is(B).map{A}                       # => [B]
   #     B.is(C).and(A.is([2,B])).map{A}      # => [[2,C]]

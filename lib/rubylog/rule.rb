@@ -10,6 +10,10 @@ module Rubylog
       @body = body
     end
 
+    def inspect
+      "#{head.inspect}.if(#{body.inspect})"
+    end 
+
     # CompoundTerm methods
     include Rubylog::CompoundTerm
     def rubylog_clone &block
