@@ -83,7 +83,7 @@ Declaring a predicate with arguments gives you three methods on the subject clas
 
   predicate_for String, ".likes()"
   'John'.likes('beer')    # returns a structure object representing this logical statement
-  'John'.likes!('beer')   # asserts that this statement as a fact
+  'John'.likes!('beer')   # asserts this statement as a fact
   'John'.likes?('beer')   # tells if this statement is true (in this case, returns true)
 
 === Nullary predicates
@@ -270,7 +270,7 @@ These predicates also have a prefix form, which can be used to create more natur
   check none X.in([1,3]), X.even
   check iff X.in([2,4]), X.in(1..4).and(X.even)
 
-There is another quantifier, which only has a prefix form <tt>every(A, B)</tt>. This works similarly to <tt>.all()</tt>, but for each solution of A, creates a copy of B and chains them together with <tt>.and()</tt>. It can be useful for work with assumptions, see below. This is an experimental feature, and still contains bugs.
+There is another quantifier <tt>A.every(B)</tt> or <tt>every(A,B)</tt>. This works similarly to <tt>.all()</tt>, but for each solution of A, creates a copy of B and chains them together with <tt>.and()</tt>. It can be useful for work with assumptions, see below. This is an experimental feature, and still contains bugs.
 
 === File system
 
@@ -333,6 +333,10 @@ These are experimental features.
 You can turn on tracing with
 
   Rubylog.trace
+
+And turn off with
+
+  Rubylog.trace false
 
 Or, you can trace a specific code block with
 
