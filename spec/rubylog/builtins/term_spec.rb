@@ -37,10 +37,6 @@ describe "Term builtins", :rubylog => true do
       (2.in [1,3,4]).to_a.should == []
     end
 
-    it "works with clauses" do
-      (A.likes(B).and B.in{:john.likes(X).map{X}}).map{[A,B]}.should == [[:john, :beer]]
-    end
-
     it "checks instatiation" do
       expect { 5.in(B).map{B} }.to raise_error Rubylog::InstantiationError
     end

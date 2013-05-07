@@ -19,8 +19,8 @@ module Rubylog
   end
 
   class ExistenceError < RubylogError
-    def initialize clause
-      super "Predicate #{clause.inspect} does not exist"
+    def initialize goal
+      super "Predicate #{goal.inspect} does not exist"
     end
   end
 

@@ -112,8 +112,8 @@ module Rubylog
       end
     end
 
-    # Clause methods
-    include Clause
+    # Goal methods
+    include Goal
 
     def prove
       v = rubylog_dereference

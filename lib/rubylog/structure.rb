@@ -51,8 +51,8 @@ module Rubylog
     # Assertable methods
     include Rubylog::Assertable
 
-    # Clause methods
-    include Rubylog::Clause
+    # Goal methods
+    include Rubylog::Goal
 
     def prove
       count = 0
