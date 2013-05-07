@@ -870,9 +870,7 @@ describe "inriasuite", :rubylog=>true do
     specify %(['='(X,1),[[X <-- 1]]].) do
       X.is(1).map{X}.should eql [1]
     end
-    specify %(['='(X,Y),[[Y <-- X]]].) do
-      X.is(Y).map{Y}.should eql [X]
-    end
+    specify %(['='(X,Y),[[Y <-- X]]].), pending: "This happens the other way around in Rubylog, X will be bound to Y."
     specify %([('='(X,Y),'='(X,abc)),[[X <-- abc, Y <-- abc]]].) do
       X.is(Y).and(X.is(:abc)).map{[X,Y]}.should eql [[:abc,:abc]]
     end

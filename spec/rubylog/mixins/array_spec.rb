@@ -34,7 +34,7 @@ describe Array, :rubylog=>true do
       a = A
       b = B
       can_unify [*a], [*b] do
-        b.value.should equal a
+        a.value.should equal b
       end
     end
 

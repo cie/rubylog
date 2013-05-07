@@ -29,9 +29,9 @@ describe "Rubylog dsl", :rubylog=>true do
   end
 
   describe "variables" do
-    check A.is(ANY).and{ A == Rubylog::Variable.new(:A) }
+    check A.is(ANY).and{ A == Rubylog::Variable.new(:ANY) }
     check A.is(4)  .and{ A == 4 }
-    check B.is(A)  .and{ A == Rubylog::Variable.new(:B) and B == Rubylog::Variable.new(:B) }
+    check B.is(A)  .and{ A == Rubylog::Variable.new(:A) and B == Rubylog::Variable.new(:A) }
     check B.is(ANY).and{ A == Rubylog::Variable.new(:A) }
   end
 

@@ -56,8 +56,12 @@ module Rubylog
     # values are variables, unifies them with the other being bound to the
     # receiver. If one of them is a variable, it gets bound to the other value.
     # If none of them is a variable, they are checked for equality with eql?.
+    # Succeeds if other is the same object as the receiver.
     #
     def rubylog_unify other
+      # succeed if same object
+      (yield; return) if self.equal? other
+
       # check if we are bound
       if @bound
         # if we are bound
@@ -73,9 +77,8 @@ module Rubylog
         if other.is_a? Rubylog::Variable
           # we union our guards with the other's
           other.append_guards guards do
-            # we bind the other to self (this order comes from
-            # inriasuite_spec#unify)
-            other.bind_to self do
+            # and bind to the other
+            bind_to other do
               yield
             end
           end
