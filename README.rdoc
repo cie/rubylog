@@ -39,14 +39,13 @@ Another option is to use Kernel#rubylog:
 
 === Data types
 
-Rubylog is similar to Prolog, but there are quite a few differences. In Rubylog,
-you can use any Ruby object as data, also +nil+.
+Rubylog is similar to Prolog, but there are quite a few differences.
 
 Rubylog variables are (undefined) constant names:
 
   A, B, ANYTHING
 
-A variable whose name starts with +ANY...+ (case-insensitive) is a don't-care
+A variable can be bound or unbound, and it contains a Ruby object when bound. A variable whose name starts with +ANY...+ (case-insensitive) is a don't-care
 variable (like +_+ in Prolog).
 
 Lists are just Ruby arrays:
@@ -57,34 +56,48 @@ They can have splats:
 
   [1, 2, *T]
 
-Which would be <tt>[1,2|T]</tt> in Prolog, however, in Rubylog, splats are not limited
+Which would be <tt>[1,2|T]</tt> in Prolog. However, in Rubylog, splats are not limited
 to the end:
 
-  [1, *A, 5]
+  [1, *X, 5]
   [*A, *B]
 
 === Predicates
-As in prolog, predicates are the buinding blocks of your program. However, the arguments are in a different order than they are in prolog:
+As in prolog, predicates are the building blocks of your program. However, the arguments are in a different order than they are in prolog:
 
   predicate_for String, ".likes()"
-  'John'.likes!('beer')
+  'John'.likes('beer')
 
-which would be <tt>likes('John','beer').</tt> in prolog.
+which would be <tt>likes('John','beer')</tt> in prolog. As you can see, the first argument comes first, then the functor, and then the further arguments.  
 
-In Rubylog, predicates must be declared with +predicate_for+. The string indicating the predicate syntax is <tt>".likes()"</tt>. The format is <tt>:asdf .asdf .asdf() .asdf(,) .asdf(,,)</tt> for predicates with 0,1,2,3,4 arguments. You can add descriptions in the indicator string like <tt>"Person.likes(Drink)"</tt>
+In Rubylog, predicates must be declared with +predicate_for+. You have to specify the class of the possible first arguments, this is called the subject class. This could also be an array of classes. The string indicating the predicate syntax is <tt>".likes()"</tt>. The format is <tt>.asdf .asdf() .asdf(,) .asdf(,,)</tt> for predicates with 0,1,2,3,4 arguments. You can add descriptions in the indicator string e.g. <tt>"Person.likes(Drink)"</tt> means the same as <tt>".likes()"</tt>.
 
-You can assert a rule with the +if+ method:
+Nullary predicates are symbols, and they have to be declared with +predicate+:
+
+  predicate ":asdf"
+  :asdf
+
+Declaring a predicate with arguments gives you three methods on the subject class:
+
+  predicate_for String, ".likes()"
+  'John'.likes('beer')    # returns a structure object representing this logical statement
+  'John'.likes!('beer')   # asserts that this statement is a fact
+  'John'.likes?('beer')   # tells if this statement is true (in this case, returns true)
+
+=== Asserting clauses
+
+As in Prolog, there are two types of clauses, rules and facts. You can assert a rule with the +if+ method:
 
   predicate_for String, ".drinks() .has()"
   X.drinks(Y).if X.has(Y).and X.likes(Y)        
 
-This would be +drinks(X,Y) :- has(X,Y), likes(X,Y)+ in Prolog.
+This would be <tt>drinks(X,Y) :- has(X,Y), likes(X,Y)</tt> in Prolog.
 
-You can assert facts with <tt>if(:true)</tt>, or with the bang syntax:
+You can assert facts with the bang syntax:
 
   'John'.likes! 'milk'                         
 
-Bang assertions return their first argument (which is <tt>'John'</tt> in this case), so they can be chained:
+This would be <tt>likes('John','beer').</tt> in Prolog. Bang assertions return their first argument (which is <tt>'John'</tt> in this case), so they can be chained:
 
   'John'.likes!('beer').has!('beer')
 
@@ -92,11 +105,6 @@ You can also use +unless+:
 
   predicate_for String, ".good .bad"
   A.good.unless A.bad              
-
-Nullary predicates are symbols, similar to Prolog:
-
-  'John'.drinks('beer').if :false.and(:cut!).or(:true)
-
 
 
 === Built-in predicates
@@ -124,7 +132,7 @@ You can see reference of these in <tt>lib/rubylog/builtins/logic.rb</tt> and <tt
 
 === Unification
 
-In Rubylog, unification works quite like in Prolog, but with the +is+ functor.
+In Rubylog, unification works like in Prolog, but with the +is+ functor.
 
   A.is(B)
 
@@ -137,6 +145,8 @@ The +in+ predicate unifies the first argument with any member of the collection:
 
   4.in([1,2,3,4])             # member(4,[1,2,3,4]) in prolog
 
+=== Guards
+
 You can use guards. These are constant expressions that restrict the unification of variables. There are several types of guards:
 
   A[String].in(["asdf",5,nil]).each { p A }     # outputs "asdf"
@@ -146,9 +156,11 @@ You can use guards. These are constant expressions that restrict the unification
   A[thats.length + 1 == 5].in(["abc","abcd"]).each { p A }    # outputs "abcd"
 
 +thats+ can receive any number of messages chained, and this will be applied to the value that would be bound to the variable. 
-You can add various guards to a variable.
+You can add various guards to a variable. +thats\_not+ is the negation of +thats+.
 
   A[Integer, thats%2 ==0].even!
+
+Currently, you cannot use variables in guards.
 
 
 === Moving between Ruby and Rubylog
@@ -259,9 +271,11 @@ You can make some metaprogramming with Rubylog
 
 These work as expected if you provide any two of the three paramters. For example,
 
+  10.sum_of(6,A).solve { p A }  # outputs 4
+
   A.in(1..21).and(21.product_of(A,B)).each do
     p [A,B]
-  end
+  end # outputs pairs of divisors
 
 == Contributing
 
