@@ -112,6 +112,7 @@ rubylog do
           vars = a.rubylog_variables.map do |v|
             new_v = Rubylog::Variable.new(v.name)
             new_v.send :bind_to!, v.value if v.bound?
+            new_v
           end
 
           # store them in a closure
