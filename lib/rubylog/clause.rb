@@ -12,7 +12,7 @@ module Rubylog::Clause
 
   def solve &block
     goal = rubylog_match_variables 
-    catch :cut do
+    catch :rubylog_cut do
       goal.prove { block.call_with_rubylog_variables(goal.rubylog_variables) if block }
     end
   end

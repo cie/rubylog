@@ -163,6 +163,29 @@ describe "logic builtins", :rubylog => true do
       :john.happy.if((:true.and :true).or :true)
       :john.should be_happy
     end
+
+    it "works after variable calls" do 
+      (A.is(:true).and A.and :cut!.and :fail).or(:true).true?.should be_false
+    end 
+
+    it "works after variable calls (control)" do 
+      (A.is(:true).and A.and :fail).or(:true).true?.should be_true
+    end 
+
+    it "works after variable calls (branch or)" do 
+      :john.happy.if A.is(:true).and A.and :cut!.and :fail
+      :john.happy.if :true
+      :john.should_not be_happy
+    end 
+
+    it "works after variable calls with multiple solutions of the variable" do 
+      (A.is(B.is(4).or(B.is(6))).and A.and :cut!).map{B}.should == [4]
+    end 
+
+    it "works after variable calls with multiple solutions of the variable (control)" do 
+      (A.is(B.is(4).or(B.is(6))).and A).map{B}.should == [4,6]
+    end 
+
   end
 
   describe "all,any,one,none,every" do

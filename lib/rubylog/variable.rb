@@ -123,10 +123,25 @@ module Rubylog
       unless v.rubylog_variables
         v = v.rubylog_match_variables
       end
-      
-      catch :cut do
-        v.prove{yield}
+
+      caught_cut = false
+
+      catch :rubylog_cut do
+        v.prove do
+          # intercept cuts that come from the yield
+          catch :rubylog_no_cut do
+            catch :rubylog_cut do
+              yield
+              throw :rubylog_no_cut
+            end
+            caught_cut = true
+          end
+          break if caught_cut
+        end
       end
+
+      # pass through cut if one was caught from yield
+      throw :rubylog_cut if caught_cut
     end
 
 

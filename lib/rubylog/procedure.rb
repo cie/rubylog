@@ -14,7 +14,7 @@ module Rubylog
     # accepts the *args of the called structure
     def call *args
       # catch cuts
-      catch :cut do
+      catch :rubylog_cut do
 
         # for each rule
         each do |rule|

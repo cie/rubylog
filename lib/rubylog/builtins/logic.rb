@@ -12,7 +12,7 @@ rubylog do
     # !
     def cut!
       yield
-      throw :cut
+      throw :rubylog_cut
     end
   end
 
@@ -34,7 +34,7 @@ rubylog do
     # Succeeds if +a+ does not succeed.
     def false a
       # catch cuts
-      catch :cut do
+      catch :rubylog_cut do
         a.prove { return }
       end
       yield
