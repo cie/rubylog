@@ -9,17 +9,20 @@ See the {wiki}[https://github.com/cie/rubylog/wiki] for online documentation.
 
 == Getting started
 
+=== Installing
+
 Currently, Rubylog only works with Ruby 1.9.2. 
 
 First, install the gem
 
-  $ gem install rubylog-2.0pre1
+  $ gem install rubylog
 
 or, if you use +bundler+, add this line to your +Gemfile+:
 
-  gem 'rubylog', '~>2.0pre1'
+  gem 'rubylog', '~>2.0'
 
 
+=== The context
 
 Secondly, you need a Rubylog context. The simplest you can do is to extend Rubylog::Context into the main object.
 

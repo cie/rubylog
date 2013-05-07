@@ -6,9 +6,9 @@ extend Rubylog::Context
 solve S.is("Hello #{X}!").and X.is("no Trace") do puts S end
 
 # tracing with on/off
-Rubylog.trace!
+Rubylog.trace
 solve S.is("Hello #{X}!").and X.is("Trace") do puts S end
-Rubylog.trace!(false)
+Rubylog.trace(false)
 
 # no trace again
 solve S.is("Hello #{X}!").and X.is("no Trace again") do puts S end
