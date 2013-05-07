@@ -33,7 +33,6 @@ Another option is to use Kernel#rubylog:
 
 
   require 'rubylog'
-  extend Rubylog::Context
 
   rubylog do
     # your code here
