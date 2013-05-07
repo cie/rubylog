@@ -65,12 +65,15 @@ to the end:
 === Predicates
 As in prolog, predicates are the building blocks of your program. However, the arguments are in a different order than they are in prolog:
 
-  predicate_for String, ".likes()"
   'John'.likes('beer')
 
 which would be <tt>likes('John','beer')</tt> in prolog. As you can see, the first argument comes first, then the functor, and then the further arguments.  
 
-In Rubylog, predicates must be declared with +predicate_for+. You have to specify the class of the possible first arguments, this is called the subject class. This could also be an array of classes. The string indicating the predicate syntax is <tt>".likes()"</tt>. The format is <tt>.asdf .asdf() .asdf(,) .asdf(,,)</tt> for predicates with 0,1,2,3,4 arguments. You can add descriptions in the indicator string e.g. <tt>"Person.likes(Drink)"</tt> means the same as <tt>".likes()"</tt>.
+In Rubylog, predicates must be declared with +predicate_for+:
+
+  predicate_for String, ".likes()"
+  
+You have to specify the class of the possible first arguments (+String+ in this case), this is called the subject class. This could also be an array of classes. The string indicating the predicate syntax is <tt>".likes()"</tt>. The format is <tt>.asdf .asdf() .asdf(,) .asdf(,,)</tt> for predicates with 1,2,3 and 4 arguments. You can add descriptions in the indicator string e.g. <tt>"Person.likes(Drink)"</tt> means the same as <tt>".likes()"</tt>.
 
 Nullary predicates are symbols, and they have to be declared with +predicate+:
 
@@ -86,12 +89,13 @@ Declaring a predicate with arguments gives you three methods on the subject clas
 
 === Asserting clauses
 
-As in Prolog, there are two types of clauses, rules and facts. You can assert a rule with the +if+ method:
+As in Prolog, there are two types of program clauses, rules and facts. You can assert a rule with the +if+ method:
 
-  predicate_for String, ".drinks() .has()"
+  predicate_for String, ".likes() .drinks() .has()"
+  
   X.drinks(Y).if X.has(Y).and X.likes(Y)        
 
-This would be <tt>drinks(X,Y) :- has(X,Y), likes(X,Y)</tt> in Prolog.
+This would be <tt>drinks(X,Y) :- has(X,Y), likes(X,Y).</tt> in Prolog.
 
 You can assert facts with the bang syntax:
 
@@ -117,7 +121,7 @@ Some built-in predicates and their Prolog equivalents:
   :fail     fail
   .and()    ,
   .or()     ;
-  :false    \+
+  .false    \+
   .is()     =
   .is_not() =/=
   .in()     member
@@ -125,9 +129,12 @@ Some built-in predicates and their Prolog equivalents:
 
 There are some new ones:
 
-  not_in, all, any, one, none, iff, every
+  .not_in(), .all(), .any(), .one(), .none(), .iff()
+
+
 
 You can see reference of these in <tt>lib/rubylog/builtins/logic.rb</tt> and <tt>lib/rubylog/builtins/term.rb</tt>
+
 
 
 === Unification
