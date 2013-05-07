@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "rubylog"
-  s.version = "2.0pre1"
+  s.version = "2.0.0"
 
-  s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
+  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bern\u{e1}t Kall\u{f3}"]
-  s.date = "2013-05-02"
+  s.date = "2013-05-07"
   s.description = "Rubylog is a Prolog-like DSL for Ruby."
   s.email = "kallo.bernat@gmail.com"
   s.extra_rdoc_files = [
@@ -66,7 +66,6 @@ Gem::Specification.new do |s|
     "lib/rubylog/builtins/logic.rb",
     "lib/rubylog/builtins/reflection.rb",
     "lib/rubylog/builtins/term.rb",
-    "lib/rubylog/clause.rb",
     "lib/rubylog/compound_term.rb",
     "lib/rubylog/context.rb",
     "lib/rubylog/context_creation.rb",
@@ -77,10 +76,12 @@ Gem::Specification.new do |s|
     "lib/rubylog/context_modules/thats.rb",
     "lib/rubylog/default_context.rb",
     "lib/rubylog/dsl/array_splat.rb",
+    "lib/rubylog/dsl/indicators.rb",
     "lib/rubylog/dsl/primitives.rb",
     "lib/rubylog/dsl/thats.rb",
     "lib/rubylog/dsl/variables.rb",
     "lib/rubylog/errors.rb",
+    "lib/rubylog/goal.rb",
     "lib/rubylog/mixins/array.rb",
     "lib/rubylog/mixins/hash.rb",
     "lib/rubylog/mixins/kernel.rb",
@@ -185,6 +186,7 @@ Gem::Specification.new do |s|
     "spec/rubylog/context_modules/predicates_spec.rb",
     "spec/rubylog/context_modules/thats_spec.rb",
     "spec/rubylog/dsl/array_splat_spec.rb",
+    "spec/rubylog/dsl/indicators_spec.rb",
     "spec/rubylog/dsl/primitives_spec.rb",
     "spec/rubylog/errors_spec.rb",
     "spec/rubylog/interfaces/term_spec.rb",
@@ -193,6 +195,8 @@ Gem::Specification.new do |s|
     "spec/rubylog/mixins/proc_spec.rb",
     "spec/rubylog/mixins/string_spec.rb",
     "spec/rubylog/mixins/symbol_spec.rb",
+    "spec/rubylog/procedure_spec.rb",
+    "spec/rubylog/rule_spec.rb",
     "spec/rubylog/structure_spec.rb",
     "spec/rubylog/term_spec.rb",
     "spec/rubylog/tracing_spec.input",
