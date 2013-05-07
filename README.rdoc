@@ -3,15 +3,17 @@
 Rubylog is a Prolog-like DSL for Ruby. The language is inspired by {Jamis
 Buck}[http://weblog.jamisbuck.org/2006/10/28/prolog-in-ruby], and the
 implementation is based on {Yield Prolog}[http://yieldprolog.sourceforge.net/],
-with lots of sintactic and semantic additions.
+with lots of sintactic and semantic candy.
 
 See the {wiki}[https://github.com/cie/rubylog/wiki] for online documentation.
 
 == Getting started
 
+Currently, Rubylog only works with Ruby 1.9.2. 
+
 First, install the gem
 
-  $ gem install rubylog
+  $ gem install rubylog-2.0pre1
 
 or, if you use +bundler+, add this line to your +Gemfile+:
 
@@ -19,22 +21,32 @@ or, if you use +bundler+, add this line to your +Gemfile+:
 
 
 
-First, you need a Rubylog context. The simplest you can do is to extend Rubylog::Context into the main object.
+Secondly, you need a Rubylog context. The simplest you can do is to extend Rubylog::Context into the main object.
 
   require 'rubylog'
   extend Rubylog::Context
+
+Another option is to use Kernel#rubylog:
+
+
+  require 'rubylog'
+  extend Rubylog::Context
+
+  rubylog do
+    # your code here
+  end
 
 
 === Data types
 
 Rubylog is similar to Prolog, but there are quite a few differences. In Rubylog,
-you can use any Ruby object as data.
+you can use any Ruby object as data, also +nil+.
 
 Rubylog variables are (undefined) constant names:
 
   A, B, ANYTHING
 
-A variables whose name starts with +ANY...+ (case-insensitive) is a don't-care
+A variable whose name starts with +ANY...+ (case-insensitive) is a don't-care
 variable (like +_+ in Prolog).
 
 Lists are just Ruby arrays:
@@ -46,7 +58,10 @@ They can have splats:
   [1, 2, *T]
 
 Which would be <tt>[1,2|T]</tt> in Prolog, however, in Rubylog, splats are not limited
-to the end.
+to the end:
+
+  [1, *A, 5]
+  [*A, *B]
 
 === Predicates
 As in prolog, predicates are the buinding blocks of your program. However, the arguments are in a different order than they are in prolog:
@@ -54,7 +69,9 @@ As in prolog, predicates are the buinding blocks of your program. However, the a
   predicate_for String, ".likes()"
   'John'.likes!('beer')
 
-which would be <tt>likes('John','beer').</tt> in prolog. In Rubylog, predicates must be declared. The string indicating the predicate syntax is <tt>".likes()"</tt>. The format is <tt>:asdf .asdf .asdf() .asdf(,) .asdf(,,)</tt> for predicates with 0,1,2,3,4 arguments.
+which would be <tt>likes('John','beer').</tt> in prolog.
+
+In Rubylog, predicates must be declared with +predicate_for+. The string indicating the predicate syntax is <tt>".likes()"</tt>. The format is <tt>:asdf .asdf .asdf() .asdf(,) .asdf(,,)</tt> for predicates with 0,1,2,3,4 arguments. You can add descriptions in the indicator string like <tt>"Person.likes(Drink)"</tt>
 
 You can assert a rule with the +if+ method:
 
@@ -63,8 +80,7 @@ You can assert a rule with the +if+ method:
 
 This would be +drinks(X,Y) :- has(X,Y), likes(X,Y)+ in Prolog.
 
-You can assert facts with <tt>if(:true)</tt>, or, as a shorthand you can use the bang
-syntax:
+You can assert facts with <tt>if(:true)</tt>, or with the bang syntax:
 
   'John'.likes! 'milk'                         
 
@@ -101,16 +117,14 @@ Some built-in predicates and their Prolog equivalents:
 
 There are some new ones:
 
-  not_in, all, any, one, none, iff
+  not_in, all, any, one, none, iff, every
 
 You can see reference of these in <tt>lib/rubylog/builtins/logic.rb</tt> and <tt>lib/rubylog/builtins/term.rb</tt>
 
 
-See the documentation in <tt>lib/rubylog/builtins/</tt>
-
 === Unification
 
-In Rubylog, unification works quite the same in Prolog, with the +is+ functor.
+In Rubylog, unification works quite like in Prolog, but with the +is+ functor.
 
   A.is(B)
 
@@ -121,25 +135,32 @@ Using arrays, you can benefit the splats:
 
 The +in+ predicate unifies the first argument with any member of the collection:
 
-  4.in([1,2,3,4])
+  4.in([1,2,3,4])             # member(4,[1,2,3,4]) in prolog
 
-You can use guards:
+You can use guards. These are constant expressions that restrict the unification of variables. There are several types of guards:
 
-  A[String].in(["asdf",5,nil]).each { p A }   # outputs "asdf"
-  A[/x/].in(["asdf","xyz"]).each { p A }      # outputs "xyz"
-  A[thats < 5].in([4,5,6]).each { p A }       # outputs 4
+  A[String].in(["asdf",5,nil]).each { p A }     # outputs "asdf"
+  A[/x/].in(["asdf","xyz"]).each { p A }        # outputs "xyz"
+  A[length: 3].in(["abc","abcd"]).each { p A }  # outputs "abc"
+  A[thats < 5].in([4,5,6]).each { p A }         # outputs 4
+  A[thats.length + 1 == 5].in(["abc","abcd"]).each { p A }    # outputs "abcd"
+
++thats+ can receive any number of messages chained, and this will be applied to the value that would be bound to the variable. 
+You can add various guards to a variable.
+
+  A[Integer, thats%2 ==0].even!
+
 
 === Moving between Ruby and Rubylog
 ==== Running a query
 
-If you want to run a query, you have many different syntaxes:
+If you want to run a query, you have three different syntaxes:
 
-  prove ('John'.drinks 'beer')  # => true
   true? ('John'.drinks 'beer')  # => true
   ('John'.drinks 'beer').true?  # => true
   'John'.drinks? 'beer'         # => true
 
-==== Enumerations
+==== Finding solutions
 
 +Structure+ implements +Enumerable+, and yields the solutions. Within the
 enumeration block, you can access the values of your variables.
@@ -148,6 +169,8 @@ enumeration block, you can access the values of your variables.
   ('John'.drinks X).each {p X}      # outputs 'beer'
   ('John'.drinks X).map{X}          # => ['beer']
   ('John'.drinks X).count           # => 1
+
+You can also use +solve+, which is equivalent with +each+.
 
 ==== Procs as predicates
 
@@ -168,55 +191,46 @@ The predicate succeeds if the block returns a true value.
   X.good.if X.is { 'BEER'.downcase }
   X.good.if X.in { get_good_drinks() }
 
-==== The two modes of Rubylog
+==== Variables in blocks
 
-Rubylog has two modes, DSL and native. DSL code is executed only once
-at compile time, and is used for describing the Rubylog program. Native code is
-executed runtime. Any block passed to Rubylog structures native code.
+When you use blocks or procs as predicates or functions, or when you use enumeration methods with blocks, you can access values of variables by their name in the blocks (if they are bound).
 
-  ('John'.drinks X).and { X != 'beer'}.each { p X }
-  ^^^^^^^^^^^^^^^^^^^^^^              ^^^^^^          dsl mode
-                         ^^^^^^^^^^^^        ^^^^^    native mode
 
-In dsl mode, variables are +Rubylog::Variable+ objects. In native mode,
-variables are substituted with their respecitve value (or +nil+ if they are not
-bound).
+  'John'.likes(Y).if { Y =~ /ale/ }
+  'John'.likes(Y).if Y.is { Y =~ /ale/ }
+  'John'.likes(Y).each { p Y }
 
-All built-in rubylog predicates are clean logical programming predicates witout
-a side-effect. If you want some side-effects, you always go into native mode.
+If your variable is unbound, you will get the variable object.
 
-=== Rubylog as a test suite
+  X.is(Y).each { p X.class }   # outputs 'Rubylog::Variable'
 
-You can write simple tests using the +check+ method:
 
-  theory do
-    check :true.or :false
-    check A.is(3).and A.in [1,2,3]
-    check { 5+5 == 10 }
+=== Rspec integration
+
+Rubylog can integrate with RSpec. This enables you to use variables and predicates in specs.
+
+  require "rspec/rubylog"
+
+  describe "numbers", rubylog: true do
+    specify do
+      A.is(5).map{A}.should == [5]
+    end
   end
 
-You sould put this file in <tt>"./logic/something\_logic.rb"</tt>. Then you can run it
-with 
+There is an assertion method called +check+ that receives a predicate as an argument and raises an exception if it fails.
 
-  rubylog logic/something_logic.rb
+  check 5.is(5)
 
-Or you can run all files in <tt>logic/**/*\_logic.rb</tt> with
-
-  rubylog
-
-=== Other built-in libraries
+=== Built-in predicates
 
 ==== File system
 
 You can make some queries on the file system:
 
-  require "rubylog/builtins/file_system"
+  check "README".filename_in "."
+  check "./README".file_in "."
 
-  theory do
-    check "README".filename_in "."
-
-    X.dirname_in(".").each { puts X }
-  end
+  X.dirname_in(".").each { puts X }
 
 
 ==== Reflection
@@ -224,12 +238,9 @@ You can make some queries on the file system:
 You can make some metaprogramming with Rubylog
 
 
-  require "rubylog/builtins/reflection"
+    predicate_for String, ".likes()"
 
-  theory do
-    functor_for String, :likes
-
-    check "John".likes("Jane").structure(:likes, ["John", "Jane"])
+    check "John".likes("Jane").structure(Pred, :likes, ["John", "Jane"])
 
     "John".likes(X).if X.likes("John")
     "Jane".likes!("John")
@@ -241,12 +252,21 @@ You can make some metaprogramming with Rubylog
 
   end
 
+==== Arithmetics
+
+  check 5.sum_of(2,3)
+  check 5.product_of(1,5)
+
+These work as expected if you provide any two of the three paramters. For example,
+
+  A.in(1..21).and(21.product_of(A,B)).each do
+    p [A,B]
+  end
+
 == Contributing
 
 === To the language
 
-* Post your own examples to the {wiki}[https://github.com/cie/rubylog/wiki/Examples].
-* Improve others' examples.
 * If you have a suggestion for the language, submit an issue.
 
 === Reporting bugs or requesting features
