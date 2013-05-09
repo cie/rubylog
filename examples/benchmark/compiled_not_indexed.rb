@@ -7,11 +7,11 @@ class << primitives
   def self.make_tree(parent, levels, s="")
     return if levels.zero?
 
-    children = (1..DEGREES).map{random_name} 
+    children = (1..DEGREES).map{random_person} 
 
-    s << "a.rubylog_unify('#{parent}'){\n" 
+    s << "a.rubylog_unify(#{parent.inspect}){\n" 
     children.each do |child|
-      s << "b.rubylog_unify('#{child}'){yield}\n"
+      s << "b.rubylog_unify(#{child.inspect}){yield}\n"
     end 
     s << "}\n"
     children.each do |child|
@@ -21,7 +21,7 @@ class << primitives
   end 
 
   eval "def parent_of a,b
-    #{make_tree("Adam", LEVELS)}
+    #{make_tree(random_person, LEVELS)}
   end"
 
   def grandparent_of a,b
@@ -29,14 +29,4 @@ class << primitives
     parent_of(a,x) { parent_of(x,b) { yield }}
   end 
 end 
-
-
-puts "Compiled, not indexed"
-
-puts "%0.5f sec" % Benchmark.realtime {
-  A.grandparent_of(B).map {
-    [A,B]
-  }
-}
-
 

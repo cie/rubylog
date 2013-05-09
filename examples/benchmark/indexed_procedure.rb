@@ -1,24 +1,19 @@
-# encoding: UTF-8
-require "rubylog"
-extend Rubylog::Context
-
 class Rubylog::Procedure
-  def initialize functor, arity
+  def initialize functor, arity, rules=Array.new
     super functor, arity
-    @rules = {}
+    @rules = rules
+    @index = {}
   end
 
   def each(args)
     index = args[0].rubylog_dereference
     if !index.is_a? Rubylog::Variable
-      (@rules[index] || []).each do |rule|
+      (@index[index] || []).each do |rule|
         yield rule
       end 
     else
-      @rules.map do |k, rules|
-        rules.each do |rule|
-          yield rule
-        end 
+      @rules.each do |rule|
+        yield rule
       end 
     end
   end 
@@ -48,43 +43,15 @@ class Rubylog::Procedure
 
   # Asserts a rule with a given head and body, indexed
   def assert head, body = :true
+    rule = Rubylog::Rule.new(head, body)
+
+    # update index
     index = head[0].rubylog_dereference 
     if !index.is_a? Rubylog::Variable
-      list = (@rules[index] ||= [])
-    else
-      list = (@rules[nil] ||= [])
+      (@index[index] ||= []).push rule
     end
-    
-    list.push Rubylog::Rule.new(head, body)
+
+    @rules.push rule
   end 
 end 
-
-predicate_for String, ".parent_of() .grandparent_of()"
-
-def make_tree(parent, levels)
-  return if levels.zero?
-
-  DEGREES.times do
-    child = random_name
-
-    # add relationship
-    parent.parent_of!(child)
-
-    # make sub-tree
-    make_tree(child, levels-1)
-  end
-end 
-
-make_tree("Adam", LEVELS)
-
-A.grandparent_of(B).if A.parent_of(X).and X.parent_of(B)
-
-puts "Indexed"
-
-puts "%0.5f sec" % Benchmark.realtime {
-  A.grandparent_of(B).map {
-    [A,B]
-  }
-}
-
 

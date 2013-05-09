@@ -2,31 +2,25 @@
 require "rubylog"
 extend Rubylog::Context
 
-predicate_for String, ".parent_of() .grandparent_of()"
+predicate_for $person_class, ".parent_of() .grandparent_of()"
 
 def make_tree(parent, levels)
   return if levels.zero?
 
-  DEGREES.times do
-    child = random_name
+  children = (1..DEGREES).map{random_person} 
 
+  children.each do |child|
     # add relationship
     parent.parent_of!(child)
+  end
 
+  children.each do |child|
     # make sub-tree
     make_tree(child, levels-1)
-  end
+  end 
 end 
 
-make_tree("Adam", LEVELS)
+make_tree(random_person, LEVELS)
 
 A.grandparent_of(B).if A.parent_of(X).and X.parent_of(B)
-
-puts "Strings"
-
-puts "%0.5f sec" % Benchmark.realtime {
-  A.grandparent_of(B).map {
-    [A,B]
-  }
-}
 
