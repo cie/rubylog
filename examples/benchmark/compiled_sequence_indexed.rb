@@ -21,15 +21,15 @@ class << primitives
     end 
 
     children.each do |child|
-      make_tree(child, levels-1, s)
+      make_tree(child, levels-1, all, indexed)
     end
-    s
+    
   end 
 
   all ="", indexed =""
   make_tree("Adam", LEVELS, all, indexed)
 
-  eval p "def parent_of a,b
+  eval "def parent_of a,b
     a = a.rubylog_dereference
     case a
     when Rubylog::Variable
@@ -45,7 +45,7 @@ class << primitives
 end 
 
 
-puts "Compiled"
+puts "Compiled, indexed with sequence"
 
 puts "%0.5f sec" % Benchmark.realtime {
   A.grandparent_of(B).map {

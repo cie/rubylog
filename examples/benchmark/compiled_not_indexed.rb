@@ -20,7 +20,7 @@ class << primitives
     s
   end 
 
-  eval p "def parent_of a,b
+  eval "def parent_of a,b
     #{make_tree("Adam", LEVELS)}
   end"
 
@@ -31,7 +31,7 @@ class << primitives
 end 
 
 
-puts "Compiled"
+puts "Compiled, not indexed"
 
 puts "%0.5f sec" % Benchmark.realtime {
   A.grandparent_of(B).map {

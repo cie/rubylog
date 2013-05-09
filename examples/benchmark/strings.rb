@@ -1,21 +1,14 @@
 # encoding: UTF-8
-# this file is the same as object_indexed.rb, but this must be run before
-# indexed.rb
 require "rubylog"
 extend Rubylog::Context
 
-
-class Person
-  extend Rubylog::Context
-  predicate ".parent_of() .grandparent_of()"
-  A.grandparent_of(B).if A.parent_of(X).and X.parent_of(B)
-end 
+predicate_for String, ".parent_of() .grandparent_of()"
 
 def make_tree(parent, levels)
   return if levels.zero?
 
   DEGREES.times do
-    child = Person.new
+    child = random_name
 
     # add relationship
     parent.parent_of!(child)
@@ -25,16 +18,15 @@ def make_tree(parent, levels)
   end
 end 
 
-make_tree(Person.new, LEVELS)
+make_tree("Adam", LEVELS)
 
+A.grandparent_of(B).if A.parent_of(X).and X.parent_of(B)
 
-
-puts "Objects"
+puts "Strings"
 
 puts "%0.5f sec" % Benchmark.realtime {
   A.grandparent_of(B).map {
     [A,B]
   }
 }
-
 

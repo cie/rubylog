@@ -7,6 +7,7 @@
 #
 
 require "benchmark"
+require "ruby-prof"
 
 DEGREES = 3
 LEVELS = 5
@@ -20,9 +21,12 @@ def random_name
 end 
 
 
-#load "./examples/benchmark/pure.rb"; GC.start; sleep(3)
-#load "./examples/benchmark/indexed.rb"; GC.start; sleep(3)
-#load "./examples/benchmark/object.rb"; GC.start; sleep(3)
-load "./examples/benchmark/compiled.rb"
+load "./examples/benchmark/strings.rb"; GC.start; sleep(3)
+load "./examples/benchmark/symbols.rb"; GC.start; sleep(3)
+load "./examples/benchmark/object.rb"; GC.start; sleep(3)
+load "./examples/benchmark/indexed.rb"; GC.start; sleep(3)
+load "./examples/benchmark/object_indexed.rb"; GC.start; sleep(3)
+load "./examples/benchmark/compiled_not_indexed.rb"; GC.start; sleep(3)
+load "./examples/benchmark/compiled_sequence_indexed.rb"; GC.start; sleep(3)
 
 
