@@ -26,7 +26,7 @@ class << primitives
     
   end 
 
-  all ="", indexed =""
+  all =""; indexed =""
   make_tree(random_person, LEVELS, all, indexed)
 
   eval "def parent_of a,b

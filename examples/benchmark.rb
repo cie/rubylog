@@ -11,7 +11,7 @@ require "ruby-prof"
 
 
 DEGREES = 3
-LEVELS = 3
+LEVELS = 5
 NAME_LENGTH = 5
 
 class Person
@@ -63,13 +63,17 @@ def run_benchmark(id, person_class, name)
     end
   }
   puts "%0.5f sec" % time
-  
+
+
+  # forget result
+  result = result.inspect
+
   # compare with last result
   raise "#{$last_result} != #{result}" if $last_result && $last_result != result
   $last_result = result
 
   # make garbage collection
-  GC.start; sleep(time*2)
+  GC.start; sleep(time*1.2+1)
 end 
 
 puts "Rubylog Grandparent Benchmark"
