@@ -1,19 +1,37 @@
 require "rubylog"
 extend Rubylog::Context
 
-predicate_for Array, ".array(N) Peek.matches(Guess)"
+predicate_for Rubylog::Variable, ".bound"
+A.bound.if { A.is_a? Rubylog::Variable }
 
-[].peek!(0)
-[K,*REST].mice(N[thats>0]).if K.in([0,1]).and N.sum_of(N1,1).and REST.mice(N1)
+class Array
+  extend Rubylog::Context
 
-[].seen!([])
-[0,*REST].seen([nil,*REST2]).if REST.seen(REST2)
-[1,*REST].seen([A,*REST2]).if A.in([0,1]).and REST.seen(REST2)
+  predicate ".can_have_neighbours"
+  [*ANY,:yes,:yes,*ANY].can_have_neighbours!
 
-[].guess!([])
-[nil,*REST].guess([A,*REST2]).if A.in([0,1]).and REST.guess(REST2)
-[0,*REST].guess([0,*REST2]).if A.in([0,1]).and REST.guess(REST2)
-[1,*REST].guess([1,*REST2]).if A.in([0,1]).and REST.guess(REST2)
+  predicate ".has_neighbours"
+  [*ANY,A,B,*ANY].has_neighbours.if { A == :yes && B == :yes}
 
-solve N.is(6).and any Peek.peek(N), all(Peek.seen(Seen), all(Guess.guess(Seen), Guess.has_neighbors.false).or(all(Guess.guess(Seen), Guess.has_neighbors)))
+  predicate ".cannot_have_neighbours"
+  A.cannot_have_neighbours.if A.can_have_neighbours.false
+
+  predicate ".decidable"
+  A.decidable.if A.has_neighbours.or A.cannot_have_neighbours
+
+
+  predicate ".guessed"
+  A.guessed.if every X.in(A), X.is(:yes).or(X.is(:no)).or(:true)
+
+  predicate ".easy"
+  A.easy.if A.guessed.and A.decidable.and any X.in(A), X.bound.false
+
+  Rubylog.trace
+  N.in(0..6).each do
+    puts "#{N}: #{([ANY]*N).easy?}"
+  end 
+
+end 
+
+
 
