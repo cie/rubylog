@@ -37,4 +37,7 @@ describe "file system builtins", :rubylog=>true do
     "./lib/#{A}.rb".file_in("./lib").map{A}.should == ["rubylog"]
   end
 
+  specify "works with nonvars" do
+    "./lib/rubylog.rb".file_in("./lib").to_a.should == [nil]
+  end
 end

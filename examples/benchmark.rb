@@ -6,12 +6,13 @@
 #
 #
 
+require "rubylog"
 require "benchmark"
 require "ruby-prof"
 
 
 DEGREES = 3
-LEVELS = 5
+LEVELS = 6
 NAME_LENGTH = 5
 
 class Person
@@ -81,6 +82,7 @@ puts
 puts "DEGREES = #{DEGREES}"
 puts "LEVELS = #{LEVELS}"
 puts "NAME_LENGTH = #{NAME_LENGTH}"
+puts "NODES = #{DEGREES**LEVELS}"
 puts
 
 
@@ -103,7 +105,9 @@ run_benchmark "compiled_not_indexed", Symbol, "Symbols compiled"
 puts
 
 run_benchmark "compiled_sequence_indexed", String, "Strings compiled, sequentially indexed"
-run_benchmark "compiled_sequence_indexed", Person, "Objects compiled, sequentially indexed"
+#run_benchmark "compiled_sequence_indexed", Person, "Objects compiled, sequentially indexed"
 run_benchmark "compiled_sequence_indexed", Symbol, "Symbols compiled, sequentially indexed"
 puts
 
+# native prolog
+load "./examples/benchmark/prolog.rb"

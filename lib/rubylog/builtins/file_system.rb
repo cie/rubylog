@@ -14,7 +14,7 @@ rubylog do
       File.basename(x) !~ /\A\.\.?\z/ 
     }
   }
-  X.file_in(D).if proc{! X.is_a? Rubylog::Variable and File.exist?(X)}.and D.is { File.dirname(X) }
+  X.file_in(D).if proc{! X.is_a? Rubylog::Variable and D.is_a?(Rubylog::Variable) and File.exist?(X)}.and D.is { File.dirname(X) }
 
   # If D is not a variable, succeeds if X unifies with a directory in directory D. X
   # necessarily starts with "#{D}/". X can contain variables, D cannot.

@@ -51,4 +51,4 @@ task :yardserver do
 end
 
 
-
+task :default => :spec
