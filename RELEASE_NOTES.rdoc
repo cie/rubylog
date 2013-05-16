@@ -4,7 +4,11 @@
   * warning for singleton variables
   * predicate for checking bound/unbound variables
 
-== Version 2.0.0 (to be released)
+== Version 2.0.1
+* Bug fixes
+  * <tt>"a/b".file\_in("a")</tt> only succeeds once
+
+== Version 2.0.0
 * Backwards incompatibilities
   * <tt>Rubylog.theory</tt> renamed to <tt>Kernel#rubylog</tt>.
   * <tt>file\_in</tt> includes directories and yields relative paths.
