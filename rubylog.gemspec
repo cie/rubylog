@@ -32,6 +32,7 @@ Gem::Specification.new do |s|
     "examples/benchmark/compiled_not_indexed.rb",
     "examples/benchmark/compiled_sequence_indexed.rb",
     "examples/benchmark/indexed_procedure.rb",
+    "examples/benchmark/prolog.rb",
     "examples/benchmark/pure.rb",
     "examples/checkmate.rb",
     "examples/combination.rb",
