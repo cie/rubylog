@@ -1,5 +1,5 @@
 require "rubylog"
-# This is a quick and dirty solution to replace Prolog's DCG syntax.
+# This is a simple solution to replace Prolog's DCG syntax.
 # It is slow for long inputs. See examples/dcg2.rb for a more efficient algorithm (the same as Prolog's DCG).
 
 rubylog do

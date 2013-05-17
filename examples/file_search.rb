@@ -1,6 +1,8 @@
 require "rubylog"
 extend Rubylog::Context
 
+# Outputs which source files have and which source files do not have a test.
+
 [true,false].each do |b|
   puts "Files which #{b ? 'have' : 'do not have'} spec:"
 

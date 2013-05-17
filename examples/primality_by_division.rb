@@ -1,6 +1,8 @@
 require "rubylog"
 extend Rubylog::Context
 
+# Primality check
+
 predicate_for Integer, ".prime .odd .divides()"
 
 A.divides(B).if { B%A == 0 }

@@ -1,6 +1,8 @@
 $:.unshift File.dirname(__FILE__)+"/../lib"
 require "rubylog"
 
+# Solution of N queens problem
+
 rubylog do
   predicate_for Integer, ".on(,)", ".attacks(,)", ".placed"
   predicate ":arranged"
@@ -18,6 +20,7 @@ rubylog do
   :arranged.if every A.in(1..N), A.placed
 
   :arranged.solve do
+    # draw board
     L.in(1..N).each do
       M.in(1..N).each do
         print ANY.on?(L,M) ? "X" : "."

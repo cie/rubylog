@@ -2,6 +2,8 @@ require "rubylog"
 extend Rubylog::Context
 predicate_for Array, ".permutation()"
 
+# Permutation of a list
+
 [].permutation! []
 [*FRONT, A, *BACK].permutation([A,*REST]).if [*FRONT,*BACK].permutation(REST)
 

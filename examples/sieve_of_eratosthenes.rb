@@ -1,6 +1,8 @@
 require "rubylog"
 extend Rubylog::Context
 
+# Sieve of Eratosthenes
+
 predicate_for Integer, ".sieve .prime .nonprime .multiple_of(N,Limit)"
 
 A.multiple_of(N,Limit).if I.in{(0..Limit/N)}.and A.is{N*I}

@@ -2,6 +2,8 @@ $:.unshift File.dirname(__FILE__)+"/../lib"
 require "rubylog"
 require "readline"
 
+# simple expression solver (slow for large inputs)
+
 rubylog do
   predicate_for String, ".term()", ".expr()", ".atom()"
 

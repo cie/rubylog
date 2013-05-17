@@ -1,6 +1,8 @@
 require "rubylog"
 extend Rubylog::Context
 
+# Palindrome checking with guards
+
 predicate_for String, ".palindrome"
 
 S[length: 0..1].palindrome!
