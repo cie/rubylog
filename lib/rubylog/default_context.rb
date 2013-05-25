@@ -1,9 +1,7 @@
 module Rubylog
-  DefaultContext = Object.new
-
-  # create the context
-  class << DefaultContext
-    include Rubylog::Context
+  module DefaultContext
+    extend Rubylog::Context
   end
+
 
 end
