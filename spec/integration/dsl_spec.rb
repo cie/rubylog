@@ -1,7 +1,6 @@
 require "spec_helper" 
 
-module DSLSpec
-  extend Rubylog::Context
+module RubylogSpec
 
   describe "Rubylog dsl", :rubylog=>true do
 
