@@ -4,7 +4,9 @@
 $:.unshift File.dirname(__FILE__)+"/../lib"
 require 'rubylog'
 
-rubylog do
+module DCG
+  extend Rubylog::Context
+
   predicate_for Array, ".sentence()", ".subject()", ".object()", ".nominal_phrase()", ".noun()", ".verb()", ".article()"
 
   # sentence --> subject, verb, object

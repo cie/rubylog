@@ -1,6 +1,7 @@
 require "rubylog"
-extend Rubylog::Context
 
-# String substitution
+module StringInterpolation
+  extend Rubylog::Context
 
-solve S.is("Mary had a #{X} lamb.").and X.is("little").and { puts S }
+  solve S.is("Mary had a #{X} lamb.").and X.is("little").and { puts S }
+end

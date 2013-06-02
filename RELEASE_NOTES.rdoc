@@ -1,8 +1,11 @@
+== Planned features
+* <tt>solve</tt> without a block returns an enumerator
+* warning for singleton variables
+* <tt>nonvar</tt> predicate
+
 == Version 2.1 (planned)
 * New features
-  * solve without a block returns an enumerator
-  * warning for singleton variables
-  * predicate for checking bound/unbound variables
+  * Works with Ruby 1.9.3 and 2.0 (only <tt>module X; extend Rubylog::Context</tt> syntax)
 
 == Version 2.0.1
 * Bug fixes
