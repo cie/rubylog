@@ -4,7 +4,8 @@ require 'rubylog'
 # Factorial program
 #
 #
-rubylog do
+module Factorial
+  extend Rubylog::Context
   predicate_for Integer, ".factorial()"
 
   0.factorial! 1

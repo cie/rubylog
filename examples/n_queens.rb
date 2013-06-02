@@ -3,7 +3,8 @@ require "rubylog"
 
 # Solution of N queens problem
 
-rubylog do
+module NQueens
+  extend Rubylog::Context
   predicate_for Integer, ".on(,)", ".attacks(,)", ".placed"
   predicate ":arranged"
 

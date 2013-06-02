@@ -4,7 +4,8 @@ require "readline"
 
 # simple expression solver (slow for large inputs)
 
-rubylog do
+module Parsing
+  extend Rubylog::Context
   predicate_for String, ".term()", ".expr()", ".atom()"
 
   "#{A}+#{B}".expr(K).if A.expr(I).and B.term(J).and K.is{I+J}
