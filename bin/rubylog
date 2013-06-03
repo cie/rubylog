@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+require "rubylog"
+require "rubylog/rubylog_files"
+
+if ARGV.empty?
+  filename = '-'
+  source = $stdin.read
+  source = Rubylog::RubylogFiles.convert_source(source)
+  eval(source, TOPLEVEL_BINDING, filename, 1)
+else
+  load_rubylog_file ARGV.shift
+end
+
+
