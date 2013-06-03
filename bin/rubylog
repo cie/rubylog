@@ -8,7 +8,7 @@ if ARGV.empty?
   source = Rubylog::RubylogFiles.convert_source(source)
   eval(source, TOPLEVEL_BINDING, filename, 1)
 else
-  load_rubylog_file ARGV.shift
+  load_rubylog ARGV.shift
 end
 
 

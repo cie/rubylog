@@ -5,7 +5,7 @@ module Kernel
   end
 
   # requires a Rublog file in a Rubylog context
-  def load_rubylog_file filename, context=Rubylog::DefaultContext
+  def load_rubylog filename, context=Rubylog::DefaultContext
     require "rubylog/rubylog_files"
     source = File.read(filename)
     source = Rubylog::RubylogFiles.convert_source(source)
