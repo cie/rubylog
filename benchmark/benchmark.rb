@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 # benchmark
 #
 # The task is to collect all grandparent-granchild relationships in a family
