@@ -19,7 +19,7 @@ First, install the gem
 
 or, if you use +bundler+, add this line to your +Gemfile+:
 
-  gem 'rubylog', '~>2.0'
+  gem 'rubylog', '~>2.1'
 
 
 === The context

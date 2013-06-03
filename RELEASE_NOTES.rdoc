@@ -3,7 +3,7 @@
 * warning for singleton variables
 * <tt>nonvar</tt> predicate
 
-== Version 2.1 (planned)
+== Version 2.1 
 * New features
   * Works with Ruby 1.9.3 and 2.0 (only <tt>module X; extend Rubylog::Context</tt> syntax)
 

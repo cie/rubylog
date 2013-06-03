@@ -1,20 +1,17 @@
-require "rubylog"
-
 # Outputs which source files have and which source files do not have a test.
-module F
-  extend Rubylog::Context
+#
 
-  [true,false].each do |b|
-    puts "Files which #{b ? 'have' : 'do not have'} spec:"
+predicate_for String, ".libfile .specfile"
 
-    "lib/#{X}.rb".file_in("lib/**").each do
-      if b == "spec/#{X}_spec.rb".file_in?("spec/**")
-        puts X
-      end
-    end
+L.libfile.if "lib/#{L}.rb".file_in("lib/**")
+L.specfile.if "spec/#{L}_spec.rb".file_in("spec/**")
 
-    puts
-
-  end
-
-end
+puts "Libs which have spec:"
+L.libfile.and(L.specfile).each { puts L }
+puts
+puts "Libs which do not have spec:"
+L.libfile.and(L.specfile.false).each { puts L }
+puts
+puts "Specs which do not have lib:"
+L.specfile.and(L.libfile.false).each { puts L }
+puts
