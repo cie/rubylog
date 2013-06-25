@@ -5,13 +5,14 @@
 
 Gem::Specification.new do |s|
   s.name = "rubylog"
-  s.version = "2.0.1"
+  s.version = "2.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bern\u{e1}t Kall\u{f3}"]
-  s.date = "2013-05-16"
+  s.date = "2013-06-25"
   s.description = "Rubylog is a Prolog-like DSL for Ruby."
   s.email = "kallo.bernat@gmail.com"
+  s.executables = ["rubylog"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.rdoc"
@@ -28,38 +29,20 @@ Gem::Specification.new do |s|
     "TODO.txt",
     "VERSION",
     "examples/a_plus_b.rb",
-    "examples/benchmark.rb",
-    "examples/benchmark/compiled_not_indexed.rb",
-    "examples/benchmark/compiled_sequence_indexed.rb",
-    "examples/benchmark/indexed_procedure.rb",
-    "examples/benchmark/prolog.rb",
-    "examples/benchmark/pure.rb",
-    "examples/checkmate.rb",
-    "examples/combination.rb",
     "examples/dcg.rb",
     "examples/dcg2.rb",
-    "examples/directory_structure_logic.rb",
-    "examples/dirlist.rb",
     "examples/divisors.rb",
-    "examples/enumerators.rb",
     "examples/factorial.rb",
     "examples/file_search.rb",
     "examples/hanoi.rb",
-    "examples/hello.rb",
     "examples/hu/csaladfa.rb",
-    "examples/mice.rb",
-    "examples/mice2.rb",
     "examples/n_queens.rb",
-    "examples/object_oriented.rb",
     "examples/palindrome_detection.rb",
     "examples/parsing.rb",
     "examples/permutation.rb",
-    "examples/prefix.rb",
     "examples/primality_by_division.rb",
-    "examples/primitives.rb",
     "examples/sieve_of_eratosthenes.rb",
     "examples/string_interpolation.rb",
-    "examples/sudoku.rb",
     "examples/tracing.rb",
     "lib/rspec/rubylog.rb",
     "lib/rubylog.rb",
@@ -176,8 +159,6 @@ Gem::Specification.new do |s|
     "spec/inriasuite_spec.rb",
     "spec/integration/custom_classes_spec.rb",
     "spec/integration/dsl_spec.rb",
-    "spec/integration/theory_as_module_spec.rb",
-    "spec/integration/theory_as_module_with_include_spec.rb",
     "spec/rspec/rubylog_spec.rb",
     "spec/rubylog/assertable_spec.rb",
     "spec/rubylog/builtins/arithmetics_spec.rb",
@@ -226,6 +207,8 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<bundler>, [">= 1.0.0"])
       s.add_development_dependency(%q<jeweler>, [">= 1.8.3"])
       s.add_development_dependency(%q<simplecov>, [">= 0"])
+      s.add_development_dependency(%q<guard>, [">= 0"])
+      s.add_development_dependency(%q<guard-rspec>, [">= 0"])
     else
       s.add_dependency(%q<ruby-prof>, [">= 0"])
       s.add_dependency(%q<rspec>, ["< 3", ">= 2.8.0"])
@@ -233,6 +216,8 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<bundler>, [">= 1.0.0"])
       s.add_dependency(%q<jeweler>, [">= 1.8.3"])
       s.add_dependency(%q<simplecov>, [">= 0"])
+      s.add_dependency(%q<guard>, [">= 0"])
+      s.add_dependency(%q<guard-rspec>, [">= 0"])
     end
   else
     s.add_dependency(%q<ruby-prof>, [">= 0"])
@@ -241,6 +226,8 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<bundler>, [">= 1.0.0"])
     s.add_dependency(%q<jeweler>, [">= 1.8.3"])
     s.add_dependency(%q<simplecov>, [">= 0"])
+    s.add_dependency(%q<guard>, [">= 0"])
+    s.add_dependency(%q<guard-rspec>, [">= 0"])
   end
 end
 
