@@ -1,36 +1,27 @@
-$:.unshift File.dirname(__FILE__)+"/../lib"
-require "rubylog"
+predicate_for Integer, ".on(,)", ".attacks(,)", ".placed"
+predicate ":arranged"
 
-# Solution of N queens problem
+N=7
 
-module NQueens
-  extend Rubylog::Context
-  predicate_for Integer, ".on(,)", ".attacks(,)", ".placed"
-  predicate ":arranged"
+A.attacks(R,ANY_C).if A.on(R,ANY_C)
+A.attacks(ANY_R,C).if A.on(ANY_R,C)
+A.attacks(R2,C2).if A.on(R1,C1).and {R1-C1==R2-C2}
+A.attacks(R2,C2).if A.on(R1,C1).and {R1+C1==R2+C2}
 
-  N=7
+A.placed.if \
+  C.in(1..N).and(B.on(ANY,ANY).none(B.attacks(A,C))).and A.on(A,C).assumed
 
-  A.attacks(R,ANY_C).if A.on(R,ANY_C)
-  A.attacks(ANY_R,C).if A.on(ANY_R,C)
-  A.attacks(R2,C2).if A.on(R1,C1).and {R1-C1==R2-C2}
-  A.attacks(R2,C2).if A.on(R1,C1).and {R1+C1==R2+C2}
+:arranged.if every A.in(1..N), A.placed
 
-  A.placed.if \
-    C.in(1..N).and(B.on(ANY,ANY).none(B.attacks(A,C))).and A.on(A,C).assumed
-
-  :arranged.if every A.in(1..N), A.placed
-
-  :arranged.solve do
-    # draw board
-    L.in(1..N).each do
-      M.in(1..N).each do
-        print ANY.on?(L,M) ? "X" : "."
-      end
-      puts
+:arranged.solve do
+  # draw board
+  L.in(1..N).each do
+    M.in(1..N).each do
+      print ANY.on?(L,M) ? "X" : "."
     end
     puts
   end
-
-
+  puts
 end
+
 
