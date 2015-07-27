@@ -24,19 +24,22 @@ or, if you use +bundler+, add this line to your +Gemfile+:
 
 === The context
 
-Secondly, you need a Rubylog context. The simplest you can do is to extend Rubylog::Context into the main object.
+Secondly, you need a Rubylog context, which is a portion of the code where Rubylog can be used (e.g. variables are interpreted correctly). 
+
+The simplest you can do is to create a file with Rubylog code and run it with +rubylog+. This is recommended for prototypes, and for applications fully written in Rubylog.
+
+  $ rubylog myfile.rb
+
+The second option is to use a module in one of normal Ruby files. This is the recommended way for bigger applications where Rubylog code is only a part of the project.
 
   require 'rubylog'
-  extend Rubylog::Context
 
-Another option is to use Kernel#rubylog:
+  module MyRubylogStuff
+    extend Rubylog::Context
 
-
-  require 'rubylog'
-
-  rubylog do
-    # your code here
+    # Rubylog code here
   end
+
 
 
 == Data types
@@ -64,7 +67,7 @@ to the end:
   [1, *X, 5]
   [*A, *B]
 
-Currently you cannot use hashes as terms.
+Currently you cannot use hashes as Rubylog terms, but this is planned (see hash.rb in the examples folder).
 
 == Predicates
 As in prolog, predicates are the building blocks of your program. However, the arguments are in a different order than they are in prolog:
@@ -97,7 +100,7 @@ Nullary predicates are symbols, and they have to be declared with +predicate+:
 == Asserting clauses
 
 As in Prolog, there are two types of program clauses: facts and rules.
-You can assert facts with the bang syntax:
+You can assert facts with the bang version of the predicate method:
 
   predicate_for String, ".likes()"
   'John'.likes! 'milk'                         
@@ -129,7 +132,7 @@ In Rubylog, unification works like in Prolog, but with the +is+ functor.
 
   A.is(B)
 
-Using arrays, you can benefit the splats:
+Using arrays, you can benefit from the splats:
 
   [1,2,3,4].is([A,B,*T])      # [1,2,3,4] = [A,B|T]     in prolog
   [1,2,3,4].is([*H,*T])       # append(H, T, [1,2,3,4]) in prolog
@@ -140,7 +143,7 @@ The +in+ predicate unifies the first argument with any member of the collection:
 
 == Guards
 
-You can use guards. These are constant expressions that restrict the unification of variables. There are several types of guards:
+You can use guards. These are constant expressions that restrict the unification of variables. There are several types of guards: classes, regexps, hashes and +thats+ expressions.
 
   A[String].in(["asdf",5,nil]).each { p A }     # outputs "asdf"
   A[/x/].in(["asdf","xyz"]).each { p A }        # outputs "xyz"
@@ -148,7 +151,7 @@ You can use guards. These are constant expressions that restrict the unification
   A[thats < 5].in([4,5,6]).each { p A }         # outputs 4
   A[thats.length + 1 == 5].in(["abc","abcd"]).each { p A }    # outputs "abcd"
 
-+thats+ can receive any number of messages chained, and this will be applied to the value that would be bound to the variable. 
++thats+ is a method that returns a special object, which can receive any number of messages chained, and this will be applied to the value that would be bound to the variable. 
 You can add various guards to a variable. +thats\_not+ is the negation of +thats+.
 
   A[Integer, thats%2 == 0].even!
